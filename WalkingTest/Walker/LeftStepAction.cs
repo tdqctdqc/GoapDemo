@@ -19,8 +19,8 @@ public class LeftStepAction : GoapAction<Walker>
 
     public override string Descr(GoapActionArgs args)
     {
-        var from = args.GetArg<Vector2>("from");
-        var to = args.GetArg<Vector2>("to");
+        var from = (Vector2)args.GetArg<Vector2>("from").Value;
+        var to = (Vector2)args.GetArg<Vector2>("to").Value;
         return $"Stepping with left foot from {from} to {to}";
     }
     public override GoapActionArgs ApplyToState(GoapState<Walker> state)

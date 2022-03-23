@@ -54,6 +54,7 @@ public class GoapPlan<TAgent>
         {
             var action = Actions[i];
             GD.Print($"Action {i}: {action.Name}");
+            GD.Print(action.Descr(ActionArgs[i]));
         }
         GD.Print("FINAL STATE");
         EndState.PrintState();

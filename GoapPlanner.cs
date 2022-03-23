@@ -24,8 +24,6 @@ public static class GoapPlanner
             current = openPlans[0];
             if (finished(current.EndState))
             {
-                GD.Print("satisfied");
-
                 return current;
             }
             openPlans.Remove(current);

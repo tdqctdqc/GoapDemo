@@ -1,0 +1,9 @@
+C:\Users\Tynan Dion\Desktop\games\GoapDemo\.mono\temp\obj\Debug\GoapDemo.csproj.AssemblyReference.cache
+C:\Users\Tynan Dion\Desktop\games\GoapDemo\.mono\temp\obj\Debug\GoapDemo.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Tynan Dion\Desktop\games\GoapDemo\.mono\temp\obj\Debug\GoapDemo.AssemblyInfoInputs.cache
+C:\Users\Tynan Dion\Desktop\games\GoapDemo\.mono\temp\obj\Debug\GoapDemo.AssemblyInfo.cs
+C:\Users\Tynan Dion\Desktop\games\GoapDemo\.mono\temp\obj\Debug\GoapDemo.csproj.CoreCompileInputs.cache
+C:\Users\Tynan Dion\Desktop\games\GoapDemo\.mono\temp\bin\Debug\GoapDemo.dll
+C:\Users\Tynan Dion\Desktop\games\GoapDemo\.mono\temp\bin\Debug\GoapDemo.pdb
+C:\Users\Tynan Dion\Desktop\games\GoapDemo\.mono\temp\obj\Debug\GoapDemo.dll
+C:\Users\Tynan Dion\Desktop\games\GoapDemo\.mono\temp\obj\Debug\GoapDemo.pdb

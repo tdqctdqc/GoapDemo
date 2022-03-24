@@ -12,7 +12,7 @@ public abstract class GoapAction<TAgent> : IGoapAction
         Name = name;
         Reqs = new List<IGoapVar>();
     }
-    public virtual GoapGoal<TSubAgent> GetAssocGoal<TSubAgent>()
+    public GoapGoal<TSubAgent> GetAssocGoal<TSubAgent>()
     {
         if (typeof(TSubAgent).IsAssignableFrom(_assocGoal.Item1))
         {
@@ -20,12 +20,8 @@ public abstract class GoapAction<TAgent> : IGoapAction
         }
         return null;
     }
-
     public abstract bool Valid(GoapState<TAgent> state);
-
     public abstract float Cost(GoapState<TAgent> state);
-
     public abstract string Descr(GoapActionArgs args);
-
     public abstract GoapActionArgs ApplyToState(GoapState<TAgent> state);
 }

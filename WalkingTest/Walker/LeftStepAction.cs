@@ -8,12 +8,12 @@ public class LeftStepAction : GoapAction<Walker>
     }
     public override bool Valid(GoapState<Walker> state)
     {
-        var leftForward = state.GetVar(WalkerAgent.LeftFootForward);
+        var leftForward = state.GetVar<bool>(WalkerAgent.LeftFootForward);
         return leftForward.Value == false; 
     }
     public override float Cost(GoapState<Walker> state)
     {
-        var leftForward = state.GetVar(WalkerAgent.LeftFootForward);
+        var leftForward = state.GetVar<bool>(WalkerAgent.LeftFootForward);
         return leftForward.Value == false ? 1f : Mathf.Inf;
     }
 
@@ -25,10 +25,10 @@ public class LeftStepAction : GoapAction<Walker>
     }
     public override GoapActionArgs ApplyToState(GoapState<Walker> state)
     {
-        var leftFootForwardVar = state.GetVar(WalkerAgent.LeftFootForward);
-        var homePos = state.GetVar(WalkerAgent.HomeLocationVar).Value;
-        var strideLength = state.GetVar(WalkerAgent.StrideLength).Value;
-        var posVar = state.GetVar(WalkerAgent.PositionVar);
+        var leftFootForwardVar = state.GetVar<bool>(WalkerAgent.LeftFootForward);
+        var homePos = state.GetVar<Vector2>(WalkerAgent.HomeLocationVar).Value;
+        var strideLength = state.GetVar<float>(WalkerAgent.StrideLength).Value;
+        var posVar = state.GetVar<Vector2>(WalkerAgent.PositionVar);
         var pos = posVar.Value;
         
         var dist = pos.DistanceTo(homePos);
@@ -44,12 +44,12 @@ public class LeftStepAction : GoapAction<Walker>
         return args; 
     }
 
-    private void DoStrideEffect(GoapState<Walker> state, Vector2 newPos, GoapVar<Vector2, Walker> posVar)
+    private void DoStrideEffect(GoapState<Walker> state, Vector2 newPos, GoapVarInstance<Vector2, Walker> posVar)
     {
-        state.MutateVar(posVar, newPos);
+        state.MutateVar(posVar.BaseVar, newPos);
     }
-    private void SwitchLeftFootForwardEffect(GoapState<Walker> state, GoapVar<bool, Walker> leftFootForwardVar)
+    private void SwitchLeftFootForwardEffect(GoapState<Walker> state, GoapVarInstance<bool, Walker> leftFootForwardVar)
     {
-        state.MutateVar(leftFootForwardVar, true);
+        state.MutateVar(leftFootForwardVar.BaseVar, true);
     }
 }

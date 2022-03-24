@@ -1,21 +1,30 @@
 using Godot;
 using System;
 
-public class FlankAction : Node
+public class FlankAction : GoapAction<Army>
 {
-    // Declare member variables here. Examples:
-    // private int a = 2;
-    // private string b = "text";
-
-    // Called when the node enters the scene tree for the first time.
-    public override void _Ready()
+    public FlankAction() : base("Flank")
     {
-        
     }
 
-//  // Called every frame. 'delta' is the elapsed time since the previous frame.
-//  public override void _Process(float delta)
-//  {
-//      
-//  }
+    public override bool Valid(GoapState<Army> state)
+    {
+        return state.GetVar<bool>(ArmyAgent.EnemyIsFlanked).Value == false;
+    }
+
+    public override float Cost(GoapState<Army> state)
+    {
+        return 1f; 
+    }
+
+    public override string Descr(GoapActionArgs args)
+    {
+        return "Flanking Enemy Army";
+    }
+
+    public override GoapActionArgs ApplyToState(GoapState<Army> state)
+    {
+        state.MutateVar(ArmyAgent.EnemyIsFlanked, true);
+        return new GoapActionArgs();
+    }
 }

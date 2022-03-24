@@ -3,44 +3,22 @@ using System;
 
 public class Vec2Var<TAgent> : GoapVar<Vector2, TAgent>
 {
-    private float _distCost;
-    public Vec2Var(string name, float distCost, Func<TAgent, Vector2> valueFunc, TAgent agent) : base(name, valueFunc, agent)
+    private Vec2Var(string name, Func<TAgent, Vector2> valueFunc, 
+        Func<GoapVarInstance<Vector2, TAgent>, IGoapVarInstance, float> heuristicFunc,
+        Func<GoapVarInstance<Vector2, TAgent>, IGoapState, bool> satisfiedFunc) : base(name, valueFunc, heuristicFunc, satisfiedFunc)
     {
-        _distCost = distCost;
     }
 
-    public Vec2Var(string name, float distCost, Func<TAgent, Vector2> valueFunc, Vector2 value) : base(name, valueFunc, value)
+    public static Vec2Var<TAgent> ConstructScaledHeuristic(string name, float distCost, Func<TAgent, Vector2> valueFunc)
     {
-        _distCost = distCost;
+        return new Vec2Var<TAgent>(name, valueFunc, 
+            (a, b) => ScaledHeuristicCost(distCost, a, b), 
+            SimpleSatisfied);
     }
 
-
-    public override bool SatisfiedBy(IGoapState state)
-    {
-        var vari = state.GetGenericVar(this);
-        if (vari.GetValue() is Vector2 v == false) return false;
-        return v == Value;
-    }
-
-    public override float GetHeuristicCost(IGoapVar comparison)
+    public static float ScaledHeuristicCost(float scale, GoapVarInstance<Vector2,TAgent> instance, IGoapVarInstance comparison)
     {
         if (comparison.GetValue() is Vector2 v == false) return Mathf.Inf;
-        return _distCost * v.DistanceTo(Value);
-    }
-
-    public override GoapVar<Vector2, TAgent> Branch(Vector2 value)
-    {
-        return new Vec2Var<TAgent>(Name, _distCost, _valueFunc, value);
-    }
-
-    public override GoapVar<Vector2, TAgent> Branch(TAgent agent)
-    {
-        return new Vec2Var<TAgent>(Name, _distCost, _valueFunc, agent);
-
-    }
-
-    public override GoapVar<Vector2, TAgent> Branch(GoapAgent<TAgent> agent)
-    {
-        return new Vec2Var<TAgent>(Name, _distCost, _valueFunc, agent.Agent);
+        return scale * v.DistanceTo(instance.Value);
     }
 }

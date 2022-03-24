@@ -26,7 +26,6 @@ public class GoapActionArgs
     {
         public string Name { get; private set; }
         public object Value { get; private set; }
-
         public GoapActionArg(string name, object value)
         {
             Name = name;

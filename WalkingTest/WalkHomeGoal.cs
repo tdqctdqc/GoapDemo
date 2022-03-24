@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Linq;
 
 public class WalkHomeGoal : GoapGoal<Walker>
 {
@@ -7,21 +8,13 @@ public class WalkHomeGoal : GoapGoal<Walker>
     {
         var targetPosVar = WalkerAgent.PositionVar.Branch(agent.Agent.HomeLocation);
         TargetState = new GoapState<Walker>(targetPosVar);
-        
-        var leftForward = WalkerAgent.LeftFootForward.Branch(agent);
-        var strideLength = WalkerAgent.StrideLength.Branch(agent);
-        var pos = WalkerAgent.PositionVar.Branch(agent);
-        var homePos = WalkerAgent.HomeLocationVar.Branch(agent);
-        
-        var initState = new GoapState<Walker>(leftForward, strideLength, pos, homePos);
+        var initState = new GoapState<Walker>(agent.GetBranchedVars());
         return initState; 
     }
-
     public override float Priority(GoapAgent<Walker> agent)
     {
         return 1f;
     }
-
     public override float SubordinateCapability(IGoapAgent agent)
     {
         return 1f;

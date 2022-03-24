@@ -1,21 +1,28 @@
 using Godot;
 using System;
 
-public class ArmyAgent : Node
+public class ArmyAgent : GoapAgent<Army>
 {
-    // Declare member variables here. Examples:
-    // private int a = 2;
-    // private string b = "text";
+    public static GoapVar<Vector2, Army> PositionVar
+        = Vec2Var<Army>.ConstructScaledHeuristic("Position", 1f, a => a.Position);
+    public static GoapVar<Vector2, Army> FacingVar
+        = Vec2Var<Army>.ConstructScaledHeuristic("Facing", 1f, a => a.Facing);
 
-    // Called when the node enters the scene tree for the first time.
-    public override void _Ready()
+    public static GoapVar<bool, Army> EnemyIsEngaged
+        = BoolVar<Army>.Construct("EnemyEngaged", 100f, a => a.Enemy.IsEngaged);
+    public static GoapVar<bool, Army> EnemyIsFlanked
+        = BoolVar<Army>.Construct("EnemyFlanked", 100f, a => a.Enemy.IsFlanked);
+    public static GoapAction<Army> FlankAction
+        = new FlankAction();
+    public static GoapAction<Army> CoverAction
+        = new CoverAction();
+    public ArmyAgent(Army agent) : base(agent)
     {
-        
+        Vars.Add(PositionVar);
+        Vars.Add(FacingVar);
+        Vars.Add(EnemyIsEngaged);
+        Vars.Add(EnemyIsFlanked);
+        Actions.Add(FlankAction);
+        Actions.Add(CoverAction);
     }
-
-//  // Called every frame. 'delta' is the elapsed time since the previous frame.
-//  public override void _Process(float delta)
-//  {
-//      
-//  }
 }

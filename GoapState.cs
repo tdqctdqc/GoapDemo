@@ -5,18 +5,19 @@ using System.Linq;
 
 public class GoapState<TAgent> : IGoapState
 {
-    protected IReadOnlyList<IGoapVar> _vars => _varsPrivate;
-    private List<IGoapVar> _varsPrivate;
-    public GoapState(params IGoapVar[] stateVars)
+    protected IReadOnlyList<IGoapVarInstance> _vars => _varsPrivate;
+    private List<IGoapVarInstance> _varsPrivate;
+    public GoapState(params IGoapVarInstance[] stateVars)
     {
-        _varsPrivate = new List<IGoapVar>(stateVars);
+        _varsPrivate = new List<IGoapVarInstance>(stateVars);
     }
-    public GoapVar<TValue, TAgent> GetVar<TValue>(GoapVar<TValue, TAgent> match)
+
+    public GoapVarInstance<TValue, TAgent> GetVar<TValue>(IGoapVar match) where TValue : struct
     {
         var goapVar = _vars.Where(v => v.Name == match.Name).FirstOrDefault();
         if (goapVar != null)
         {
-            if (goapVar is GoapVar<TValue, TAgent> v)
+            if (goapVar is GoapVarInstance<TValue, TAgent> v)
             {
                 return v;
             }
@@ -24,19 +25,25 @@ public class GoapState<TAgent> : IGoapState
         return null;
     }
 
-    public void MutateVar<TValue>(GoapVar<TValue, TAgent> varToMutate, TValue newValue)
+    public void MutateVar<TValue>(GoapVar<TValue, TAgent> varToMutate, TValue newValue) where TValue : struct
     {
-        var newVar = varToMutate.Branch(newValue);
-        _varsPrivate.Remove(varToMutate);
-        _varsPrivate.Add(newVar);
+        var newVarInstance = varToMutate.Branch(newValue);
+        var varToMutateInstance = GetVar<TValue>(varToMutate);
+        _varsPrivate.Remove(varToMutateInstance);
+        _varsPrivate.Add(newVarInstance);
     }
 
-    private IGoapVar GetVarTypeChecked(string name, Type type)
+    private IGoapVarInstance GetVarTypeChecked(string name, Type type)
     {
         var goapVar = _vars.Where(v => v.Name == name)
                         .Where(v => v.ValueType == type)    
                         .FirstOrDefault();
         return goapVar;
+    }
+    
+    public IGoapVarInstance GetVarGeneric(IGoapVar match)
+    {
+        return GetVarTypeChecked(match.Name, match.ValueType);
     }
     public bool SatisfiedBy(GoapState<TAgent> candidateState)
     {
@@ -74,8 +81,4 @@ public class GoapState<TAgent> : IGoapState
         }
     }
 
-    public IGoapVar GetGenericVar(IGoapVar match)
-    {
-        return GetVarTypeChecked(match.Name, match.ValueType);
-    }
 }

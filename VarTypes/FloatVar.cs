@@ -3,44 +3,23 @@ using System;
 
 public class FloatVar<TAgent> : GoapVar<float, TAgent>
 {
-    private float _distCost;
-
-    public FloatVar(string name, float distCost, Func<TAgent, float> valueFunc, TAgent agent) : base(name, valueFunc, agent)
-    {
-        _distCost = distCost;
-    }
     
-    public FloatVar(string name, float distCost, Func<TAgent, float> valueFunc, float value) : base(name, valueFunc, value)
+    private FloatVar(string name, Func<TAgent, float> valueFunc,
+        Func<GoapVarInstance<float, TAgent>, IGoapVarInstance, float> heuristicFunc,
+        Func<GoapVarInstance<float, TAgent>, IGoapState, bool> satisfiedFunc) : base(name, valueFunc, heuristicFunc, satisfiedFunc)
     {
-        _distCost = distCost;
+    }
+    public static FloatVar<TAgent> ConstructScaleHeuristic(string name, float distCost, 
+        Func<TAgent, float> valueFunc)
+    {
+        return new FloatVar<TAgent>(name, valueFunc, 
+            (a, b) => ScaledHeuristicCost(distCost, a, b), 
+            SimpleSatisfied);
     }
 
-    public override bool SatisfiedBy(IGoapState state)
-    {
-        var vari = state.GetGenericVar(this);
-        if (vari.GetValue() is float f == false) return false;
-        return f == Value;
-    }
-    public override float GetHeuristicCost(IGoapVar comparison)
+    public static float ScaledHeuristicCost(float weight, GoapVarInstance<float,TAgent> instance, IGoapVarInstance comparison)
     {
         if (comparison.GetValue() is float v == false) return Mathf.Inf;
-    
-        return _distCost * Mathf.Abs(v - Value);
-    }
-
-    public override GoapVar<float, TAgent> Branch(float value)
-    {
-        return new FloatVar<TAgent>(Name, _distCost, _valueFunc, value);
-    }
-
-    public override GoapVar<float, TAgent> Branch(TAgent agent)
-    {
-        return new FloatVar<TAgent>(Name, _distCost, _valueFunc, agent);
-
-    }
-
-    public override GoapVar<float, TAgent> Branch(GoapAgent<TAgent> agent)
-    {
-        return new FloatVar<TAgent>(Name, _distCost, _valueFunc, agent.Agent);
+        return weight * Mathf.Abs(v - instance.Value);
     }
 }

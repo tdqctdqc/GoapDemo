@@ -3,37 +3,23 @@ using System;
 
 public class BoolVar<TAgent> : GoapVar<bool,TAgent>
 {
-    public BoolVar(string name, Func<TAgent, bool> valueFunc, TAgent agent) : base(name, valueFunc, agent)
+    private BoolVar(string name, Func<TAgent, bool> valueFunc, 
+        Func<GoapVarInstance<bool, TAgent>, IGoapVarInstance, float> heuristicFunc,
+        Func<GoapVarInstance<bool, TAgent>, IGoapState, bool> satisfiedFunc) 
+            : base(name, valueFunc, heuristicFunc, satisfiedFunc)
     {
     }
 
-    public BoolVar(string name, Func<TAgent, bool> valueFunc, bool value) : base(name, valueFunc, value)
+    public static BoolVar<TAgent> Construct(string name, float missCost, Func<TAgent, bool> valueFunc)
     {
+        return new BoolVar<TAgent>(name, valueFunc, 
+            (a, b) => FlatCostHeuristic(missCost, a, b), 
+            SimpleSatisfied);
     }
 
-    public override bool SatisfiedBy(IGoapState state)
+    public static float FlatCostHeuristic(float missHeurCost, GoapVarInstance<bool,TAgent> instance, IGoapVarInstance comparison)
     {
-        var vari = state.GetGenericVar(this);
-        if (vari.GetValue() is bool b == false) return false;
-        return b == Value;
-    }
-
-    public override float GetHeuristicCost(IGoapVar comparison)
-    {
-        if (comparison.GetValue() is bool b == false) return Mathf.Inf;
-        return b == Value ? 0f : Mathf.Inf;
-    }
-
-    public override GoapVar<bool, TAgent> Branch(bool value)
-    {
-        return new BoolVar<TAgent>(Name, _valueFunc, value);
-    }
-    public override GoapVar<bool, TAgent> Branch(TAgent agent)
-    {
-        return new BoolVar<TAgent>(Name, _valueFunc, agent);
-    }
-    public override GoapVar<bool, TAgent> Branch(GoapAgent<TAgent> agent)
-    {
-        return new BoolVar<TAgent>(Name, _valueFunc, agent.Agent);
+        if (comparison.GetValue() is bool b == false) return missHeurCost;
+        return b == instance.Value ? 0f : missHeurCost;
     }
 }

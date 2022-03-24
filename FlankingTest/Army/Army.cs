@@ -1,21 +1,21 @@
 using Godot;
 using System;
 
-public class Army : Node
+public class Army 
 {
-    // Declare member variables here. Examples:
-    // private int a = 2;
-    // private string b = "text";
+    public Vector2 Position { get; private set; }
+    public Vector2 Facing { get; private set; }
+    public Army Enemy { get; private set; }
+    public bool IsEngaged { get; private set; }
+    public bool IsFlanked { get; private set; }
 
-    // Called when the node enters the scene tree for the first time.
-    public override void _Ready()
+    public Army()
     {
-        
+        Enemy = new Army(this);
     }
 
-//  // Called every frame. 'delta' is the elapsed time since the previous frame.
-//  public override void _Process(float delta)
-//  {
-//      
-//  }
+    private Army(Army enemy)
+    {
+        Enemy = enemy; 
+    }
 }

@@ -12,12 +12,6 @@ public class GoapPlan<TAgent>
     private readonly float _cost;
     public float Difficulty => _diff;
     private readonly float _diff;
-    
-    public GoapPlan()
-    {
-        Actions = new List<GoapAction<TAgent>>();
-        ActionArgs = new List<GoapActionArgs>();
-    }
     public GoapPlan(GoapState<TAgent> startState)
     {
         EndState = startState.Clone();

@@ -4,24 +4,26 @@ using System;
 public class WalkerAgent : GoapAgent<Walker>
 {
     public static GoapVar<Vector2, Walker> PositionVar =
-        new Vec2Var<Walker>("Position", 1f, w => w.Location, Vector2.Zero);
+        Vec2Var<Walker>.ConstructScaledHeuristic("Position", 1f, w => w.Location);
+
     public static GoapVar<Vector2, Walker> HomeLocationVar =
-        new Vec2Var<Walker>("HomeLocation", 1f, w => w.HomeLocation, Vector2.One * 100f);
+        Vec2Var<Walker>.ConstructScaledHeuristic("HomeLocation", 1f, w => w.HomeLocation);
+
     public static GoapVar<float, Walker> StrideLength =
-        new FloatVar<Walker>("StrideLength", 1f, w => w.StrideLength, 10f);
+        FloatVar<Walker>.ConstructScaleHeuristic("StrideLength", 1f, w => w.StrideLength);
+
     public static GoapVar<bool, Walker> LeftFootForward =
-        new BoolVar<Walker>("LeftFootForward", w => w.LeftFootForward, true);
+        BoolVar<Walker>.Construct("LeftFootForward", 100f, w => w.LeftFootForward);
 
     public static LeftStepAction LeftStepAction = new LeftStepAction();
     public static RightStepAction RightStepAction = new RightStepAction();
     public WalkerAgent(Walker agent) : base(agent)
     {
-        BuildActions();
-    }
-
-    protected override void BuildActions()
-    {
         Actions.Add(LeftStepAction);
         Actions.Add(RightStepAction);
+        Vars.Add(PositionVar);
+        Vars.Add(HomeLocationVar);
+        Vars.Add(StrideLength);
+        Vars.Add(LeftFootForward);
     }
 }

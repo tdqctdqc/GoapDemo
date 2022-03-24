@@ -6,14 +6,15 @@ using System.Linq;
 public abstract class GoapAgent<TAgent> : IGoapAgent
 {
     public TAgent Agent { get; private set; }
+    public Type AgentType => Agent.GetType();
     public List<GoapAction<TAgent>> Actions { get; private set; }
+    public List<IGoapVar> Vars { get; private set; }
     public GoapAgent(TAgent agent)
     {
         Actions = new List<GoapAction<TAgent>>();
+        Vars = new List<IGoapVar>();
         Agent = agent; 
     }
-
-    protected abstract void BuildActions();
     public virtual GoapSchedule<TAgent> GetSchedule(List<GoapGoal<TAgent>> goals)
     {
         goals = goals.OrderBy(g => g.Priority(this)).ToList();
@@ -26,7 +27,15 @@ public abstract class GoapAgent<TAgent> : IGoapAgent
         }
         return schedule;
     }
-    
 
-    
+
+    public IGoapVarInstance[] GetBranchedVars()
+    {
+        return Vars.Select(v => v.BranchGeneric(this)).ToArray();
+    }
+
+    public object GetAgent()
+    {
+        return Agent; 
+    }
 }

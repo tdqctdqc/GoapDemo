@@ -2,19 +2,16 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public class FarmAgent : GoapAgent<Farm> 
+public class FarmAgent : GoapAgent<Farm>
 {
-    public static GoapVar<float, Farm> FieldCutPercent = new FloatVar<Farm>("fieldCutPercent", 1f, f => 0f, 0f);
+    public static GoapVar<float, Farm> FieldCutPercent =
+        FloatVar<Farm>.ConstructScaleHeuristic("fieldCutPercent", 1f, f => 0f);
     public static CutFieldAction CutFieldAction = new CutFieldAction();
 
     public FarmAgent(Farm agent) : base(agent)
     {
-        BuildActions();
-    }
-    
-    protected override void BuildActions()
-    {
         Actions.Add(CutFieldAction);
+        Vars.Add(FieldCutPercent);
     }
 }
 
@@ -44,7 +41,7 @@ public class CutFieldAction : GoapAction<Farm>
     public override GoapActionArgs ApplyToState(GoapState<Farm> state)
     {
         var fieldCutPercent = state.GetVar<float>(FarmAgent.FieldCutPercent);
-        state.MutateVar<float>(fieldCutPercent, 1f);
+        state.MutateVar<float>(fieldCutPercent.BaseVar, 1f);
         return new GoapActionArgs();
     }
 }

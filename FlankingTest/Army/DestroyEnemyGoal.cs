@@ -8,7 +8,7 @@ public class DestroyEnemyGoal : GoapGoal<Army>
     {
         var enemyEngagedVar = ArmyAgent.EnemyIsEngaged.Branch(true);
         var enemyFlankedVar = ArmyAgent.EnemyIsFlanked.Branch(true);
-        TargetState = new GoapState<Army>(enemyEngagedVar, enemyFlankedVar);
+        TargetStates.Add(new GoapState<Army>(enemyEngagedVar, enemyFlankedVar));
 
         Actions = agent.Actions.ToList();
         var flankAction = new FlankAction(agent.Agent.Enemy);

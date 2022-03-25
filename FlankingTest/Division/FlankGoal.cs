@@ -15,7 +15,7 @@ public class FlankGoal : GoapGoal<Division>
                        + _enemy.Facing.Normalized().Rotated(Mathf.Pi / 2f) * 10f;
         var inFlankPos = DivisionAgent.PositionVar.Branch(flankPos);
         var attacking = DivisionAgent.AttackingVar.Branch(true);
-        TargetState = new GoapState<Division>(inFlankPos, attacking);
+        TargetStates.Add(new GoapState<Division>(inFlankPos, attacking));
 
         Actions = agent.Actions.ToList();
         var moveToFlankPos = new MoveAction(flankPos, 1f);

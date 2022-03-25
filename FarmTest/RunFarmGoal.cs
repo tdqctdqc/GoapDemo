@@ -6,7 +6,7 @@ public class RunFarmGoal : GoapGoal<Farm>
     public RunFarmGoal()
     {
         var fieldCutPercentVar = FarmAgent.FieldCutPercent.Branch(1f);
-        TargetState = new GoapState<Farm>(fieldCutPercentVar);
+        TargetStates.Add(new GoapState<Farm>(fieldCutPercentVar));
     }
     public override GoapState<Farm> GetInitialState(GoapAgent<Farm> agent)
     {

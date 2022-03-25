@@ -3,11 +3,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-public abstract class GoapSuperAgent<TAgent, TSubAgent> : GoapAgent<TAgent>
+public abstract class GoapSuperAgent<TSuperAgent, TSubAgent> : GoapAgent<TSuperAgent>
 {
     public List<GoapAgent<TSubAgent>> Subordinates { get; private set; }
 
-    public GoapSuperAgent(TAgent agent) : base(agent)
+    public GoapSuperAgent(TSuperAgent agent) : base(agent)
     {
         Subordinates = new List<GoapAgent<TSubAgent>>();
     }
@@ -16,14 +16,14 @@ public abstract class GoapSuperAgent<TAgent, TSubAgent> : GoapAgent<TAgent>
     {
         Subordinates.AddRange(subs);
     }
-    private GoapSchedule<TAgent> GetSelfSchedule(List<GoapGoal<TAgent>> goals)
+    private GoapSchedule<TSuperAgent> GetSelfSchedule(List<GoapGoal<TSuperAgent>> goals)
     {
         goals = goals.OrderBy(g => g.Priority(this)).ToList();
         var plans = goals.Select(g => GoapPlanner.PlanOld(this, g, 100)).ToList();
         var agentsDistribution = GetSubordinateDistribution(goals, plans)
                                 .ToArray();
                                     
-        var schedule = new GoapSchedule<TAgent>(typeof(TSubAgent));
+        var schedule = new GoapSchedule<TSuperAgent>(typeof(TSubAgent));
         for (int i = 0; i < plans.Count; i++)
         {
             schedule.AddEntry(goals[i], plans[i], agentsDistribution[i]);
@@ -31,7 +31,7 @@ public abstract class GoapSuperAgent<TAgent, TSubAgent> : GoapAgent<TAgent>
         return schedule;
     }
 
-    private GoapSchedule<TSubAgent> GetSubordinateSchedule(List<GoapGoal<TAgent>> goals)
+    private GoapSchedule<TSubAgent> GetSubordinateSchedule(List<GoapGoal<TSuperAgent>> goals)
     {
         var selfSchedule = GetSchedule(goals);
         var agentsDistribution = GetSubordinateDistribution(selfSchedule.Entries.Select(e => e.Goal).ToList(), selfSchedule.Entries.Select(e => e.Plan).ToList());
@@ -52,7 +52,7 @@ public abstract class GoapSuperAgent<TAgent, TSubAgent> : GoapAgent<TAgent>
         return subSchedule; 
     }
 
-    private List<GoapAgent<TSubAgent>>[] GetSubordinateDistribution(List<GoapGoal<TAgent>> goals, List<GoapPlan<TAgent>> plans)
+    private List<GoapAgent<TSubAgent>>[] GetSubordinateDistribution(List<GoapGoal<TSuperAgent>> goals, List<GoapPlan<TSuperAgent>> plans)
     {
         var availableSubs = Subordinates.ToList();
         var agentsDistribution = new List<GoapAgent<TSubAgent>>[plans.Count];

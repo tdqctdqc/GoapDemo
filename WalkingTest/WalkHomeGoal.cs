@@ -7,7 +7,7 @@ public class WalkHomeGoal : GoapGoal<Walker>
     public override GoapState<Walker> GetInitialState(GoapAgent<Walker> agent)
     {
         var targetPosVar = WalkerAgent.PositionVar.Branch(agent.Agent.HomeLocation);
-        TargetState = new GoapState<Walker>(targetPosVar);
+        TargetStates.Add(new GoapState<Walker>(targetPosVar));
 
         Actions = agent.Actions.ToList();
         var initState = new GoapState<Walker>(agent.GetBranchedVars());

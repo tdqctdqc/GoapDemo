@@ -14,7 +14,7 @@ public class CoverGoal : GoapGoal<Division>
         var coverPos = _enemy.Position + _enemy.Facing.Normalized() * 10f;
         var inCoverPos = DivisionAgent.PositionVar.Branch(coverPos);
         var attacking = DivisionAgent.AttackingVar.Branch(true);
-        TargetState = new GoapState<Division>(inCoverPos, attacking);
+        TargetStates.Add(new GoapState<Division>(inCoverPos, attacking));
 
         Actions = agent.Actions.ToList();
         var moveToCoverPos = new MoveAction(coverPos, 1f);

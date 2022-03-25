@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Linq;
 
 public class DestroyEnemyGoal : GoapGoal<Army>
 {
@@ -8,8 +9,13 @@ public class DestroyEnemyGoal : GoapGoal<Army>
         var enemyEngagedVar = ArmyAgent.EnemyIsEngaged.Branch(true);
         var enemyFlankedVar = ArmyAgent.EnemyIsFlanked.Branch(true);
         TargetState = new GoapState<Army>(enemyEngagedVar, enemyFlankedVar);
-        var initState = new GoapState<Army>(agent.GetBranchedVars());
-        return initState; 
+
+        Actions = agent.Actions.ToList();
+        var flankAction = new FlankAction(agent.Agent.Enemy);
+        var coverAction = new CoverAction(agent.Agent.Enemy);
+        Actions.Add(flankAction);
+        Actions.Add(coverAction);
+        return new GoapState<Army>(agent.GetBranchedVars());
     }
 
     public override float Priority(GoapAgent<Army> agent)

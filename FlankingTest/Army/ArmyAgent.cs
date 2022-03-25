@@ -12,17 +12,12 @@ public class ArmyAgent : GoapAgent<Army>
         = BoolVar<Army>.Construct("EnemyEngaged", 100f, a => a.Enemy.IsEngaged);
     public static GoapVar<bool, Army> EnemyIsFlanked
         = BoolVar<Army>.Construct("EnemyFlanked", 100f, a => a.Enemy.IsFlanked);
-    public static GoapAction<Army> FlankAction
-        = new FlankAction();
-    public static GoapAction<Army> CoverAction
-        = new CoverAction();
+    
     public ArmyAgent(Army agent) : base(agent)
     {
         Vars.Add(PositionVar);
         Vars.Add(FacingVar);
         Vars.Add(EnemyIsEngaged);
         Vars.Add(EnemyIsFlanked);
-        Actions.Add(FlankAction);
-        Actions.Add(CoverAction);
     }
 }

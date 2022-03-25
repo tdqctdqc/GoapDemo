@@ -8,6 +8,8 @@ public class WalkHomeGoal : GoapGoal<Walker>
     {
         var targetPosVar = WalkerAgent.PositionVar.Branch(agent.Agent.HomeLocation);
         TargetState = new GoapState<Walker>(targetPosVar);
+
+        Actions = agent.Actions.ToList();
         var initState = new GoapState<Walker>(agent.GetBranchedVars());
         return initState; 
     }

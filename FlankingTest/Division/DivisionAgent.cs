@@ -1,21 +1,20 @@
 using Godot;
 using System;
 
-public class DivisionAgent : Node
+public class DivisionAgent : GoapAgent<Division>
 {
-    // Declare member variables here. Examples:
-    // private int a = 2;
-    // private string b = "text";
+    public static GoapVar<Vector2, Division> PositionVar
+        = Vec2Var<Division>.ConstructScaledHeuristic("Position", 1f, a => a.Position);
+    public static GoapVar<Vector2, Division> FacingVar
+        = Vec2Var<Division>.ConstructScaledHeuristic("Facing", 1f, a => a.Facing);
+    public static GoapVar<bool, Division> AttackingVar
+        = BoolVar<Division>.Construct("Attacking", 1f, a => false);
 
-    // Called when the node enters the scene tree for the first time.
-    public override void _Ready()
+    public DivisionAgent(Division agent) : base(agent)
     {
-        
-    }
+        Vars.Add(PositionVar);
+        Vars.Add(FacingVar);
+        Vars.Add(AttackingVar);
 
-//  // Called every frame. 'delta' is the elapsed time since the previous frame.
-//  public override void _Process(float delta)
-//  {
-//      
-//  }
+    }
 }

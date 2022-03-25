@@ -1,21 +1,14 @@
 using Godot;
 using System;
 
-public class Division : Node
+public class Division 
 {
-    // Declare member variables here. Examples:
-    // private int a = 2;
-    // private string b = "text";
-
-    // Called when the node enters the scene tree for the first time.
-    public override void _Ready()
+    public Division(Vector2 position, Vector2 facing)
     {
-        
+        Position = position;
+        Facing = facing;
     }
 
-//  // Called every frame. 'delta' is the elapsed time since the previous frame.
-//  public override void _Process(float delta)
-//  {
-//      
-//  }
+    public Vector2 Position { get; private set; }
+    public Vector2 Facing { get; private set; }
 }

@@ -1,21 +1,36 @@
 using Godot;
 using System;
+using System.Linq;
 
-public class CoverGoal : Node
+public class CoverGoal : GoapGoal<Division>
 {
-    // Declare member variables here. Examples:
-    // private int a = 2;
-    // private string b = "text";
-
-    // Called when the node enters the scene tree for the first time.
-    public override void _Ready()
+    private Army _enemy; 
+    public CoverGoal(Army enemy)
     {
-        
+        _enemy = enemy;
+    }
+    public override GoapState<Division> GetInitialState(GoapAgent<Division> agent)
+    {
+        var coverPos = _enemy.Position + _enemy.Facing.Normalized() * 10f;
+        var inCoverPos = DivisionAgent.PositionVar.Branch(coverPos);
+        var attacking = DivisionAgent.AttackingVar.Branch(true);
+        TargetState = new GoapState<Division>(inCoverPos, attacking);
+
+        Actions = agent.Actions.ToList();
+        var moveToCoverPos = new MoveAction(coverPos, 1f);
+        var attack = new AttackAction(_enemy);
+        Actions.Add(moveToCoverPos);
+        Actions.Add(attack);
+        return new GoapState<Division>(agent.GetBranchedVars());
     }
 
-//  // Called every frame. 'delta' is the elapsed time since the previous frame.
-//  public override void _Process(float delta)
-//  {
-//      
-//  }
+    public override float Priority(GoapAgent<Division> agent)
+    {
+        return 1f;
+    }
+
+    public override float SubordinateCapability(IGoapAgent agent)
+    {
+        return 1f;
+    }
 }

@@ -3,8 +3,10 @@ using System;
 
 public class FlankAction : GoapAction<Army>
 {
-    public FlankAction() : base("Flank")
+    private Army _enemy; 
+    public FlankAction(Army enemy) : base("Flank")
     {
+        _enemy = enemy; 
     }
 
     public override bool Valid(GoapState<Army> state)
@@ -26,5 +28,13 @@ public class FlankAction : GoapAction<Army>
     {
         state.MutateVar(ArmyAgent.EnemyIsFlanked, true);
         return new GoapActionArgs();
+    }
+    public override GoapGoal<TSubAgent> GetAssocGoal<TSubAgent>(GoapActionArgs args)
+    {
+        if (typeof(TSubAgent).IsAssignableFrom( typeof(Division) ) )
+        {
+            return new FlankGoal(_enemy) as GoapGoal<TSubAgent>;
+        }
+        return null;
     }
 }

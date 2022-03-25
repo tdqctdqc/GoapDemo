@@ -44,4 +44,8 @@ public class CutFieldAction : GoapAction<Farm>
         state.MutateVar<float>(fieldCutPercent.BaseVar, 1f);
         return new GoapActionArgs();
     }
+    public override GoapGoal<TSubAgent> GetAssocGoal<TSubAgent>(GoapActionArgs args)
+    {
+        return null;
+    }
 }

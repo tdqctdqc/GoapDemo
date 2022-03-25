@@ -3,9 +3,19 @@ using System;
 
 public class CoverAction : GoapAction<Army>
 {
-    public CoverAction() : base("Cover")
+    private Army _enemy; 
+    public CoverAction(Army enemy) : base("Cover")
     {
-        
+        _enemy = enemy; 
+    }
+
+    public override GoapGoal<TSubAgent> GetAssocGoal<TSubAgent>(GoapActionArgs args)
+    {
+        if (typeof(TSubAgent).IsAssignableFrom( typeof(Division) ) )
+        {
+            return new CoverGoal(_enemy) as GoapGoal<TSubAgent>;
+        }
+        return null;
     }
 
     public override bool Valid(GoapState<Army> state)

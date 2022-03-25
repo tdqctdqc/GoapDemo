@@ -9,8 +9,10 @@ public class Army
     public bool IsEngaged { get; private set; }
     public bool IsFlanked { get; private set; }
 
-    public Army()
+    public Army(Vector2 pos, Vector2 facing)
     {
+        Position = pos;
+        Facing = facing;
         Enemy = new Army(this);
     }
 

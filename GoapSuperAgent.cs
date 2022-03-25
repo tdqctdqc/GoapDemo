@@ -19,7 +19,7 @@ public abstract class GoapSuperAgent<TAgent, TSubAgent> : GoapAgent<TAgent>
     private GoapSchedule<TAgent> GetSelfSchedule(List<GoapGoal<TAgent>> goals)
     {
         goals = goals.OrderBy(g => g.Priority(this)).ToList();
-        var plans = goals.Select(g => GoapPlanner.Plan(this, g, 100)).ToList();
+        var plans = goals.Select(g => GoapPlanner.PlanOld(this, g, 100)).ToList();
         var agentsDistribution = GetSubordinateDistribution(goals, plans)
                                 .ToArray();
                                     
@@ -40,7 +40,11 @@ public abstract class GoapSuperAgent<TAgent, TSubAgent> : GoapAgent<TAgent>
         for (int i = 0; i < selfSchedule.Entries.Count; i++)
         {
             var e = selfSchedule.Entries[i];
-            var subGoals = e.Plan.Actions.Select(a => a.GetAssocGoal<TSubAgent>()).ToList();
+            var plan = e.Plan;
+            var subGoals = Enumerable.Range(0, e.Plan.Actions.Count)
+                .Select(j =>
+                    plan.Actions[j].GetAssocGoal<TSubAgent>(plan.ActionArgs[j]))
+                .ToList();
             var subSchedules = agentsDistribution[i].Select(a => a.GetSchedule(subGoals)).ToList();
             subSchedules.ForEach(s => subSchedule.MergeSchedule(s));
         }

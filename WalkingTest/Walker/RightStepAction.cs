@@ -56,4 +56,8 @@ public class RightStepAction : GoapAction<Walker>
     {
         state.MutateVar(leftFootForwardVar.BaseVar, false);
     }
+    public override GoapGoal<TSubAgent> GetAssocGoal<TSubAgent>(GoapActionArgs args)
+    {
+        return null;
+    }
 }

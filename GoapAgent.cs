@@ -18,7 +18,7 @@ public abstract class GoapAgent<TAgent> : IGoapAgent
     public virtual GoapSchedule<TAgent> GetSchedule(List<GoapGoal<TAgent>> goals)
     {
         goals = goals.OrderBy(g => g.Priority(this)).ToList();
-        var plans = goals.Select(g => GoapPlanner.Plan(this, g, 100)).ToList();
+        var plans = goals.Select(g => GoapPlanner.PlanOld(this, g, 100)).ToList();
         
         var schedule = new GoapSchedule<TAgent>(typeof(TAgent));
         for (int i = 0; i < plans.Count; i++)

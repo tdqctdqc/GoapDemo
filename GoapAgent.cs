@@ -6,7 +6,6 @@ using System.Linq;
 public abstract class GoapAgent<TAgent> : IGoapAgent
 {
     public TAgent Entity { get; private set; }
-    public Type AgentType => Entity.GetType();
     public List<GoapAction<TAgent>> Actions { get; private set; }
     public List<IGoapAgentVar<TAgent>> Vars { get; private set; }
     public GoapAgent(TAgent entity)
@@ -32,10 +31,5 @@ public abstract class GoapAgent<TAgent> : IGoapAgent
     public IGoapVarInstance[] GetBranchedVars()
     {
         return Vars.Select(v => v.BranchGeneric(this)).ToArray();
-    }
-
-    public object GetAgent()
-    {
-        return Entity; 
     }
 }

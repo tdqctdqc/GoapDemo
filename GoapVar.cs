@@ -8,8 +8,6 @@ public abstract class GoapVar<TValue, TAgent> : IGoapAgentVar<TAgent> where TVal
     public readonly Func<TAgent, TValue> ValueFunc;
     protected Func<GoapVarInstance<TValue, TAgent>, IGoapVarInstance, float> _heuristicFunc;
     protected Func<GoapVarInstance<TValue, TAgent>, GoapState<TAgent>, bool> _satisfiedFunc;
-    public Type ValueType => typeof(TValue);
-    public Type AgentType => typeof(TAgent);
     
 
     public GoapVar(string name, Func<TAgent, TValue> valueFunc, 

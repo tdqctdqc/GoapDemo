@@ -5,8 +5,8 @@ public class GoapVarInstance<TValue, TAgent> : IGoapVarInstance where TValue : s
 {
     public GoapVar<TValue,TAgent> BaseVar { get; private set; }
     public TValue Value { get; private set; }
-    public Type ValueType => BaseVar.ValueType;
-    public Type AgentType => BaseVar.AgentType;
+    public Type ValueType => typeof(TValue);
+    public Type AgentType => typeof(TAgent);
     public string Name => BaseVar.Name;
 
     public GoapVarInstance(GoapVar<TValue,TAgent> baseVar, TValue value)

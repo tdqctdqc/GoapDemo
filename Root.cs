@@ -37,9 +37,9 @@ public class Root : Node
         var enemy = new Army(Vector2.Zero, Vector2.Up);
         var coverGoal = new CoverGoal(enemy);
         var flankGoal = new FlankGoal(enemy);
-        var coverPlan = GoapPlanner.PlanOld(agent1, coverGoal, 100);
-        coverPlan.Print();
-        var flankPlan = GoapPlanner.PlanOld(agent2, flankGoal, 100);
-        flankPlan.Print();
+        var coverPlans = GoapPlanner.PlanNew(agent1, coverGoal, 100);
+        coverPlans.ForEach(p => p.Print());
+        var flankPlans = GoapPlanner.PlanNew(agent2, flankGoal, 100);
+        flankPlans.ForEach(p => p.Print());
     }
 }

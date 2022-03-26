@@ -10,7 +10,7 @@ public class DivisionAgent : GoapAgent<Division>
     public static GoapVar<bool, Division> AttackingVar
         = BoolVar<Division>.Construct("Attacking", 1f, a => false);
 
-    public DivisionAgent(Division agent) : base(agent)
+    public DivisionAgent(Division entity) : base(entity)
     {
         Vars.Add(PositionVar);
         Vars.Add(FacingVar);

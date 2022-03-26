@@ -33,7 +33,7 @@ public class GoapState<TAgent> : IGoapState
         _varsPrivate.Add(newVarInstance);
     }
 
-    private IGoapVarInstance GetVarTypeChecked(string name, Type type)
+    public IGoapVarInstance GetVarTypeChecked(string name, Type type)
     {
         var goapVar = _vars.Where(v => v.Name == name)
                         .Where(v => v.ValueType == type)    
@@ -41,10 +41,6 @@ public class GoapState<TAgent> : IGoapState
         return goapVar;
     }
     
-    public IGoapVarInstance GetVarGeneric(IGoapVar match)
-    {
-        return GetVarTypeChecked(match.Name, match.ValueType);
-    }
     public bool SatisfiedBy(GoapState<TAgent> candidateState)
     {
         foreach (var v in _vars)

@@ -17,7 +17,7 @@ public class WalkerAgent : GoapAgent<Walker>
 
     public static LeftStepAction LeftStepAction = new LeftStepAction();
     public static RightStepAction RightStepAction = new RightStepAction();
-    public WalkerAgent(Walker agent) : base(agent)
+    public WalkerAgent(Walker entity) : base(entity)
     {
         Actions.Add(LeftStepAction);
         Actions.Add(RightStepAction);

@@ -6,7 +6,7 @@ public class FloatVar<TAgent> : GoapVar<float, TAgent>
     
     private FloatVar(string name, Func<TAgent, float> valueFunc,
         Func<GoapVarInstance<float, TAgent>, IGoapVarInstance, float> heuristicFunc,
-        Func<GoapVarInstance<float, TAgent>, IGoapState, bool> satisfiedFunc) : base(name, valueFunc, heuristicFunc, satisfiedFunc)
+        Func<GoapVarInstance<float, TAgent>, GoapState<TAgent>, bool> satisfiedFunc) : base(name, valueFunc, heuristicFunc, satisfiedFunc)
     {
     }
     public static FloatVar<TAgent> ConstructScaleHeuristic(string name, float distCost, 

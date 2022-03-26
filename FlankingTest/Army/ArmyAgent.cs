@@ -13,7 +13,7 @@ public class ArmyAgent : GoapAgent<Army>
     public static GoapVar<bool, Army> EnemyIsFlanked
         = BoolVar<Army>.Construct("EnemyFlanked", 100f, a => a.Enemy.IsFlanked);
     
-    public ArmyAgent(Army agent) : base(agent)
+    public ArmyAgent(Army entity) : base(entity)
     {
         Vars.Add(PositionVar);
         Vars.Add(FacingVar);

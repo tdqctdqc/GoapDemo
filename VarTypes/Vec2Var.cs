@@ -5,7 +5,7 @@ public class Vec2Var<TAgent> : GoapVar<Vector2, TAgent>
 {
     private Vec2Var(string name, Func<TAgent, Vector2> valueFunc, 
         Func<GoapVarInstance<Vector2, TAgent>, IGoapVarInstance, float> heuristicFunc,
-        Func<GoapVarInstance<Vector2, TAgent>, IGoapState, bool> satisfiedFunc) : base(name, valueFunc, heuristicFunc, satisfiedFunc)
+        Func<GoapVarInstance<Vector2, TAgent>, GoapState<TAgent>, bool> satisfiedFunc) : base(name, valueFunc, heuristicFunc, satisfiedFunc)
     {
     }
 

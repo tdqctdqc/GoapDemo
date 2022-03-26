@@ -5,7 +5,7 @@ public class BoolVar<TAgent> : GoapVar<bool,TAgent>
 {
     private BoolVar(string name, Func<TAgent, bool> valueFunc, 
         Func<GoapVarInstance<bool, TAgent>, IGoapVarInstance, float> heuristicFunc,
-        Func<GoapVarInstance<bool, TAgent>, IGoapState, bool> satisfiedFunc) 
+        Func<GoapVarInstance<bool, TAgent>, GoapState<TAgent>, bool> satisfiedFunc) 
             : base(name, valueFunc, heuristicFunc, satisfiedFunc)
     {
     }

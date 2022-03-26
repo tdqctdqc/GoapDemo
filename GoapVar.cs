@@ -7,14 +7,14 @@ public abstract class GoapVar<TValue, TAgent> : IGoapAgentVar<TAgent> where TVal
     private readonly string _name;
     public readonly Func<TAgent, TValue> ValueFunc;
     protected Func<GoapVarInstance<TValue, TAgent>, IGoapVarInstance, float> _heuristicFunc;
-    protected Func<GoapVarInstance<TValue, TAgent>, IGoapState, bool> _satisfiedFunc;
+    protected Func<GoapVarInstance<TValue, TAgent>, GoapState<TAgent>, bool> _satisfiedFunc;
     public Type ValueType => typeof(TValue);
     public Type AgentType => typeof(TAgent);
     
 
     public GoapVar(string name, Func<TAgent, TValue> valueFunc, 
                     Func<GoapVarInstance<TValue, TAgent>, IGoapVarInstance, float> heuristicFunc,
-                    Func<GoapVarInstance<TValue, TAgent>, IGoapState, bool> satisfiedFunc)
+                    Func<GoapVarInstance<TValue, TAgent>, GoapState<TAgent>, bool> satisfiedFunc)
     {
         _heuristicFunc = heuristicFunc;
         _satisfiedFunc = satisfiedFunc;
@@ -22,7 +22,7 @@ public abstract class GoapVar<TValue, TAgent> : IGoapAgentVar<TAgent> where TVal
         _name = name;
     }
 
-    public bool SatisfiedBy(GoapVarInstance<TValue, TAgent> instance, IGoapState state)
+    public bool SatisfiedBy(GoapVarInstance<TValue, TAgent> instance, GoapState<TAgent> state)
     {
         return _satisfiedFunc(instance, state);
     }
@@ -43,12 +43,12 @@ public abstract class GoapVar<TValue, TAgent> : IGoapAgentVar<TAgent> where TVal
     }
     public IGoapVarInstance BranchGeneric(GoapAgent<TAgent> agent)
     {
-        return Branch(agent.Agent);
+        return Branch(agent.Entity);
     }
 
-    public static bool SimpleSatisfied(IGoapVarInstance instance, IGoapState state)
+    public static bool SimpleSatisfied(IGoapVarInstance instance, GoapState<TAgent> state)
     {
-        var vari = state.GetVarGeneric(instance.BaseVarGeneric);
+        var vari = state.GetVarTypeChecked(instance.Name, instance.ValueType);
         if (vari.GetValue() is TValue f == false) return false;
         return f.Equals((TValue)instance.GetValue());
     }

@@ -11,8 +11,8 @@ public class DestroyEnemyGoal : GoapGoal<Army>
         TargetStates.Add(new GoapState<Army>(enemyEngagedVar, enemyFlankedVar));
 
         Actions = agent.Actions.ToList();
-        var flankAction = new FlankAction(agent.Agent.Enemy);
-        var coverAction = new CoverAction(agent.Agent.Enemy);
+        var flankAction = new FlankAction(agent.Entity.Enemy);
+        var coverAction = new CoverAction(agent.Entity.Enemy);
         Actions.Add(flankAction);
         Actions.Add(coverAction);
         return new GoapState<Army>(agent.GetBranchedVars());

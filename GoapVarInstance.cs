@@ -5,7 +5,6 @@ public class GoapVarInstance<TValue, TAgent> : IGoapVarInstance where TValue : s
 {
     public GoapVar<TValue,TAgent> BaseVar { get; private set; }
     public TValue Value { get; private set; }
-    public IGoapVar BaseVarGeneric => BaseVar;
     public Type ValueType => BaseVar.ValueType;
     public Type AgentType => BaseVar.AgentType;
     public string Name => BaseVar.Name;
@@ -27,7 +26,8 @@ public class GoapVarInstance<TValue, TAgent> : IGoapVarInstance where TValue : s
 
     public bool SatisfiedBy(IGoapState state)
     {
-        return BaseVar.SatisfiedBy(this, state);
+        if (state is GoapState<TAgent> s == false) return false;
+        return BaseVar.SatisfiedBy(this, s);
     }
 
     public object GetValue()

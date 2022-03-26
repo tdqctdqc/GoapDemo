@@ -7,7 +7,7 @@ public abstract class GoapSuperAgent<TSuperAgent, TSubAgent> : GoapAgent<TSuperA
 {
     public List<GoapAgent<TSubAgent>> Subordinates { get; private set; }
 
-    public GoapSuperAgent(TSuperAgent agent) : base(agent)
+    public GoapSuperAgent(TSuperAgent entity) : base(entity)
     {
         Subordinates = new List<GoapAgent<TSubAgent>>();
     }

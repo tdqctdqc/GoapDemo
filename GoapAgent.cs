@@ -5,15 +5,15 @@ using System.Linq;
 
 public abstract class GoapAgent<TAgent> : IGoapAgent
 {
-    public TAgent Agent { get; private set; }
-    public Type AgentType => Agent.GetType();
+    public TAgent Entity { get; private set; }
+    public Type AgentType => Entity.GetType();
     public List<GoapAction<TAgent>> Actions { get; private set; }
     public List<IGoapAgentVar<TAgent>> Vars { get; private set; }
-    public GoapAgent(TAgent agent)
+    public GoapAgent(TAgent entity)
     {
         Actions = new List<GoapAction<TAgent>>();
         Vars = new List<IGoapAgentVar<TAgent>>();
-        Agent = agent; 
+        Entity = entity; 
     }
     public virtual GoapSchedule<TAgent> GetSchedule(List<GoapGoal<TAgent>> goals)
     {
@@ -36,6 +36,6 @@ public abstract class GoapAgent<TAgent> : IGoapAgent
 
     public object GetAgent()
     {
-        return Agent; 
+        return Entity; 
     }
 }

@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public abstract class GoapVar<TValue, TAgent> : IGoapVar where TValue : struct
+public abstract class GoapVar<TValue, TAgent> : IGoapAgentVar<TAgent> where TValue : struct
 {
     public string Name => _name;
     private readonly string _name;
@@ -41,13 +41,9 @@ public abstract class GoapVar<TValue, TAgent> : IGoapVar where TValue : struct
     {
         return new GoapVarInstance<TValue, TAgent>(this, ValueFunc(agent));
     }
-    public IGoapVarInstance BranchGeneric(IGoapAgent agent)
+    public IGoapVarInstance BranchGeneric(GoapAgent<TAgent> agent)
     {
-        if (agent.GetAgent() is TAgent a)
-        {
-            return Branch(a);
-        }
-        return null; 
+        return Branch(agent.Agent);
     }
 
     public static bool SimpleSatisfied(IGoapVarInstance instance, IGoapState state)

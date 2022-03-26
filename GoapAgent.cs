@@ -8,11 +8,11 @@ public abstract class GoapAgent<TAgent> : IGoapAgent
     public TAgent Agent { get; private set; }
     public Type AgentType => Agent.GetType();
     public List<GoapAction<TAgent>> Actions { get; private set; }
-    public List<IGoapVar> Vars { get; private set; }
+    public List<IGoapAgentVar<TAgent>> Vars { get; private set; }
     public GoapAgent(TAgent agent)
     {
         Actions = new List<GoapAction<TAgent>>();
-        Vars = new List<IGoapVar>();
+        Vars = new List<IGoapAgentVar<TAgent>>();
         Agent = agent; 
     }
     public virtual GoapSchedule<TAgent> GetSchedule(List<GoapGoal<TAgent>> goals)

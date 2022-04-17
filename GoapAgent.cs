@@ -30,6 +30,6 @@ public abstract class GoapAgent<TAgent> : IGoapAgent
 
     public IGoapVarInstance[] GetBranchedVars()
     {
-        return Vars.Select(v => v.BranchGeneric(this)).ToArray();
+        return Vars.Select(v => v.BranchAgnostic(this)).ToArray();
     }
 }

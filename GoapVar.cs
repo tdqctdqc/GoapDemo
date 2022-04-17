@@ -39,7 +39,7 @@ public abstract class GoapVar<TValue, TAgent> : IGoapAgentVar<TAgent> where TVal
     {
         return new GoapVarInstance<TValue, TAgent>(this, ValueFunc(agent));
     }
-    public IGoapVarInstance BranchGeneric(GoapAgent<TAgent> agent)
+    public IGoapVarInstance BranchAgnostic(GoapAgent<TAgent> agent)
     {
         return Branch(agent.Entity);
     }

@@ -47,6 +47,7 @@ public abstract class GoapVar<TValue, TAgent> : IGoapAgentVar<TAgent> where TVal
     public static bool SimpleSatisfied(IGoapVarInstance instance, GoapState<TAgent> state)
     {
         var vari = state.GetVarTypeChecked(instance.Name, instance.ValueType);
+        if (vari == null) return false; 
         if (vari.GetValue() is TValue f == false) return false;
         return f.Equals((TValue)instance.GetValue());
     }

@@ -12,7 +12,7 @@ public abstract class GoapAction<TAgent> : IGoapAction
         Reqs = new List<IGoapVar>();
     }
 
-    public abstract GoapGoal<TSubAgent> GetAssocGoal<TSubAgent>(GoapActionArgs args);
+    public abstract GoapGoal<TAgent> GetSuccessorGoal(GoapActionArgs args);
     public abstract bool Valid(GoapState<TAgent> state);
     public abstract float Cost(GoapState<TAgent> state);
     public abstract string Descr(GoapActionArgs args);

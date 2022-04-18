@@ -19,6 +19,7 @@ public class BoolVar<TAgent> : GoapVar<bool,TAgent>
 
     public static float FlatCostHeuristic(float missHeurCost, GoapVarInstance<bool,TAgent> instance, IGoapVarInstance comparison)
     {
+        if (comparison == null) return missHeurCost; 
         if (comparison.GetValue() is bool b == false) return missHeurCost;
         return b == instance.Value ? 0f : missHeurCost;
     }

@@ -5,18 +5,30 @@ using System.Linq;
 
 public static class GoapPlanner 
 {
-    public static GoapPlan<TAgent> PlanOld<TAgent>(GoapAgent<TAgent> agent, GoapGoal<TAgent> goal, int maxPlanIter)
+    public static void PlanGoal<TAgent>(GoapGoal<TAgent> goal, List<GoapAgent<TAgent>> agents)
     {
-        if (goal == null) return null;
-        
-        var startState = goal.GetInitialState(agent);
+        var goalNode = new GoapGoalNode<TAgent>(goal, agents);
+        goalNode.DoPlanning();
+        var actionNodes = new List<GoapActionNode<TAgent>>();
+        goalNode.AccumulateLeaves(actionNodes);
+        for (int i = 0; i < actionNodes.Count; i++)
+        {
+            var descr = actionNodes[i].Action.Descr(new GoapActionArgs());
+            GD.Print(descr);
+        }
+    }
+
+    public static GoapPlan<TAgent> PlanSubGoal<TAgent>(GoapSubGoal<TAgent> subGoal, 
+        List<GoapAgent<TAgent>> agents, int maxPlanIter)
+    {
+        var startState = subGoal.GetInitialState(agents);
         var startPlan = new GoapPlan<TAgent>(startState);
-        
+                    
         GoapPlan<TAgent> current; 
-        
-        Func<GoapState<TAgent>, bool> finished = (s) => goal.TargetStates[0].SatisfiedBy(s);
+            
+        Func<GoapState<TAgent>, bool> finished = (s) => subGoal.TargetState.SatisfiedBy(s);
         int planIter = 0;
-        
+            
         List<GoapPlan<TAgent>> openPlans = new List<GoapPlan<TAgent>>();
         openPlans.Add(startPlan);
         while (openPlans.Count > 0 && planIter < maxPlanIter)
@@ -28,57 +40,16 @@ public static class GoapPlanner
             }
             openPlans.Remove(current);
             planIter++;
-            var planNeighbors = goal.Actions
+            var planNeighbors = subGoal.Actions
                 .Where(a => a.Valid(current.EndState))
                 .Select(a => current.ExtendPlan(a));
             openPlans.AddRange(planNeighbors);
             if (openPlans.Count == 0) break;
             openPlans = openPlans
-                .OrderBy(p => p.Cost + goal.TargetStates[0].GetHeuristicDistance(p.EndState))
+                .OrderBy(p => p.Cost + subGoal.TargetState.GetHeuristicDistance(p.EndState))
                 .ToList();
         }
 
         return null;
-    }
-    
-    
-    public static List<GoapPlan<TAgent>> PlanNew<TAgent>(GoapAgent<TAgent> agent, GoapGoal<TAgent> goal, int maxPlanIter)
-    {
-        if (goal == null) return null;
-        var startState = goal.GetInitialState(agent);
-        var plans = new List<GoapPlan<TAgent>>();
-        foreach (var track in goal.TargetStates)
-        {
-            var startPlan = new GoapPlan<TAgent>(startState);
-                    
-            GoapPlan<TAgent> current; 
-            
-            Func<GoapState<TAgent>, bool> finished = (s) => track.SatisfiedBy(s);
-            int planIter = 0;
-            
-            List<GoapPlan<TAgent>> openPlans = new List<GoapPlan<TAgent>>();
-            openPlans.Add(startPlan);
-            while (openPlans.Count > 0 && planIter < maxPlanIter)
-            {
-                current = openPlans[0];
-                if (finished(current.EndState))
-                {
-                    plans.Add(current);
-                    break;
-                }
-                openPlans.Remove(current);
-                planIter++;
-                var planNeighbors = goal.Actions
-                    .Where(a => a.Valid(current.EndState))
-                    .Select(a => current.ExtendPlan(a));
-                openPlans.AddRange(planNeighbors);
-                if (openPlans.Count == 0) break;
-                openPlans = openPlans
-                    .OrderBy(p => p.Cost + track.GetHeuristicDistance(p.EndState))
-                    .ToList();
-            }
-        }
-        
-        return plans; 
     }
 }

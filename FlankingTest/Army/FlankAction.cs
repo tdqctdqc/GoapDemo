@@ -29,12 +29,12 @@ public class FlankAction : GoapAction<Army>
         state.MutateVar(ArmyAgent.EnemyIsFlanked, true);
         return new GoapActionArgs();
     }
-    public override GoapGoal<TSubAgent> GetAssocGoal<TSubAgent>(GoapActionArgs args)
+    public override GoapGoal<Army> GetSuccessorGoal(GoapActionArgs args)
     {
-        if (typeof(TSubAgent).IsAssignableFrom( typeof(Division) ) )
-        {
-            return new FlankGoal(_enemy) as GoapGoal<TSubAgent>;
-        }
+        // if (typeof(TSubAgent).IsAssignableFrom( typeof(Division) ) )
+        // {
+        //     return new FlankGoal(_enemy) as GoapGoal<TSubAgent>;
+        // }
         return null;
     }
 }

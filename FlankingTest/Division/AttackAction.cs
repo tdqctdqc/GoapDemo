@@ -9,7 +9,7 @@ public class AttackAction : GoapAction<Division>
         _enemy = enemy;
     }
 
-    public override GoapGoal<TSubAgent> GetAssocGoal<TSubAgent>(GoapActionArgs args)
+    public override GoapGoal<Division> GetSuccessorGoal(GoapActionArgs args)
     {
         return null;
     }

@@ -25,6 +25,12 @@ public class GoapState<TAgent> : IGoapState
         return null;
     }
 
+    public bool CheckVarMatch<TValue>(IGoapVar match, TValue value) where TValue : struct
+    {
+        var goapVar = GetVar<TValue>(match);
+        return goapVar != null ? goapVar.Value.Equals(value) : false;
+    }
+
     public void MutateVar<TValue>(GoapVar<TValue, TAgent> varToMutate, TValue newValue) where TValue : struct
     {
         var newVarInstance = varToMutate.Branch(newValue);

@@ -11,7 +11,7 @@ public class MoveAction : GoapAction<Division>
         _moveCost = moveCost;
     }
 
-    public override GoapGoal<TSubAgent> GetAssocGoal<TSubAgent>(GoapActionArgs args)
+    public override GoapGoal<Division> GetSuccessorGoal(GoapActionArgs args)
     {
         return null;
     }

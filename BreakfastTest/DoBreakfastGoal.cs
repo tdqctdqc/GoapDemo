@@ -59,8 +59,10 @@ public class DoBreakfastGoal : GoapGoal<Eater>
         }
         private static GoapState<Eater> GetTargetState()
         {
-            var targetState = new GoapState<Eater>();
-            targetState.MutateVar(HasConsumedBreakfast, true);
+            var targetState = new GoapState<Eater>
+            (
+                new GoapVarInstance<bool, Eater>(HasConsumedBreakfast, true)
+            );
             return targetState;
         }
     }

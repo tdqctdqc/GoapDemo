@@ -60,9 +60,9 @@ public class ConsumeBreakfastGoal : GoapGoal<Eater>
         {
             var targetState = new GoapState<Eater>
             (
+                new GoapVarInstance<bool, Eater>(Hungry, false),
+                new GoapVarInstance<bool, Eater>(Caffeinated, true)
             );
-            targetState.MutateVar(Hungry, false);
-            targetState.MutateVar(Caffeinated, true);
             return targetState;
         }
     }

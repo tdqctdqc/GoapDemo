@@ -62,9 +62,11 @@ public class MakeBreakfastGoal : GoapGoal<Eater>
         }
         private static GoapState<Eater> GetTargetState()
         {
-            var targetState = new GoapState<Eater>();
-            targetState.MutateVar(BreadIsToasted, true);
-            targetState.MutateVar(BreadIsButtered, true);
+            var targetState = new GoapState<Eater>
+            (
+                new GoapVarInstance<bool, Eater>(BreadIsToasted, true),
+                new GoapVarInstance<bool, Eater>(BreadIsButtered, true)
+            );
             return targetState;
         }
     }
@@ -80,8 +82,10 @@ public class MakeBreakfastGoal : GoapGoal<Eater>
         }
         private static GoapState<Eater> GetTargetState()
         {
-            var targetState = new GoapState<Eater>();
-            targetState.MutateVar(CoffeeIsMade, true);
+            var targetState = new GoapState<Eater>
+            (
+                new GoapVarInstance<bool, Eater>(CoffeeIsMade, true)
+            );
             return targetState;
         }
     }

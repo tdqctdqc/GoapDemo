@@ -16,6 +16,16 @@ public class DoBreakfastGoal : GoapGoal<Eater>
     {
         return 1f;
     }
+
+    protected override void SetupVars()
+    {
+        Vars = new List<IGoapAgentVar<Eater>>()
+        {
+            BreakfastIsMade,
+            HasConsumedBreakfast
+        };
+    }
+
     protected override void SetupSubGoals()
     {
         SubGoals = new List<GoapSubGoal<Eater>>()

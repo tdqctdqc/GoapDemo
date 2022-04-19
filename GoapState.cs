@@ -5,19 +5,23 @@ using System.Linq;
 
 public class GoapState<TAgent> : IGoapState
 {
-    protected IReadOnlyList<IGoapVarInstance> _vars => _varsPrivate;
-    private List<IGoapVarInstance> _varsPrivate;
+    protected Dictionary<string, IGoapVarInstance> _varNameDic;
+    
     public GoapState(params IGoapVarInstance[] stateVars)
     {
-        _varsPrivate = new List<IGoapVarInstance>(stateVars);
+        _varNameDic = new Dictionary<string, IGoapVarInstance>();
+        for (int i = 0; i < stateVars.Length; i++)
+        {
+            var stateVar = stateVars[i];
+            _varNameDic.Add(stateVar.Name, stateVar);
+        }
     }
 
     public GoapVarInstance<TValue, TAgent> GetVar<TValue>(IGoapVar match) where TValue : struct
     {
-        var goapVar = _vars.Where(v => v.Name == match.Name).FirstOrDefault();
-        if (goapVar != null)
+        if (_varNameDic.ContainsKey(match.Name))
         {
-            if (goapVar is GoapVarInstance<TValue, TAgent> v)
+            if (_varNameDic[match.Name] is GoapVarInstance<TValue, TAgent> v)
             {
                 return v;
             }
@@ -34,25 +38,30 @@ public class GoapState<TAgent> : IGoapState
     public void MutateVar<TValue>(GoapVar<TValue, TAgent> varToMutate, TValue newValue) where TValue : struct
     {
         var newVarInstance = varToMutate.Branch(newValue);
-        var varToMutateInstance = GetVar<TValue>(varToMutate);
-        _varsPrivate.Remove(varToMutateInstance);
-        _varsPrivate.Add(newVarInstance);
+        if(_varNameDic.ContainsKey(varToMutate.Name))
+            _varNameDic.Remove(varToMutate.Name);
+        _varNameDic.Add(newVarInstance.Name, newVarInstance);
     }
 
     public IGoapVarInstance GetVarTypeChecked(string name, Type type)
     {
-        var goapVar = _vars.Where(v => v.Name == name)
-                        .Where(v => v.ValueType == type)    
-                        .FirstOrDefault();
-        return goapVar;
+        if (_varNameDic.ContainsKey(name))
+        {
+            if (_varNameDic[name].ValueType == type)
+            {
+                return _varNameDic[name];
+            }
+        }
+        return null;
     }
     
     public bool SatisfiedBy(GoapState<TAgent> candidateState)
     {
-        foreach (var v in _vars)
+        foreach (var entry in _varNameDic)
         {
-            var typedVar = GetVarTypeChecked(v.Name, v.ValueType);
-            var candVar = candidateState.GetVarTypeChecked(v.Name, v.ValueType);
+            var variable = entry.Value;
+            var typedVar = GetVarTypeChecked(variable.Name, variable.ValueType);
+            var candVar = candidateState.GetVarTypeChecked(variable.Name, variable.ValueType);
             if (typedVar.SatisfiedBy(candidateState) == false) return false;
         }
         return true; 
@@ -61,25 +70,26 @@ public class GoapState<TAgent> : IGoapState
     public float GetHeuristicDistance(GoapState<TAgent> state)
     {
         var cost = 0f;
-        foreach (var v in _vars)
+        foreach (var entry in _varNameDic)
         {
-            var typedVar = GetVarTypeChecked(v.Name, v.ValueType);
-            var candVar = state.GetVarTypeChecked(v.Name, v.ValueType);
+            var variable = entry.Value;
+            var typedVar = GetVarTypeChecked(variable.Name, variable.ValueType);
+            var candVar = state.GetVarTypeChecked(variable.Name, variable.ValueType);
             cost += typedVar.GetHeuristicCost(candVar);
         }
         return cost; 
     }
     public GoapState<TAgent> Clone()
     {
-        return new GoapState<TAgent>(_vars.ToArray());
+        return new GoapState<TAgent>(_varNameDic.Values.ToArray());
     }
 
     public void PrintState()
     {
-        for (int i = 0; i < _vars.Count; i++)
+        foreach (var entry in _varNameDic)
         {
-            var vari = _vars[i];
-            GD.Print(vari.Name + " " + vari.GetValue());
+            var variable = entry.Value;
+            GD.Print(variable.Name + " " + variable.GetValue());
         }
     }
 

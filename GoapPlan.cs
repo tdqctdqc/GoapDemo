@@ -35,11 +35,10 @@ public class GoapPlan<TAgent>
         float diff = Mathf.Max(actionCost, _diff);
         var newActions = Actions.ToList();
         newActions.Add(action);
-        
-        var newState = EndState.Clone();
-        var newArg = action.ApplyToState(newState);
+        GoapActionArgs args = null;
+        var newState = EndState.ExtendState(action, out args);
         var extendedArgs = ActionArgs.ToList();
-        extendedArgs.Add(newArg);
+        extendedArgs.Add(args);
         return new GoapPlan<TAgent>(this, newState, newActions, extendedArgs, Cost + actionCost, diff);
     }
 

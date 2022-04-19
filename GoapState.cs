@@ -35,6 +35,12 @@ public class GoapState<TAgent> : IGoapState
         return goapVar != null ? goapVar.Value.Equals(value) : false;
     }
 
+    public GoapState<TAgent> ExtendState(GoapAction<TAgent> action, out GoapActionArgs args)
+    {
+        var newState = Clone();
+        args = action.ApplyToState(newState);
+        return newState;
+    }
     public void MutateVar<TValue>(GoapVar<TValue, TAgent> varToMutate, TValue newValue) where TValue : struct
     {
         var newVarInstance = varToMutate.Branch(newValue);

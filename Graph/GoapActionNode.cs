@@ -15,4 +15,17 @@ public class GoapActionNode<TAgent>
         Action = action;
         Parent = parent;
     }
+
+    public GoapState<TAgent> GetContext()
+    {
+        int index = Parent.ActionNodes.IndexOf(this);
+        int amtToIncrementBack = Parent.Plan.Actions.Count - index;
+        var plan = Parent.Plan;
+        for (int i = 0; i < amtToIncrementBack; i++)
+        {
+            plan = plan.Parent;
+        }
+
+        return plan.EndState;
+    }
 }

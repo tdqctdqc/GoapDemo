@@ -1,6 +1,7 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 public class DoBreakfastGoal : GoapGoal<Eater>
 {
@@ -39,10 +40,9 @@ public class DoBreakfastGoal : GoapGoal<Eater>
         var eater = agents[0];
         var initialState = new GoapState<Eater>
         (
-            BreakfastIsMade.Branch(eater.Entity),
-            HasConsumedBreakfast.Branch(eater.Entity)
+            Vars.Select(v => v.BranchAgnostic(eater)).ToArray()
         );
-        return initialState; 
+        return initialState;
     }
 
     private class DoBreakfastSubGoal : GoapSubGoal<Eater>

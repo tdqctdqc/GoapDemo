@@ -34,7 +34,8 @@ public class GoapPlanNode<TAgent>
             ActionNodes.Add(actionNode);
             if (action.GetSuccessorGoal(args) is GoapGoal<TAgent> g)
             {
-                var goalNode = new GoapGoalNode<TAgent>(g, Agents);
+                var context = actionNode.GetContext();
+                var goalNode = new GoapGoalNode<TAgent>(g, Agents, context);
                 Children.Add(goalNode);
             }
             else

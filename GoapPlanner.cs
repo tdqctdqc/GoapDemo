@@ -19,9 +19,9 @@ public static class GoapPlanner
     }
 
     public static GoapPlan<TAgent> PlanSubGoal<TAgent>(GoapSubGoal<TAgent> subGoal, 
+        GoapState<TAgent> startState,
         List<GoapAgent<TAgent>> agents, int maxPlanIter)
     {
-        var startState = subGoal.GetInitialState(agents);
         var startPlan = new GoapPlan<TAgent>(startState);
                     
         GoapPlan<TAgent> current; 

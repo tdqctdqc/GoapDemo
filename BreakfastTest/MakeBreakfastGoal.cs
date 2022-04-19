@@ -37,6 +37,19 @@ public class MakeBreakfastGoal : GoapGoal<Eater>
             new MakeCoffeeSubGoal(1f)
         };
     }
+
+    public override GoapState<Eater> GetInitialState(List<GoapAgent<Eater>> agents)
+    {
+        var eater = agents[0];
+        var initialState = new GoapState<Eater>
+        (
+            BreadIsToasted.Branch(eater.Entity.Bread.Toasted),
+            BreadIsButtered.Branch(eater.Entity.Bread.Buttered),
+            CoffeeIsMade.Branch(eater.Entity.Coffee.Made)
+        );
+        return initialState;
+    }
+
     private class MakeToastSubGoal : GoapSubGoal<Eater>
     {
         public override List<GoapAction<Eater>> Actions => _actions;
@@ -55,15 +68,6 @@ public class MakeBreakfastGoal : GoapGoal<Eater>
             targetState.MutateVar(BreadIsButtered, true);
             return targetState;
         }
-
-        public override GoapState<Eater> GetInitialState(List<GoapAgent<Eater>> agents)
-        {
-            var eater = agents[0];
-            var initialState = new GoapState<Eater>();
-            initialState.MutateVar(BreadIsToasted, eater.Entity.Bread.Toasted);
-            initialState.MutateVar(BreadIsButtered, eater.Entity.Bread.Buttered);
-            return initialState;
-        }
     }
     private class MakeCoffeeSubGoal : GoapSubGoal<Eater>
     {
@@ -80,13 +84,6 @@ public class MakeBreakfastGoal : GoapGoal<Eater>
             var targetState = new GoapState<Eater>();
             targetState.MutateVar(CoffeeIsMade, true);
             return targetState;
-        }
-        public override GoapState<Eater> GetInitialState(List<GoapAgent<Eater>> agents)
-        {
-            var eater = agents[0]; 
-            var initialState = new GoapState<Eater>();
-            initialState.MutateVar(CoffeeIsMade, eater.Entity.Coffee.Made);
-            return initialState;
         }
     }
 }

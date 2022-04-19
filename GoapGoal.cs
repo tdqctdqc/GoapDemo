@@ -15,4 +15,5 @@ public abstract class GoapGoal<TAgent>
 
     protected abstract void SetupVars();
     protected abstract void SetupSubGoals();
+    public abstract GoapState<TAgent> GetInitialState(List<GoapAgent<TAgent>> agents);
 }

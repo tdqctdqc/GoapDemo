@@ -18,9 +18,9 @@ public class GoapPlanNode<TAgent>
         Children = new List<GoapGoalNode<TAgent>>();
     }
 
-    public void DoPlanning()
+    public void DoPlanning(GoapState<TAgent> initialState)
     {
-        Plan = GoapPlanner.PlanSubGoal(SubGoal, Agents, 100);
+        Plan = GoapPlanner.PlanSubGoal(SubGoal, initialState, Agents, 100);
         if (Plan == null)
         {
             GD.Print("failed plan");

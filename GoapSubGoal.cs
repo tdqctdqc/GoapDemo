@@ -7,7 +7,6 @@ public abstract class GoapSubGoal<TAgent>
     public GoapState<TAgent> TargetState { get; private set; }
     public abstract List<GoapAction<TAgent>> Actions { get; }
     public float Difficulty { get; private set; }
-    public abstract GoapState<TAgent> GetInitialState(List<GoapAgent<TAgent>> agents);
     protected GoapSubGoal(GoapState<TAgent> targetState, float difficulty)
     {
         Difficulty = difficulty;

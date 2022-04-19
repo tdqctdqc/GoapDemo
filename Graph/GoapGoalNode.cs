@@ -9,13 +9,23 @@ public class GoapGoalNode<TAgent>
     public List<GoapSubGoalNode<TAgent>> SubGoalNodes { get; private set; }
     public List<GoapAgent<TAgent>> Agents { get; private set; }
     public List<GoapPlanNode<TAgent>> PlanNodes { get; private set; }
-
+    private GoapState<TAgent> _initialState;
     public GoapGoalNode(GoapGoal<TAgent> goal, List<GoapAgent<TAgent>> agents)
     {
         Goal = goal;
         Agents = agents;
         PlanNodes = new List<GoapPlanNode<TAgent>>();
         SubGoalNodes = new List<GoapSubGoalNode<TAgent>>();
+        _initialState = goal.GetInitialState(agents);
+    }
+    public GoapGoalNode(GoapGoal<TAgent> goal, List<GoapAgent<TAgent>> agents,
+        GoapState<TAgent> initialState)
+    {
+        Goal = goal;
+        Agents = agents;
+        PlanNodes = new List<GoapPlanNode<TAgent>>();
+        SubGoalNodes = new List<GoapSubGoalNode<TAgent>>();
+        _initialState = initialState;
     }
     public void DoPlanning()
     {
@@ -25,7 +35,7 @@ public class GoapGoalNode<TAgent>
 
         for (int i = 0; i < PlanNodes.Count; i++)
         {
-            PlanNodes[i].DoPlanning();
+            PlanNodes[i].DoPlanning(_initialState);
         }
     }
 

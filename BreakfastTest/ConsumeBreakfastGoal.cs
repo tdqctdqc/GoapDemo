@@ -33,6 +33,18 @@ public class ConsumeBreakfastGoal : GoapGoal<Eater>
             new ConsumeBreakfastSubGoal(1f)
         };
     }
+
+    public override GoapState<Eater> GetInitialState(List<GoapAgent<Eater>> agents)
+    {
+        var eater = agents[0];
+        var initialState = new GoapState<Eater>
+        (
+            Hungry.Branch(eater.Entity),
+            Caffeinated.Branch(eater.Entity)
+        );
+        return initialState;
+    }
+
     private class ConsumeBreakfastSubGoal : GoapSubGoal<Eater>
     {
         public override List<GoapAction<Eater>> Actions => _actions;
@@ -43,14 +55,6 @@ public class ConsumeBreakfastGoal : GoapGoal<Eater>
         };
         public ConsumeBreakfastSubGoal(float difficulty) : base(GetTargetState(), difficulty)
         {
-        }
-        public override GoapState<Eater> GetInitialState(List<GoapAgent<Eater>> agents)
-        {
-            var eater = agents[0];
-            var targetState = new GoapState<Eater>();
-            targetState.MutateVar(Hungry, eater.Entity.Hungry);
-            targetState.MutateVar(Caffeinated, eater.Entity.Caffeinated);
-            return targetState;
         }
         private static GoapState<Eater> GetTargetState()
         {

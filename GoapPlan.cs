@@ -5,6 +5,7 @@ using System.Linq;
 
 public class GoapPlan<TAgent> 
 {
+    public GoapPlan<TAgent> Parent { get; private set; }
     public List<GoapAction<TAgent>> Actions { get; private set; }
     public List<GoapActionArgs> ActionArgs { get; private set; }
     public GoapState<TAgent> EndState { get; private set; }
@@ -18,9 +19,10 @@ public class GoapPlan<TAgent>
         Actions = new List<GoapAction<TAgent>>();
         ActionArgs = new List<GoapActionArgs>();
     }
-    private GoapPlan(GoapState<TAgent> startState, List<GoapAction<TAgent>> actions, 
+    private GoapPlan(GoapPlan<TAgent> parent, GoapState<TAgent> startState, List<GoapAction<TAgent>> actions, 
                     List<GoapActionArgs> args, float costCumul, float diff)
     {
+        Parent = parent; 
         _cost = costCumul;
         _diff = diff; 
         EndState = startState.Clone();
@@ -38,7 +40,7 @@ public class GoapPlan<TAgent>
         var newArg = action.ApplyToState(newState);
         var extendedArgs = ActionArgs.ToList();
         extendedArgs.Add(newArg);
-        return new GoapPlan<TAgent>(newState, newActions, extendedArgs, Cost + actionCost, diff);
+        return new GoapPlan<TAgent>(this, newState, newActions, extendedArgs, Cost + actionCost, diff);
     }
 
     public void Print()

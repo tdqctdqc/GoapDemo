@@ -12,7 +12,7 @@ public class PutButterOnToastAction : GoapAction<Eater>
     }
     public override bool Valid(GoapState<Eater> state)
     {
-        return state.CheckVarMatch<bool>(MakeBreakfastGoal.BreadIsToasted, true);
+        return state.CheckVarMatch<bool>(MakeBreakfastGoal.BreadIsToasted.Name, true);
     }
     public override float Cost(GoapState<Eater> state)
     {

@@ -4,7 +4,7 @@ using System;
 public class Vec2Var<TAgent> : GoapVar<Vector2, TAgent>
 {
     private Vec2Var(string name, Func<TAgent, Vector2> valueFunc, 
-        Func<GoapVarInstance<Vector2, TAgent>, IGoapVarInstance, float> heuristicFunc,
+        Func<GoapVarInstance<Vector2, TAgent>, IGoapAgentVarInstance<TAgent>, float> heuristicFunc,
         Func<GoapVarInstance<Vector2, TAgent>, GoapState<TAgent>, bool> satisfiedFunc) : base(name, valueFunc, heuristicFunc, satisfiedFunc)
     {
     }
@@ -16,7 +16,7 @@ public class Vec2Var<TAgent> : GoapVar<Vector2, TAgent>
             SimpleSatisfied);
     }
 
-    public static float ScaledHeuristicCost(float scale, GoapVarInstance<Vector2,TAgent> instance, IGoapVarInstance comparison)
+    public static float ScaledHeuristicCost(float scale, GoapVarInstance<Vector2,TAgent> instance, IGoapAgentVarInstance<TAgent> comparison)
     {
         if (comparison.GetValue() is Vector2 v == false) return Mathf.Inf;
         return scale * v.DistanceTo(instance.Value);

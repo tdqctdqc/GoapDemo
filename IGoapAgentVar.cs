@@ -3,5 +3,6 @@ using System;
 
 public interface IGoapAgentVar<TAgent> : IGoapVar
 {
-    IGoapVarInstance BranchAgnostic(GoapAgent<TAgent> agent);
+    IGoapAgentVarInstance<TAgent> BranchAgnosticByAgent(GoapAgent<TAgent> agent);
+    IGoapAgentVarInstance<TAgent> BranchAgnosticByValue(object value);
 }

@@ -5,23 +5,22 @@ using System.Linq;
 
 public class GoapState<TAgent> : IGoapState
 {
-    protected Dictionary<string, IGoapVarInstance> _varNameDic;
+    protected Dictionary<string, IGoapAgentVarInstance<TAgent>> _varNameDic;
     
-    public GoapState(params IGoapVarInstance[] stateVars)
+    public GoapState(params IGoapAgentVarInstance<TAgent>[] stateVars)
     {
-        _varNameDic = new Dictionary<string, IGoapVarInstance>();
+        _varNameDic = new Dictionary<string, IGoapAgentVarInstance<TAgent>>();
         for (int i = 0; i < stateVars.Length; i++)
         {
             var stateVar = stateVars[i];
             _varNameDic.Add(stateVar.Name, stateVar);
         }
     }
-
-    public GoapVarInstance<TValue, TAgent> GetVar<TValue>(IGoapVar match) where TValue : struct
+    private GoapVarInstance<TValue, TAgent> GetVarTyped<TValue>(string name) where TValue : struct
     {
-        if (_varNameDic.ContainsKey(match.Name))
+        if (_varNameDic.ContainsKey(name))
         {
-            if (_varNameDic[match.Name] is GoapVarInstance<TValue, TAgent> v)
+            if (_varNameDic[name] is GoapVarInstance<TValue, TAgent> v)
             {
                 return v;
             }
@@ -29,10 +28,18 @@ public class GoapState<TAgent> : IGoapState
         return null;
     }
 
-    public bool CheckVarMatch<TValue>(IGoapVar match, TValue value) where TValue : struct
+    private IGoapAgentVarInstance<TAgent> GetVar(string name)
     {
-        var goapVar = GetVar<TValue>(match);
-        return goapVar != null ? goapVar.Value.Equals(value) : false;
+        if (_varNameDic.ContainsKey(name))
+        {
+            return _varNameDic[name];
+        }
+        return null;
+    }
+    public bool CheckVarMatch<TValue>(string name, TValue value)
+    {
+        var goapVar = GetVar(name);
+        return goapVar != null ? goapVar.GetValue().Equals(value) : false;
     }
 
     public GoapState<TAgent> ExtendState(GoapAction<TAgent> action, out GoapActionArgs args)
@@ -49,7 +56,7 @@ public class GoapState<TAgent> : IGoapState
         _varNameDic.Add(newVarInstance.Name, newVarInstance);
     }
 
-    public IGoapVarInstance GetVarTypeChecked(string name, Type type)
+    public IGoapAgentVarInstance<TAgent> GetVarTypeChecked(string name, Type type)
     {
         if (_varNameDic.ContainsKey(name))
         {

@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public class GoapVarInstance<TValue, TAgent> : IGoapVarInstance where TValue : struct
+public class GoapVarInstance<TValue, TAgent> : IGoapAgentVarInstance<TAgent> where TValue : struct
 {
     public GoapVar<TValue,TAgent> BaseVar { get; private set; }
     public TValue Value { get; private set; }
@@ -19,7 +19,7 @@ public class GoapVarInstance<TValue, TAgent> : IGoapVarInstance where TValue : s
         BaseVar = baseVar;
         Value = baseVar.ValueFunc(agent); 
     }
-    public float GetHeuristicCost(IGoapVarInstance comparison)
+    public float GetHeuristicCost(IGoapAgentVarInstance<TAgent> comparison)
     {
         return BaseVar.GetHeuristicCost(this, comparison);
     }

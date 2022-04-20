@@ -6,12 +6,12 @@ public abstract class GoapVar<TValue, TAgent> : IGoapAgentVar<TAgent> where TVal
     public string Name => _name;
     private readonly string _name;
     public readonly Func<TAgent, TValue> ValueFunc;
-    protected Func<GoapVarInstance<TValue, TAgent>, IGoapVarInstance, float> _heuristicFunc;
+    protected Func<GoapVarInstance<TValue, TAgent>, IGoapAgentVarInstance<TAgent>, float> _heuristicFunc;
     protected Func<GoapVarInstance<TValue, TAgent>, GoapState<TAgent>, bool> _satisfiedFunc;
     
 
     public GoapVar(string name, Func<TAgent, TValue> valueFunc, 
-                    Func<GoapVarInstance<TValue, TAgent>, IGoapVarInstance, float> heuristicFunc,
+                    Func<GoapVarInstance<TValue, TAgent>, IGoapAgentVarInstance<TAgent>, float> heuristicFunc,
                     Func<GoapVarInstance<TValue, TAgent>, GoapState<TAgent>, bool> satisfiedFunc)
     {
         _heuristicFunc = heuristicFunc;
@@ -25,7 +25,7 @@ public abstract class GoapVar<TValue, TAgent> : IGoapAgentVar<TAgent> where TVal
         return _satisfiedFunc(instance, state);
     }
 
-    public float GetHeuristicCost(GoapVarInstance<TValue, TAgent> instance, IGoapVarInstance comparison)
+    public float GetHeuristicCost(GoapVarInstance<TValue, TAgent> instance, IGoapAgentVarInstance<TAgent> comparison)
     {
         return _heuristicFunc(instance, comparison);
     }
@@ -39,16 +39,17 @@ public abstract class GoapVar<TValue, TAgent> : IGoapAgentVar<TAgent> where TVal
     {
         return new GoapVarInstance<TValue, TAgent>(this, ValueFunc(agent));
     }
-    public IGoapVarInstance BranchAgnostic(GoapAgent<TAgent> agent)
+    public IGoapAgentVarInstance<TAgent> BranchAgnosticByAgent(GoapAgent<TAgent> agent)
     {
         return Branch(agent.Entity);
     }
-
-    public static bool SimpleSatisfied(IGoapVarInstance instance, GoapState<TAgent> state)
+    public IGoapAgentVarInstance<TAgent> BranchAgnosticByValue(object value)
     {
-        var vari = state.GetVarTypeChecked(instance.Name, instance.ValueType);
-        if (vari == null) return false; 
-        if (vari.GetValue() is TValue f == false) return false;
-        return f.Equals((TValue)instance.GetValue());
+        return Branch((TValue)value);
+    }
+
+    public static bool SimpleSatisfied(IGoapAgentVarInstance<TAgent> instance, GoapState<TAgent> state)
+    {
+        return state.CheckVarMatch(instance.Name, instance.GetValue());
     }
 }

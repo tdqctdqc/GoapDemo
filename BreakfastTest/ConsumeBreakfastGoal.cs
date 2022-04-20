@@ -40,7 +40,7 @@ public class ConsumeBreakfastGoal : GoapGoal<Eater>
         var eater = agents[0];
         var initialState = new GoapState<Eater>
         (
-            Vars.Select(v => v.BranchAgnostic(eater)).ToArray()
+            Vars.Select(v => v.BranchAgnosticByAgent(eater)).ToArray()
         );
         return initialState;
     }

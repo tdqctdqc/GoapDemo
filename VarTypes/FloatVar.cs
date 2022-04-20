@@ -4,7 +4,7 @@ using System;
 public class FloatVar<TAgent> : GoapVar<float, TAgent>
 {
     private FloatVar(string name, Func<TAgent, float> valueFunc,
-        Func<GoapVarInstance<float, TAgent>, IGoapVarInstance, float> heuristicFunc,
+        Func<GoapVarInstance<float, TAgent>, IGoapAgentVarInstance<TAgent>, float> heuristicFunc,
         Func<GoapVarInstance<float, TAgent>, GoapState<TAgent>, bool> satisfiedFunc) : base(name, valueFunc, heuristicFunc, satisfiedFunc)
     {
     }
@@ -16,7 +16,7 @@ public class FloatVar<TAgent> : GoapVar<float, TAgent>
             SimpleSatisfied);
     }
 
-    private static float ScaledHeuristicCost(float weight, GoapVarInstance<float,TAgent> instance, IGoapVarInstance comparison)
+    private static float ScaledHeuristicCost(float weight, GoapVarInstance<float,TAgent> instance, IGoapAgentVarInstance<TAgent> comparison)
     {
         if (comparison.GetValue() is float v == false) return Mathf.Inf;
         return weight * Mathf.Abs(v - instance.Value);

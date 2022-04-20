@@ -1,6 +1,7 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 public abstract class GoapGoal<TAgent> 
 {
@@ -11,9 +12,32 @@ public abstract class GoapGoal<TAgent>
     {
         SetupVars();
         SetupSubGoals();
+        CheckActionVars();
     }
 
     protected abstract void SetupVars();
     protected abstract void SetupSubGoals();
+
+    private void CheckActionVars()
+    {
+        foreach (var subGoal in SubGoals)
+        {
+            foreach (var action in subGoal.Actions)
+            {
+                foreach (var actionVar in action.Vars)
+                {
+                    if (
+                        Vars
+                            .Where(v => v.Name == actionVar.Name
+                                        && v.ValueType == actionVar.ValueType)
+                            .Count() == 0
+                    )
+                    {
+                        throw new Exception("can't fulfil action vars");
+                    }
+                }
+            }
+        }
+    }
     public abstract GoapState<TAgent> GetInitialState(List<GoapAgent<TAgent>> agents);
 }

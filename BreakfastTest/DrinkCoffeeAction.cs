@@ -2,13 +2,12 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public class PutButterOnToastAction : GoapAction<Eater>
+public class DrinkCoffeeAction : GoapAction<Eater>
 {
-    public static GoapVar<bool, Eater> BreadIsToasted =
-        BoolVar<Eater>.Construct("BreadIsToasted", 1f, e => e.Bread.Toasted);
-    public static GoapVar<bool, Eater> BreadIsButtered =
-        BoolVar<Eater>.Construct("BreadIsButtered", 1f, e => e.Bread.Buttered);
-    public PutButterOnToastAction() : base("PutButterOnToast")
+    public static GoapVar<bool, Eater> Caffeinated =
+        BoolVar<Eater>.Construct("Caffeinated", 1f, e => e.Caffeinated);
+    
+    public DrinkCoffeeAction() : base("DrinkCoffee")
     {
     }
 
@@ -16,8 +15,7 @@ public class PutButterOnToastAction : GoapAction<Eater>
     {
         Vars = new List<IGoapAgentVar<Eater>>
         {
-            BreadIsButtered,
-            BreadIsToasted
+            Caffeinated
         };
     }
 
@@ -32,7 +30,7 @@ public class PutButterOnToastAction : GoapAction<Eater>
     }
     public override bool Valid(GoapState<Eater> state)
     {
-        return state.CheckVarMatch<bool>(BreadIsToasted.Name, true);
+        return true; 
     }
     public override float Cost(GoapState<Eater> state)
     {
@@ -40,11 +38,11 @@ public class PutButterOnToastAction : GoapAction<Eater>
     }
     public override string Descr(GoapActionArgs args)
     {
-        return "Putting butter on toast";
+        return "Drinking coffee";
     }
     public override GoapActionArgs ApplyToState(GoapState<Eater> state)
     {
-        state.MutateVar(BreadIsButtered, true);
+        state.MutateVar(Caffeinated, true);
         return new GoapActionArgs();
     }
 }

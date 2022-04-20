@@ -5,9 +5,9 @@ using System.Linq;
 
 public class DoBreakfastGoal : GoapGoal<Eater>
 {
-    public static GoapVar<bool, Eater> BreakfastIsMade =
+    private static GoapVar<bool, Eater> _breakfastIsMade =
         BoolVar<Eater>.Construct("BreakfastIsMade", 1f, e => e.Bread.Buttered && e.Bread.Toasted && e.Coffee.Made);
-    public static GoapVar<bool, Eater> HasConsumedBreakfast =
+    private static GoapVar<bool, Eater> _hasConsumedBreakfast =
         BoolVar<Eater>.Construct("HasEatenBreakfast", 1f, e => e.Hungry == false);
     public DoBreakfastGoal() : base()
     {
@@ -22,8 +22,8 @@ public class DoBreakfastGoal : GoapGoal<Eater>
     {
         Vars = new List<IGoapAgentVar<Eater>>()
         {
-            BreakfastIsMade,
-            HasConsumedBreakfast
+            _breakfastIsMade,
+            _hasConsumedBreakfast
         };
     }
 
@@ -40,7 +40,7 @@ public class DoBreakfastGoal : GoapGoal<Eater>
         var eater = agents[0];
         var initialState = new GoapState<Eater>
         (
-            Vars.Select(v => v.BranchAgnosticByAgent(eater)).ToArray()
+            Vars.Select(v => v.BranchAgnosticByAgentEntity(eater.Entity)).ToArray()
         );
         return initialState;
     }
@@ -48,11 +48,17 @@ public class DoBreakfastGoal : GoapGoal<Eater>
     private class DoBreakfastSubGoal : GoapSubGoal<Eater>
     {
         public override List<GoapAction<Eater>> Actions => _actions;
-        private static List<GoapAction<Eater>> _actions = new List<GoapAction<Eater>>()
+        private static List<GoapAction<Eater>> _actions;
+
+        protected override void BuildActions()
         {
-            new MakeBreakfastAction(),
-            new ConsumeBreakfastAction()
-        };
+            _actions = new List<GoapAction<Eater>>()
+            {
+                new MakeBreakfastAction(),
+                new ConsumeBreakfastAction()
+            };
+        }
+
         public DoBreakfastSubGoal(float diff) : base(GetTargetState(), diff)
         {
         
@@ -61,7 +67,7 @@ public class DoBreakfastGoal : GoapGoal<Eater>
         {
             var targetState = new GoapState<Eater>
             (
-                new GoapVarInstance<bool, Eater>(HasConsumedBreakfast, true)
+                new GoapVarInstance<bool, Eater>(_hasConsumedBreakfast, true)
             );
             return targetState;
         }

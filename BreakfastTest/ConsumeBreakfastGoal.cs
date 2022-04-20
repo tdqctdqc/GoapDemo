@@ -5,9 +5,9 @@ using System.Linq;
 
 public class ConsumeBreakfastGoal : GoapGoal<Eater>
 {
-    public static GoapVar<bool, Eater> Hungry =
+    private static GoapVar<bool, Eater> _hungry { get; set; } =
         BoolVar<Eater>.Construct("Hungry", 1f, e => e.Hungry);
-    public static GoapVar<bool, Eater> Caffeinated =
+    private static GoapVar<bool, Eater> _caffeinated { get; set; } =
         BoolVar<Eater>.Construct("Caffeinated", 1f, e => e.Caffeinated);
     public ConsumeBreakfastGoal() : base()
     {
@@ -22,8 +22,8 @@ public class ConsumeBreakfastGoal : GoapGoal<Eater>
     {
         Vars = new List<IGoapAgentVar<Eater>>
         {
-            Hungry,
-            Caffeinated
+            _hungry,
+            _caffeinated
         };
     }
 
@@ -40,7 +40,7 @@ public class ConsumeBreakfastGoal : GoapGoal<Eater>
         var eater = agents[0];
         var initialState = new GoapState<Eater>
         (
-            Vars.Select(v => v.BranchAgnosticByAgent(eater)).ToArray()
+            Vars.Select(v => v.BranchAgnosticByAgentEntity(eater.Entity)).ToArray()
         );
         return initialState;
     }
@@ -48,11 +48,16 @@ public class ConsumeBreakfastGoal : GoapGoal<Eater>
     private class ConsumeBreakfastSubGoal : GoapSubGoal<Eater>
     {
         public override List<GoapAction<Eater>> Actions => _actions;
-        private static List<GoapAction<Eater>> _actions = new List<GoapAction<Eater>>()
+        protected override void BuildActions()
         {
-            new EatToastAction(),
-            new DrinkCoffeeAction()
-        };
+            _actions = new List<GoapAction<Eater>>()
+            {
+                new EatToastAction(),
+                new DrinkCoffeeAction()
+            };
+        }
+
+        private static List<GoapAction<Eater>> _actions;
         public ConsumeBreakfastSubGoal(float difficulty) : base(GetTargetState(), difficulty)
         {
         }
@@ -60,93 +65,14 @@ public class ConsumeBreakfastGoal : GoapGoal<Eater>
         {
             var targetState = new GoapState<Eater>
             (
-                new GoapVarInstance<bool, Eater>(Hungry, false),
-                new GoapVarInstance<bool, Eater>(Caffeinated, true)
+                new GoapVarInstance<bool, Eater>(_hungry, false),
+                new GoapVarInstance<bool, Eater>(_caffeinated, true)
             );
             return targetState;
         }
     }
-    private class EatToastAction : GoapAction<Eater>
-    {
-        public EatToastAction() : base("EatToast")
-        {
-        }
-        public override GoapGoal<Eater> GetSuccessorGoal(GoapActionArgs args)
-        {
-            return null;
-        }
-        public override bool Valid(GoapState<Eater> state)
-        {
-            return true;
-        }
-        public override float Cost(GoapState<Eater> state)
-        {
-            return 1f;
-        }
-        public override string Descr(GoapActionArgs args)
-        {
-            return "Eating toast";
-        }
-        public override GoapActionArgs ApplyToState(GoapState<Eater> state)
-        {
-            state.MutateVar(ConsumeBreakfastGoal.Hungry, false);
-            return new GoapActionArgs();
-        }
-    }
-    private class DrinkCoffeeAction : GoapAction<Eater>
-    {
-        public DrinkCoffeeAction() : base("DrinkCoffee")
-        {
-        }
-        public override GoapGoal<Eater> GetSuccessorGoal(GoapActionArgs args)
-        {
-            return null;
-        }
-        public override bool Valid(GoapState<Eater> state)
-        {
-            return true; 
-        }
-        public override float Cost(GoapState<Eater> state)
-        {
-            return 1f;
-        }
-        public override string Descr(GoapActionArgs args)
-        {
-            return "Drinking coffee";
-        }
-        public override GoapActionArgs ApplyToState(GoapState<Eater> state)
-        {
-            state.MutateVar(ConsumeBreakfastGoal.Caffeinated, true);
-            return new GoapActionArgs();
-        }
-    }
-    public class MakeBreakfastAction : GoapAction<Eater>
-    {
-        public MakeBreakfastAction() : base("MakeBreakfast")
-        {
-        }
-        public override GoapGoal<Eater> GetSuccessorGoal(GoapActionArgs args)
-        {
-            return new MakeBreakfastGoal();
-        }
-        public override bool Valid(GoapState<Eater> state)
-        {
-            return true;
-        }
-        public override float Cost(GoapState<Eater> state)
-        {
-            return 1f;
-        }
-        public override string Descr(GoapActionArgs args)
-        {
-            return "Making breakfast";
-        }
-        public override GoapActionArgs ApplyToState(GoapState<Eater> state)
-        {
-            state.MutateVar(DoBreakfastGoal.BreakfastIsMade, true);
-            return new GoapActionArgs();
-        }
-    }
+    
+    
 }
 
 

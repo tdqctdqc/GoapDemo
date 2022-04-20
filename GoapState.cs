@@ -20,7 +20,7 @@ public class GoapState<TAgent> : IGoapState
     
     public bool CheckVarMatch<TValue>(string name, TValue value)
     {
-        var goapVar = GetVar(name);
+        var goapVar = GetVarAgnostic(name);
         return goapVar != null ? goapVar.GetValue().Equals(value) : false;
     }
 
@@ -37,7 +37,17 @@ public class GoapState<TAgent> : IGoapState
             _varNameDic.Remove(varToMutate.Name);
         _varNameDic.Add(newVarInstance.Name, newVarInstance);
     }
-    private IGoapAgentVarInstance<TAgent> GetVar(string name)
+
+    public GoapVarInstance<TValue, TAgent> GetVar<TValue>(string name) where TValue : struct
+    {
+        if (GetVarTypeChecked(name, typeof(TValue)) is GoapVarInstance<TValue, TAgent> v)
+        {
+            return v;
+        }
+
+        return null;
+    }
+    private IGoapAgentVarInstance<TAgent> GetVarAgnostic(string name)
     {
         if (_varNameDic.ContainsKey(name))
         {

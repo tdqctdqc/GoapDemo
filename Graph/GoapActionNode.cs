@@ -25,7 +25,6 @@ public class GoapActionNode<TAgent>
         {
             plan = plan.Parent;
         }
-
         return plan.EndState;
     }
 }

@@ -1,11 +1,28 @@
 using Godot;
 using System;
+using System.Collections.Generic;
 
 public class MakeCoffeeAction : GoapAction<Eater>
 {
+    public static GoapVar<bool, Eater> CoffeeIsMade =
+        BoolVar<Eater>.Construct("CoffeeIsMade", 1f, e => e.Coffee.Made);
     public MakeCoffeeAction() : base("MakeCoffee")
     {
     }
+
+    protected override void SetupVars()
+    {
+        Vars = new List<IGoapAgentVar<Eater>>
+        {
+            CoffeeIsMade
+        };
+    }
+
+    public override GoapState<Eater> TransformContextForSuccessorGoal(GoapState<Eater> actionContext)
+    {
+        return null;
+    }
+
     public override GoapGoal<Eater> GetSuccessorGoal(GoapActionArgs args)
     {
         return null;
@@ -24,7 +41,7 @@ public class MakeCoffeeAction : GoapAction<Eater>
     }
     public override GoapActionArgs ApplyToState(GoapState<Eater> state)
     {
-        var coffeeMadeVar = MakeBreakfastGoal.CoffeeIsMade;
+        var coffeeMadeVar = CoffeeIsMade;
         state.MutateVar(coffeeMadeVar, true);
         return new GoapActionArgs();
     }

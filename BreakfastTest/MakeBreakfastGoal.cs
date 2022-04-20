@@ -5,11 +5,11 @@ using System.Linq;
 
 public class MakeBreakfastGoal : GoapGoal<Eater>
 {
-    public static GoapVar<bool, Eater> BreadIsToasted =
+    private static GoapVar<bool, Eater> _breadIsToasted =
         BoolVar<Eater>.Construct("BreadIsToasted", 1f, e => e.Bread.Toasted);
-    public static GoapVar<bool, Eater> BreadIsButtered =
+    private static GoapVar<bool, Eater> _breadIsButtered =
         BoolVar<Eater>.Construct("BreadIsButtered", 1f, e => e.Bread.Buttered);
-    public static GoapVar<bool, Eater> CoffeeIsMade =
+    private static GoapVar<bool, Eater> _coffeeIsMade =
         BoolVar<Eater>.Construct("CoffeeIsMade", 1f, e => e.Coffee.Made);
     public MakeBreakfastGoal() : base()
     {
@@ -24,9 +24,9 @@ public class MakeBreakfastGoal : GoapGoal<Eater>
     {
         Vars = new List<IGoapAgentVar<Eater>>
         {
-            BreadIsButtered,
-            BreadIsToasted,
-            CoffeeIsMade
+            _breadIsButtered,
+            _breadIsToasted,
+            _coffeeIsMade
         };
     }
 
@@ -44,7 +44,7 @@ public class MakeBreakfastGoal : GoapGoal<Eater>
         var eater = agents[0];
         var initialState = new GoapState<Eater>
         (
-            Vars.Select(v => v.BranchAgnosticByAgent(eater)).ToArray()
+            Vars.Select(v => v.BranchAgnosticByAgentEntity(eater.Entity)).ToArray()
         );
         return initialState;
     }
@@ -52,11 +52,15 @@ public class MakeBreakfastGoal : GoapGoal<Eater>
     private class MakeToastSubGoal : GoapSubGoal<Eater>
     {
         public override List<GoapAction<Eater>> Actions => _actions;
-        private static List<GoapAction<Eater>> _actions = new List<GoapAction<Eater>>()
+        private static List<GoapAction<Eater>> _actions;
+        protected override void BuildActions()
         {
-            new ToastBreadAction(),
-            new PutButterOnToastAction()
-        };
+            _actions = new List<GoapAction<Eater>>()
+            {
+                new ToastBreadAction(),
+                new PutButterOnToastAction()
+            };
+        }
         public MakeToastSubGoal(float difficulty) : base(GetTargetState(), difficulty)
         {
         }
@@ -64,8 +68,8 @@ public class MakeBreakfastGoal : GoapGoal<Eater>
         {
             var targetState = new GoapState<Eater>
             (
-                new GoapVarInstance<bool, Eater>(BreadIsToasted, true),
-                new GoapVarInstance<bool, Eater>(BreadIsButtered, true)
+                new GoapVarInstance<bool, Eater>(_breadIsToasted, true),
+                new GoapVarInstance<bool, Eater>(_breadIsButtered, true)
             );
             return targetState;
         }
@@ -73,10 +77,14 @@ public class MakeBreakfastGoal : GoapGoal<Eater>
     private class MakeCoffeeSubGoal : GoapSubGoal<Eater>
     {
         public override List<GoapAction<Eater>> Actions => _actions;
-        private static List<GoapAction<Eater>> _actions = new List<GoapAction<Eater>>()
+        private static List<GoapAction<Eater>> _actions;
+        protected override void BuildActions()
         {
-            new MakeCoffeeAction()
-        };
+            _actions = new List<GoapAction<Eater>>()
+            {
+                new MakeCoffeeAction()
+            };
+        }
         public MakeCoffeeSubGoal(float difficulty) : base(GetTargetState(), difficulty)
         {
         }
@@ -84,7 +92,7 @@ public class MakeBreakfastGoal : GoapGoal<Eater>
         {
             var targetState = new GoapState<Eater>
             (
-                new GoapVarInstance<bool, Eater>(CoffeeIsMade, true)
+                new GoapVarInstance<bool, Eater>(_coffeeIsMade, true)
             );
             return targetState;
         }

@@ -16,26 +16,8 @@ public class GoapState<TAgent> : IGoapState
             _varNameDic.Add(stateVar.Name, stateVar);
         }
     }
-    private GoapVarInstance<TValue, TAgent> GetVarTyped<TValue>(string name) where TValue : struct
-    {
-        if (_varNameDic.ContainsKey(name))
-        {
-            if (_varNameDic[name] is GoapVarInstance<TValue, TAgent> v)
-            {
-                return v;
-            }
-        }
-        return null;
-    }
 
-    private IGoapAgentVarInstance<TAgent> GetVar(string name)
-    {
-        if (_varNameDic.ContainsKey(name))
-        {
-            return _varNameDic[name];
-        }
-        return null;
-    }
+    
     public bool CheckVarMatch<TValue>(string name, TValue value)
     {
         var goapVar = GetVar(name);
@@ -55,8 +37,15 @@ public class GoapState<TAgent> : IGoapState
             _varNameDic.Remove(varToMutate.Name);
         _varNameDic.Add(newVarInstance.Name, newVarInstance);
     }
-
-    public IGoapAgentVarInstance<TAgent> GetVarTypeChecked(string name, Type type)
+    private IGoapAgentVarInstance<TAgent> GetVar(string name)
+    {
+        if (_varNameDic.ContainsKey(name))
+        {
+            return _varNameDic[name];
+        }
+        return null;
+    }
+    private IGoapAgentVarInstance<TAgent> GetVarTypeChecked(string name, Type type)
     {
         if (_varNameDic.ContainsKey(name))
         {
@@ -74,21 +63,24 @@ public class GoapState<TAgent> : IGoapState
         {
             var variable = entry.Value;
             var typedVar = GetVarTypeChecked(variable.Name, variable.ValueType);
-            var candVar = candidateState.GetVarTypeChecked(variable.Name, variable.ValueType);
             if (typedVar.SatisfiedBy(candidateState) == false) return false;
         }
         return true; 
     }
 
-    public float GetHeuristicDistance(GoapState<TAgent> state)
+    public float GetHeuristicDistance(GoapState<TAgent> candState)
     {
         var cost = 0f;
         foreach (var entry in _varNameDic)
         {
             var variable = entry.Value;
-            var typedVar = GetVarTypeChecked(variable.Name, variable.ValueType);
-            var candVar = state.GetVarTypeChecked(variable.Name, variable.ValueType);
-            cost += typedVar.GetHeuristicCost(candVar);
+            var candVar = candState.GetVarTypeChecked(variable.Name, variable.ValueType);
+            
+            
+            var marginalCost = candVar != null 
+                                ? variable.GetHeuristicCost(candVar.GetValue())
+                                : Mathf.Inf;
+            cost += marginalCost;
         }
         return cost; 
     }

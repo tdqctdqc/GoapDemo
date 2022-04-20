@@ -3,7 +3,7 @@ using System;
 
 public class GoapVarInstance<TValue, TAgent> : IGoapAgentVarInstance<TAgent> where TValue : struct
 {
-    public GoapVar<TValue,TAgent> BaseVar { get; private set; }
+    public GoapVar<TValue, TAgent> BaseVar { get; private set; }
     public TValue Value { get; private set; }
     public Type ValueType => typeof(TValue);
     public Type AgentType => typeof(TAgent);
@@ -23,11 +23,13 @@ public class GoapVarInstance<TValue, TAgent> : IGoapAgentVarInstance<TAgent> whe
     {
         return BaseVar.GetHeuristicCost(this, comparison);
     }
-
-    public bool SatisfiedBy(IGoapState state)
+    public float GetHeuristicCost(object comparison)
     {
-        if (state is GoapState<TAgent> s == false) return false;
-        return BaseVar.SatisfiedBy(this, s);
+        return BaseVar.GetHeuristicCost(this, comparison);
+    }
+    public bool SatisfiedBy(GoapState<TAgent> state)
+    {
+        return BaseVar.SatisfiedBy(this, state);
     }
 
     public object GetValue()

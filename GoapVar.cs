@@ -6,12 +6,13 @@ public abstract class GoapVar<TValue, TAgent> : IGoapAgentVar<TAgent> where TVal
     public string Name => _name;
     private readonly string _name;
     public readonly Func<TAgent, TValue> ValueFunc;
-    protected Func<GoapVarInstance<TValue, TAgent>, IGoapAgentVarInstance<TAgent>, float> _heuristicFunc;
+    //protected Func<GoapVarInstance<TValue, TAgent>, IGoapAgentVarInstance<TAgent>, float> _heuristicFunc;
+    protected Func<TValue, object, float> _heuristicFunc;
     protected Func<GoapVarInstance<TValue, TAgent>, GoapState<TAgent>, bool> _satisfiedFunc;
     
 
     public GoapVar(string name, Func<TAgent, TValue> valueFunc, 
-                    Func<GoapVarInstance<TValue, TAgent>, IGoapAgentVarInstance<TAgent>, float> heuristicFunc,
+                    Func<TValue, object, float> heuristicFunc,
                     Func<GoapVarInstance<TValue, TAgent>, GoapState<TAgent>, bool> satisfiedFunc)
     {
         _heuristicFunc = heuristicFunc;
@@ -25,11 +26,14 @@ public abstract class GoapVar<TValue, TAgent> : IGoapAgentVar<TAgent> where TVal
         return _satisfiedFunc(instance, state);
     }
 
-    public float GetHeuristicCost(GoapVarInstance<TValue, TAgent> instance, IGoapAgentVarInstance<TAgent> comparison)
+    // public float GetHeuristicCost(GoapVarInstance<TValue, TAgent> instance, IGoapAgentVarInstance<TAgent> comparison)
+    // {
+    //     return _heuristicFunc(instance, comparison);
+    // }
+    public float GetHeuristicCost(GoapVarInstance<TValue, TAgent> instance, object comparison)
     {
-        return _heuristicFunc(instance, comparison);
+        return _heuristicFunc(instance.Value, comparison);
     }
-    
     public GoapVarInstance<TValue, TAgent> Branch(TValue value)
     {
         return new GoapVarInstance<TValue, TAgent>(this, value);

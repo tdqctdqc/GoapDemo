@@ -14,4 +14,5 @@ public class GoapSatisfactionFunc<TAgent, TValue> where TValue : struct
     {
         return _satisfactionFunc(goalCondition, state);
     }
+    
 }

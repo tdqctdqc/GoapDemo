@@ -22,9 +22,9 @@ public abstract class GoapVar<TValue, TAgent> : IGoapAgentVar<TAgent> where TVal
         _name = name;
     }
 
-    public bool SatisfiedBy(GoapFluent<TValue, TAgent> instance, GoapState<TAgent> state)
+    public bool SatisfiedBy(GoapFluent<TValue, TAgent> fluent, GoapState<TAgent> state)
     {
-        return _satisfiedFunc.Check(instance, state);
+        return _satisfiedFunc.Check(fluent, state);
     }
     public float GetHeuristicCost(GoapFluent<TValue, TAgent> instance, object comparison)
     {

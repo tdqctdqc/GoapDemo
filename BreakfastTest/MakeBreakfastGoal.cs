@@ -5,12 +5,17 @@ namespace GoapDemo.BreakfastTest
 {
     public class MakeBreakfastGoal : GoapGoal<Eater>
     {
-        private static GoapVar<bool, Eater> _breadIsToasted =
-            BoolVar<Eater>.Construct("BreadIsToasted", 1f, e => e.Bread.Toasted);
-        private static GoapVar<bool, Eater> _breadIsButtered =
-            BoolVar<Eater>.Construct("BreadIsButtered", 1f, e => e.Bread.Buttered);
-        private static GoapVar<bool, Eater> _coffeeIsMade =
-            BoolVar<Eater>.Construct("CoffeeIsMade", 1f, e => e.Coffee.Made);
+        [ExplicitVar] private static GoapVar<bool, Eater> _breadIsToasted 
+            = BoolVar<Eater>.Construct("BreadIsToasted", 1f, e => e.Bread.Toasted);
+        [ExplicitVar] private static GoapVar<bool, Eater> _breadIsButtered 
+            = BoolVar<Eater>.Construct("BreadIsButtered", 1f, e => e.Bread.Buttered);
+        [ExplicitVar] private static GoapVar<bool, Eater> _coffeeIsMade 
+            = BoolVar<Eater>.Construct("CoffeeIsMade", 1f, e => e.Coffee.Made);
+
+        [SubGoal] private static GoapSubGoal<Eater> _makeToastSubGoal
+            = new MakeToastSubGoal(1f);
+        [SubGoal] private static GoapSubGoal<Eater> _makeCoffeeSubGoal
+            = new MakeCoffeeSubGoal(1f);
         public MakeBreakfastGoal() : base()
         {
         
@@ -18,25 +23,6 @@ namespace GoapDemo.BreakfastTest
         public override float Priority(GoapAgent<Eater> agent)
         {
             return 1f;
-        }
-
-        protected override void SetupVars()
-        {
-            Vars = new List<IGoapAgentVar<Eater>>
-            {
-                _breadIsButtered,
-                _breadIsToasted,
-                _coffeeIsMade
-            };
-        }
-
-        protected override void SetupSubGoals()
-        {
-            SubGoals = new List<GoapSubGoal<Eater>>()
-            {
-                new MakeToastSubGoal(1f),
-                new MakeCoffeeSubGoal(1f)
-            };
         }
 
         public override GoapState<Eater> GetInitialState(List<GoapAgent<Eater>> agents)

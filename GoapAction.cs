@@ -9,7 +9,7 @@ public abstract class GoapAction<TAgent> : IGoapAction
     public List<IGoapVar> Reqs { get; private set; }
     protected abstract void SetupVars();
     public abstract GoapState<TAgent> TransformContextForSuccessorGoal(GoapState<TAgent> actionContext);
-    public List<IGoapAgentVar<TAgent>> Vars { get; protected set; }
+    public List<IGoapAgentVar<TAgent>> ExplicitVars { get; protected set; }
     public List<IGoapAgentVar<TAgent>> SuccessorVars { get; protected set; }
     protected GoapAction(string name)
     {
@@ -29,7 +29,7 @@ public abstract class GoapAction<TAgent> : IGoapAction
     {
         var goal = GetSuccessorGoal(new GoapActionArgs());
         if (goal == null) return;
-        foreach (var goalVar in goal.Vars)
+        foreach (var goalVar in goal.ExplicitVars)
         {
             if (
                 SuccessorVars

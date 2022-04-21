@@ -6,16 +6,19 @@ namespace GoapDemo.WalkHomeTest
 {
     public class WalkHomeGoal : GoapGoal<Walker>
     {
-        private static GoapVar<Vector2, Walker> _currentPosition
+        [ExplicitVar] private static GoapVar<Vector2, Walker> _currentPosition
             = Vec2Var<Walker>.ConstructScaledHeuristic("CurrentPosition", 1f, w => w.CurrentPosition);
-        private static GoapVar<Vector2, Walker> _homePosition
+        [ExplicitVar] private static GoapVar<Vector2, Walker> _homePosition
             = Vec2Var<Walker>.ConstructScaledHeuristic("HomePosition", 1f, w => w.HomePosition);
-        private static GoapVar<bool, Walker> _leftFootForward
+        [ExplicitVar] private static GoapVar<bool, Walker> _leftFootForward
             = BoolVar<Walker>.Construct("LeftFootForward", 1f, w => w.LeftFootForward);
-        private static GoapVar<float, Walker> _strideLength
+        [ExplicitVar] private static GoapVar<float, Walker> _strideLength
             = FloatVar<Walker>.ConstructScaleHeuristic("StrideLength", 1f, w => w.StrideLength);
+        
+        [ImplicitVar] private static GoapVar<bool, Walker> _atHome = AtHomeVar.Construct();
 
-        private static GoapVar<bool, Walker> _atHome = AtHomeVar.Construct();
+        [SubGoal] private static GoapSubGoal<Walker> _subGoal
+            = new WalkHomeSubGoal(1f);
         public override float Priority(GoapAgent<Walker> agent)
         {
             return 1f; 
@@ -26,24 +29,6 @@ namespace GoapDemo.WalkHomeTest
             var homePos = state.GetVar<Vector2>(_homePosition.Name).Value;
             var currentPos = state.GetVar<Vector2>(_currentPosition.Name).Value;
             return homePos == currentPos;
-        }
-        protected override void SetupVars()
-        {
-            Vars = new List<IGoapAgentVar<Walker>>
-            {
-                _currentPosition, 
-                _homePosition,
-                _leftFootForward,
-                _atHome,
-                _strideLength
-            };
-        }
-        protected override void SetupSubGoals()
-        {
-            SubGoals = new List<GoapSubGoal<Walker>>
-            {
-                new WalkHomeSubGoal(1f)
-            };
         }
         public override GoapState<Walker> GetInitialState(List<GoapAgent<Walker>> agents)
         {

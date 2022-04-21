@@ -1,22 +1,24 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Linq;
 
-public abstract class GoapGoal<TAgent> 
+public abstract class GoapGoal<TAgent>
 {
-    public List<GoapSubGoal<TAgent>> SubGoals { get; protected set; }
-    public List<IGoapAgentVar<TAgent>> Vars { get; protected set; }
+    public IReadOnlyList<GoapSubGoal<TAgent>> SubGoals => _subGoals;
+    private List<GoapSubGoal<TAgent>> _subGoals;
+    public List<IGoapAgentVar<TAgent>> ExplicitVars => _explicitVars;
+    private List<IGoapAgentVar<TAgent>> _explicitVars;
+    public List<IGoapAgentVar<TAgent>> ImplicitVars => _implicitVars;
+    private List<IGoapAgentVar<TAgent>> _implicitVars;
     public abstract float Priority(GoapAgent<TAgent> agent);
     public GoapGoal()
     {
-        SetupVars();
-        SetupSubGoals();
+        SetupVars(this);
+        SetupSubGoals(this);
         CheckActionVars();
     }
-
-    protected abstract void SetupVars();
-    protected abstract void SetupSubGoals();
 
     private void CheckActionVars()
     {
@@ -24,16 +26,16 @@ public abstract class GoapGoal<TAgent>
         {
             foreach (var action in subGoal.Actions)
             {
-                foreach (var actionVar in action.Vars)
+                foreach (var actionVar in action.ExplicitVars)
                 {
                     if (
-                        Vars
+                        ExplicitVars
                             .Where(v => v.Name == actionVar.Name
                                         && v.ValueType == actionVar.ValueType)
                             .Count() == 0
                     )
                     {
-                        throw new Exception("can't fulfil action vars");
+                        throw new Exception("can't fulfil action var " + actionVar.Name);
                     }
                 }
             }
@@ -46,8 +48,33 @@ public abstract class GoapGoal<TAgent>
         var agent = agents[0];
         var initialState = new GoapState<TAgent>
         (
-            Vars.Select(v => v.BranchAgnosticByAgentEntity(agent.Entity)).ToArray()
+            ExplicitVars.Select(v => v.BranchAgnosticByAgentEntity(agent.Entity)).ToArray()
         );
         return initialState;
+    }
+
+    protected static void SetupVars(GoapGoal<TAgent> goal)
+    {
+        var goalType = goal.GetType();
+        var fields = goalType.GetFields(BindingFlags.NonPublic | BindingFlags.Static);
+        goal._explicitVars = GetFieldsWithAttribute<ExplicitVarAttribute, IGoapAgentVar<TAgent>>(fields);
+        goal._implicitVars = GetFieldsWithAttribute<ImplicitVarAttribute, IGoapAgentVar<TAgent>>(fields);
+    }
+
+    protected static void SetupSubGoals(GoapGoal<TAgent> goal)
+    {
+        var goalType = goal.GetType();
+        var fields = goalType.GetFields(BindingFlags.NonPublic | BindingFlags.Static);
+        goal._subGoals = GetFieldsWithAttribute<SubGoalAttribute, GoapSubGoal<TAgent>>(fields);
+    }
+
+    private static List<TField> GetFieldsWithAttribute<TAttribute, TField>(IEnumerable<FieldInfo> varFields)
+        where TAttribute : System.Attribute
+    {
+        return varFields
+            .Where(f => f.GetCustomAttribute<TAttribute>() != null)
+            .Select(
+                f => (TField)f.GetValue(null)  )
+            .ToList();
     }
 }

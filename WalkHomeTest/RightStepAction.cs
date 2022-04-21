@@ -19,7 +19,7 @@ namespace GoapDemo.WalkHomeTest
 
         protected override void SetupVars()
         {
-            Vars = new List<IGoapAgentVar<Walker>>
+            ExplicitVars = new List<IGoapAgentVar<Walker>>
             {
                 _currentPosition,
                 _homePosition,

@@ -9,6 +9,7 @@ public class Root : Node
     public override void _Ready()
     {
         DoWalkerTest();
+        DoBreakfastTest();
     }
 
     private void DoBreakfastTest()

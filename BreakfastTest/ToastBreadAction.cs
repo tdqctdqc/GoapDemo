@@ -12,7 +12,7 @@ namespace GoapDemo.BreakfastTest
 
         protected override void SetupVars()
         {
-            Vars = new List<IGoapAgentVar<Eater>>
+            ExplicitVars = new List<IGoapAgentVar<Eater>>
             {
                 BreadIsToasted
             };

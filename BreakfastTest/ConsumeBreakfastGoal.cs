@@ -5,10 +5,13 @@ namespace GoapDemo.BreakfastTest
 {
     public class ConsumeBreakfastGoal : GoapGoal<Eater>
     {
-        private static GoapVar<bool, Eater> _hungry { get; set; } =
-            BoolVar<Eater>.Construct("Hungry", 1f, e => e.Hungry);
-        private static GoapVar<bool, Eater> _caffeinated { get; set; } =
-            BoolVar<Eater>.Construct("Caffeinated", 1f, e => e.Caffeinated);
+        [ExplicitVar] private static GoapVar<bool, Eater> _hungry 
+            = BoolVar<Eater>.Construct("Hungry", 1f, e => e.Hungry);
+        [ExplicitVar] private static GoapVar<bool, Eater> _caffeinated 
+            = BoolVar<Eater>.Construct("Caffeinated", 1f, e => e.Caffeinated);
+
+        [SubGoal] private static GoapSubGoal<Eater> _subGoal
+            = new ConsumeBreakfastSubGoal(1f);
         public ConsumeBreakfastGoal() : base()
         {
         
@@ -16,23 +19,6 @@ namespace GoapDemo.BreakfastTest
         public override float Priority(GoapAgent<Eater> agent)
         {
             return 1f;
-        }
-
-        protected override void SetupVars()
-        {
-            Vars = new List<IGoapAgentVar<Eater>>
-            {
-                _hungry,
-                _caffeinated
-            };
-        }
-
-        protected override void SetupSubGoals()
-        {
-            SubGoals = new List<GoapSubGoal<Eater>>()
-            {
-                new ConsumeBreakfastSubGoal(1f)
-            };
         }
 
         public override GoapState<Eater> GetInitialState(List<GoapAgent<Eater>> agents)
@@ -71,8 +57,6 @@ namespace GoapDemo.BreakfastTest
                 return targetState;
             }
         }
-    
-    
     }
 }
 

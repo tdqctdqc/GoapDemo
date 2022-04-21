@@ -57,24 +57,14 @@ public abstract class GoapGoal<TAgent>
     {
         var goalType = goal.GetType();
         var fields = goalType.GetFields(BindingFlags.NonPublic | BindingFlags.Static);
-        goal._explicitVars = GetFieldsWithAttribute<ExplicitVarAttribute, IGoapAgentVar<TAgent>>(fields);
-        goal._implicitVars = GetFieldsWithAttribute<ImplicitVarAttribute, IGoapAgentVar<TAgent>>(fields);
+        goal._explicitVars = fields.GetFieldsWithAttribute<ExplicitVarAttribute, IGoapAgentVar<TAgent>>();
+        goal._implicitVars = fields.GetFieldsWithAttribute<ImplicitVarAttribute, IGoapAgentVar<TAgent>>();
     }
 
     protected static void SetupSubGoals(GoapGoal<TAgent> goal)
     {
         var goalType = goal.GetType();
         var fields = goalType.GetFields(BindingFlags.NonPublic | BindingFlags.Static);
-        goal._subGoals = GetFieldsWithAttribute<SubGoalAttribute, GoapSubGoal<TAgent>>(fields);
-    }
-
-    private static List<TField> GetFieldsWithAttribute<TAttribute, TField>(IEnumerable<FieldInfo> varFields)
-        where TAttribute : System.Attribute
-    {
-        return varFields
-            .Where(f => f.GetCustomAttribute<TAttribute>() != null)
-            .Select(
-                f => (TField)f.GetValue(null)  )
-            .ToList();
+        goal._subGoals = fields.GetFieldsWithAttribute<SubGoalAttribute, GoapSubGoal<TAgent>>();
     }
 }

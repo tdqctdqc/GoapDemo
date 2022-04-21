@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Reflection;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -7,15 +8,17 @@ public abstract class GoapAction<TAgent> : IGoapAction
 {
     public string Name { get; private set; }
     public List<IGoapVar> Reqs { get; private set; }
-    protected abstract void SetupVars();
     public abstract GoapState<TAgent> TransformContextForSuccessorGoal(GoapState<TAgent> actionContext);
-    public List<IGoapAgentVar<TAgent>> ExplicitVars { get; protected set; }
-    public List<IGoapAgentVar<TAgent>> SuccessorVars { get; protected set; }
+    public List<IGoapAgentVar<TAgent>> ExplicitVars => _explicitVars;
+    private List<IGoapAgentVar<TAgent>> _explicitVars;
+
+    public List<IGoapAgentVar<TAgent>> SuccessorVars => _successorVars;
+    private List<IGoapAgentVar<TAgent>> _successorVars;
     protected GoapAction(string name)
     {
         Name = name;
         Reqs = new List<IGoapVar>();
-        SetupVars();
+        SetupVarsSpecial(this);
         CheckSuccessorGoalActions();
     }
 
@@ -38,8 +41,15 @@ public abstract class GoapAction<TAgent> : IGoapAction
                     .Count() == 0
             )
             {
-                throw new Exception("can't fulfil action vars");
+                throw new Exception("can't fulfil successor goal var " + goalVar.Name);
             }
         }
+    }
+    protected static void SetupVarsSpecial(GoapAction<TAgent> goal)
+    {
+        var goalType = goal.GetType();
+        var fields = goalType.GetFields(BindingFlags.NonPublic | BindingFlags.Static);
+        goal._explicitVars = fields.GetFieldsWithAttribute<ExplicitVarAttribute, IGoapAgentVar<TAgent>>();
+        goal._successorVars = fields.GetFieldsWithAttribute<SuccessorVarAttribute, IGoapAgentVar<TAgent>>();
     }
 }

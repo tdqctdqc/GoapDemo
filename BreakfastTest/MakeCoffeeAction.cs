@@ -4,18 +4,10 @@ namespace GoapDemo.BreakfastTest
 {
     public class MakeCoffeeAction : GoapAction<Eater>
     {
-        public static GoapVar<bool, Eater> CoffeeIsMade =
+        [ExplicitVar] private static GoapVar<bool, Eater> _coffeeIsMade =
             BoolVar<Eater>.Construct("CoffeeIsMade", 1f, e => e.Coffee.Made);
         public MakeCoffeeAction() : base("MakeCoffee")
         {
-        }
-
-        protected override void SetupVars()
-        {
-            ExplicitVars = new List<IGoapAgentVar<Eater>>
-            {
-                CoffeeIsMade
-            };
         }
 
         public override GoapState<Eater> TransformContextForSuccessorGoal(GoapState<Eater> actionContext)
@@ -41,7 +33,7 @@ namespace GoapDemo.BreakfastTest
         }
         public override GoapActionArgs ApplyToState(GoapState<Eater> state)
         {
-            var coffeeMadeVar = CoffeeIsMade;
+            var coffeeMadeVar = _coffeeIsMade;
             state.MutateVar(coffeeMadeVar, true);
             return new GoapActionArgs();
         }

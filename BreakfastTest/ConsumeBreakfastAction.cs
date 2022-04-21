@@ -5,36 +5,21 @@ namespace GoapDemo.BreakfastTest
 {
     public class ConsumeBreakfastAction : GoapAction<Eater> 
     {
-        public static GoapVar<bool, Eater> BreakfastIsMade { get; private set; } =
+        [ExplicitVar] private static GoapVar<bool, Eater> _breakfastIsMade =
             BoolVar<Eater>.Construct("BreakfastIsMade", 1f, e => e.Bread.Buttered && e.Bread.Toasted && e.Coffee.Made);
-        public static GoapVar<bool, Eater> HasConsumedBreakfast { get; private set; } =
+        [ExplicitVar] private static GoapVar<bool, Eater> _hasConsumedBreakfast =
             BoolVar<Eater>.Construct("HasEatenBreakfast", 1f, e => e.Hungry == false);
-    
-        private static GoapVar<bool, Eater> _hungry { get; set; } =
+        [SuccessorVar] private static GoapVar<bool, Eater> _hungry =
             BoolVar<Eater>.Construct("Hungry", 1f, e => e.Hungry);
-        private static GoapVar<bool, Eater> _caffeinated { get; set; } =
+        [SuccessorVar] private static GoapVar<bool, Eater> _caffeinated =
             BoolVar<Eater>.Construct("Caffeinated", 1f, e => e.Caffeinated);
         public ConsumeBreakfastAction() : base("ConsumeBreakfast")
         {
         }
 
-        protected override void SetupVars()
-        {
-            ExplicitVars = new List<IGoapAgentVar<Eater>>
-            {
-                BreakfastIsMade,
-                HasConsumedBreakfast
-            };
-            SuccessorVars = new List<IGoapAgentVar<Eater>>
-            {
-                _hungry,
-                _caffeinated
-            };
-        }
-
         public override GoapState<Eater> TransformContextForSuccessorGoal(GoapState<Eater> actionContext)
         {
-            var consumedVar = actionContext.GetVar<bool>(HasConsumedBreakfast.Name);
+            var consumedVar = actionContext.GetVar<bool>(_hasConsumedBreakfast.Name);
             if (consumedVar is GoapFluent<bool, Eater> consumed)
             {
                 GoapState<Eater> initState;
@@ -68,7 +53,7 @@ namespace GoapDemo.BreakfastTest
         }
         public override bool Valid(GoapState<Eater> state)
         {
-            return state.CheckVarMatch(BreakfastIsMade.Name, true);
+            return state.CheckVarMatch(_breakfastIsMade.Name, true);
         }
         public override float Cost(GoapState<Eater> state)
         {
@@ -80,7 +65,7 @@ namespace GoapDemo.BreakfastTest
         }
         public override GoapActionArgs ApplyToState(GoapState<Eater> state)
         {
-            state.MutateVar(HasConsumedBreakfast, true);
+            state.MutateVar(_hasConsumedBreakfast, true);
             return new GoapActionArgs();
         }
     }

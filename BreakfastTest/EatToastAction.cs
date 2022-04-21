@@ -4,18 +4,10 @@ namespace GoapDemo.BreakfastTest
 {
     public class EatToastAction : GoapAction<Eater>
     {
-        public static GoapVar<bool, Eater> _hungry =
+        [ExplicitVar] private static GoapVar<bool, Eater> _hungry =
             BoolVar<Eater>.Construct("Hungry", 1f, e => e.Hungry);
         public EatToastAction() : base("EatToast")
         {
-        }
-
-        protected override void SetupVars()
-        {
-            ExplicitVars = new List<IGoapAgentVar<Eater>>
-            {
-                _hungry
-            };
         }
 
         public override GoapState<Eater> TransformContextForSuccessorGoal(GoapState<Eater> actionContext)

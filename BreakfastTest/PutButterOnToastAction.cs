@@ -4,21 +4,12 @@ namespace GoapDemo.BreakfastTest
 {
     public class PutButterOnToastAction : GoapAction<Eater>
     {
-        public static GoapVar<bool, Eater> BreadIsToasted =
+        [ExplicitVar] private static GoapVar<bool, Eater> _breadIsToasted =
             BoolVar<Eater>.Construct("BreadIsToasted", 1f, e => e.Bread.Toasted);
-        public static GoapVar<bool, Eater> BreadIsButtered =
+        [ExplicitVar] private static GoapVar<bool, Eater> _breadIsButtered =
             BoolVar<Eater>.Construct("BreadIsButtered", 1f, e => e.Bread.Buttered);
         public PutButterOnToastAction() : base("PutButterOnToast")
         {
-        }
-
-        protected override void SetupVars()
-        {
-            ExplicitVars = new List<IGoapAgentVar<Eater>>
-            {
-                BreadIsButtered,
-                BreadIsToasted
-            };
         }
 
         public override GoapState<Eater> TransformContextForSuccessorGoal(GoapState<Eater> actionContext)
@@ -32,7 +23,7 @@ namespace GoapDemo.BreakfastTest
         }
         public override bool Valid(GoapState<Eater> state)
         {
-            return state.CheckVarMatch<bool>(BreadIsToasted.Name, true);
+            return state.CheckVarMatch<bool>(_breadIsToasted.Name, true);
         }
         public override float Cost(GoapState<Eater> state)
         {
@@ -44,7 +35,7 @@ namespace GoapDemo.BreakfastTest
         }
         public override GoapActionArgs ApplyToState(GoapState<Eater> state)
         {
-            state.MutateVar(BreadIsButtered, true);
+            state.MutateVar(_breadIsButtered, true);
             return new GoapActionArgs();
         }
     }

@@ -5,14 +5,14 @@ namespace GoapDemo.BreakfastTest
 {
     public class MakeBreakfastAction : GoapAction<Eater>
     {
-        public static GoapVar<bool, Eater> BreakfastIsMade =
+        [ExplicitVar] private static GoapVar<bool, Eater> _breakfastIsMade =
             BoolVar<Eater>.Construct("BreakfastIsMade", 1f, e => e.Bread.Buttered && e.Bread.Toasted && e.Coffee.Made);
     
-        private static GoapVar<bool, Eater> _breadIsToasted =
+        [SuccessorVar] private static GoapVar<bool, Eater> _breadIsToasted =
             BoolVar<Eater>.Construct("BreadIsToasted", 1f, e => e.Bread.Toasted);
-        private static GoapVar<bool, Eater> _breadIsButtered =
+        [SuccessorVar] private static GoapVar<bool, Eater> _breadIsButtered =
             BoolVar<Eater>.Construct("BreadIsButtered", 1f, e => e.Bread.Buttered);
-        private static GoapVar<bool, Eater> _coffeeIsMade =
+        [SuccessorVar] private static GoapVar<bool, Eater> _coffeeIsMade =
             BoolVar<Eater>.Construct("CoffeeIsMade", 1f, e => e.Coffee.Made);
     
     
@@ -20,23 +20,9 @@ namespace GoapDemo.BreakfastTest
         {
         }
 
-        protected override void SetupVars()
-        {
-            ExplicitVars = new List<IGoapAgentVar<Eater>>
-            {
-                BreakfastIsMade
-            };
-            SuccessorVars = new List<IGoapAgentVar<Eater>>
-            {
-                _breadIsButtered,
-                _breadIsToasted,
-                _coffeeIsMade
-            };
-        }
-
         public override GoapState<Eater> TransformContextForSuccessorGoal(GoapState<Eater> actionContext)
         {
-            if (actionContext.GetVar<bool>(BreakfastIsMade.Name) is GoapFluent<bool, Eater> breakfastMade)
+            if (actionContext.GetVar<bool>(_breakfastIsMade.Name) is GoapFluent<bool, Eater> breakfastMade)
             {
                 GoapState<Eater> initState;
                 if (breakfastMade.Value == false)
@@ -82,7 +68,7 @@ namespace GoapDemo.BreakfastTest
         }
         public override GoapActionArgs ApplyToState(GoapState<Eater> state)
         {
-            state.MutateVar(BreakfastIsMade, true);
+            state.MutateVar(_breakfastIsMade, true);
             return new GoapActionArgs();
         }
     }

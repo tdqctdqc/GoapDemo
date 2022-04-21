@@ -40,4 +40,14 @@ public abstract class GoapGoal<TAgent>
         }
     }
     public abstract GoapState<TAgent> GetInitialState(List<GoapAgent<TAgent>> agents);
+
+    protected GoapState<TAgent> GetInitialStateFirstAgentMethod(List<GoapAgent<TAgent>> agents)
+    {
+        var agent = agents[0];
+        var initialState = new GoapState<TAgent>
+        (
+            Vars.Select(v => v.BranchAgnosticByAgentEntity(agent.Entity)).ToArray()
+        );
+        return initialState;
+    }
 }

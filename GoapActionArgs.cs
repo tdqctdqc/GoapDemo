@@ -17,6 +17,12 @@ public class GoapActionArgs
         if (_vars[name].Value is T t) return _vars[name];
         return null;
     }
+    public T? GetValue<T>(string name) where T : struct
+    {
+        if (_vars.ContainsKey(name) == false) return null;
+        if (_vars[name].Value is T t) return t;
+        return null;
+    }
     public void AddArg(string name, object value)
     {
         _vars.Add(name, new GoapActionArg(name, value));

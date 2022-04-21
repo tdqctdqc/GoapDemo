@@ -5,11 +5,11 @@ using System.Linq;
 
 public class GoapState<TAgent> : IGoapState
 {
-    protected Dictionary<string, IGoapAgentVarInstance<TAgent>> _varNameDic;
+    protected Dictionary<string, IGoapAgentFluent<TAgent>> _varNameDic;
     
-    public GoapState(params IGoapAgentVarInstance<TAgent>[] stateVars)
+    public GoapState(params IGoapAgentFluent<TAgent>[] stateVars)
     {
-        _varNameDic = new Dictionary<string, IGoapAgentVarInstance<TAgent>>();
+        _varNameDic = new Dictionary<string, IGoapAgentFluent<TAgent>>();
         for (int i = 0; i < stateVars.Length; i++)
         {
             var stateVar = stateVars[i];
@@ -38,16 +38,16 @@ public class GoapState<TAgent> : IGoapState
         _varNameDic.Add(newVarInstance.Name, newVarInstance);
     }
 
-    public GoapVarInstance<TValue, TAgent> GetVar<TValue>(string name) where TValue : struct
+    public GoapFluent<TValue, TAgent> GetVar<TValue>(string name) where TValue : struct
     {
-        if (GetVarTypeChecked(name, typeof(TValue)) is GoapVarInstance<TValue, TAgent> v)
+        if (GetVarTypeChecked(name, typeof(TValue)) is GoapFluent<TValue, TAgent> v)
         {
             return v;
         }
 
         return null;
     }
-    private IGoapAgentVarInstance<TAgent> GetVarAgnostic(string name)
+    private IGoapAgentFluent<TAgent> GetVarAgnostic(string name)
     {
         if (_varNameDic.ContainsKey(name))
         {
@@ -55,7 +55,7 @@ public class GoapState<TAgent> : IGoapState
         }
         return null;
     }
-    private IGoapAgentVarInstance<TAgent> GetVarTypeChecked(string name, Type type)
+    private IGoapAgentFluent<TAgent> GetVarTypeChecked(string name, Type type)
     {
         if (_varNameDic.ContainsKey(name))
         {

@@ -1,13 +1,13 @@
-using Godot;
-using System;
-
-public class Coffee 
+namespace GoapDemo.BreakfastTest
 {
-    public bool Made { get; private set; }
-
-    public Coffee()
+    public class Coffee 
     {
-        Made = false;
+        public bool Made { get; private set; }
+
+        public Coffee()
+        {
+            Made = false;
+        }
     }
 }
 

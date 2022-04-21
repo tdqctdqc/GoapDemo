@@ -1,14 +1,14 @@
-using Godot;
-using System;
-
-public class Bread 
+namespace GoapDemo.BreakfastTest
 {
-    public bool Toasted { get; private set; }
-    public bool Buttered { get; private set; }
-
-    public Bread()
+    public class Bread 
     {
-        Toasted = false;
-        Buttered = false;
+        public bool Toasted { get; private set; }
+        public bool Buttered { get; private set; }
+
+        public Bread()
+        {
+            Toasted = false;
+            Buttered = false;
+        }
     }
 }

@@ -1,10 +1,9 @@
-using Godot;
-using System;
-using System.Collections.Generic;
-
-public class EaterAgent : GoapAgent<Eater>
+namespace GoapDemo.BreakfastTest
 {
-    public EaterAgent(Eater entity) : base(entity)
+    public class EaterAgent : GoapAgent<Eater>
     {
+        public EaterAgent(Eater entity) : base(entity)
+        {
+        }
     }
 }

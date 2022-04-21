@@ -3,9 +3,9 @@ using System;
 
 public class BoolVar<TAgent> : GoapVar<bool,TAgent>
 {
-    private BoolVar(string name, Func<TAgent, bool> valueFunc, 
+    protected BoolVar(string name, Func<TAgent, bool> valueFunc, 
         Func<bool, object, float> heuristicFunc,
-        Func<GoapVarInstance<bool, TAgent>, GoapState<TAgent>, bool> satisfiedFunc) 
+        GoapSatisfactionFunc<TAgent, bool> satisfiedFunc) 
             : base(name, valueFunc, heuristicFunc, satisfiedFunc)
     {
     }
@@ -14,9 +14,16 @@ public class BoolVar<TAgent> : GoapVar<bool,TAgent>
     {
         return new BoolVar<TAgent>(name, valueFunc, 
             (a, b) => FlatCostHeuristic(missCost, a, b), 
-            SimpleSatisfied);
+            SimpleSatisfactionFunc);
     }
-
+    public static BoolVar<TAgent> ConstructCustomSatisfiedFunc(string name, float missCost, 
+        Func<TAgent, bool> valueFunc, 
+        GoapSatisfactionFunc<TAgent, bool> satisfiedFunc)
+    {
+        return new BoolVar<TAgent>(name, valueFunc, 
+            (a, b) => FlatCostHeuristic(missCost, a, b), 
+            satisfiedFunc);
+    }
     public static float FlatCostHeuristic(float missHeurCost, bool instance, object comparison)
     {
         if (comparison == null) return missHeurCost; 

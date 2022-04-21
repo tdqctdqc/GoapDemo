@@ -7,7 +7,6 @@ public class GoapActionNode<TAgent>
     public GoapAction<TAgent> Action { get; private set; }
     public GoapPlanNode<TAgent> Parent { get; private set; }
     public GoapActionArgs Args { get; private set; }
-
     public GoapActionNode(GoapAction<TAgent> action, GoapPlanNode<TAgent> parent,
         GoapActionArgs args)
     {
@@ -15,7 +14,6 @@ public class GoapActionNode<TAgent>
         Action = action;
         Parent = parent;
     }
-
     public GoapState<TAgent> GetContext()
     {
         int index = Parent.ActionNodes.IndexOf(this);

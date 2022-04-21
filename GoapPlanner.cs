@@ -13,7 +13,7 @@ public static class GoapPlanner
         goalNode.AccumulateLeaves(actionNodes);
         for (int i = 0; i < actionNodes.Count; i++)
         {
-            var descr = actionNodes[i].Action.Descr(new GoapActionArgs());
+            var descr = actionNodes[i].Action.Descr(actionNodes[i].Args);
             GD.Print(descr);
         }
     }

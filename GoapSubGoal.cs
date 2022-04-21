@@ -14,8 +14,6 @@ public abstract class GoapSubGoal<TAgent>
         TargetState = targetState;
         BuildActions();
     }
-    public float SubordinateCapability(IGoapAgent agent)
-    {
-        return 0f;
-    }
+
+    public abstract float GetAgentCapability(GoapAgent<TAgent> agent);
 }

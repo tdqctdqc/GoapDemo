@@ -1,8 +1,8 @@
-using Godot;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
+namespace GoapDemo.BreakfastTest
+{
 public class DoBreakfastGoal : GoapGoal<Eater>
 {
     private static GoapVar<bool, Eater> _breakfastIsMade =
@@ -37,12 +37,7 @@ public class DoBreakfastGoal : GoapGoal<Eater>
 
     public override GoapState<Eater> GetInitialState(List<GoapAgent<Eater>> agents)
     {
-        var eater = agents[0];
-        var initialState = new GoapState<Eater>
-        (
-            Vars.Select(v => v.BranchAgnosticByAgentEntity(eater.Entity)).ToArray()
-        );
-        return initialState;
+        return GetInitialStateFirstAgentMethod(agents);
     }
 
     private class DoBreakfastSubGoal : GoapSubGoal<Eater>
@@ -59,6 +54,11 @@ public class DoBreakfastGoal : GoapGoal<Eater>
             };
         }
 
+        public override float GetAgentCapability(GoapAgent<Eater> agent)
+        {
+            return 1f;
+        }
+
         public DoBreakfastSubGoal(float diff) : base(GetTargetState(), diff)
         {
         
@@ -67,11 +67,11 @@ public class DoBreakfastGoal : GoapGoal<Eater>
         {
             var targetState = new GoapState<Eater>
             (
-                new GoapVarInstance<bool, Eater>(_hasConsumedBreakfast, true)
+                new GoapFluent<bool, Eater>(_hasConsumedBreakfast, true)
             );
             return targetState;
         }
     }
 }
-
+}
 

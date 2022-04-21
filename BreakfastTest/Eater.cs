@@ -1,18 +1,18 @@
-using Godot;
-using System;
-
-public class Eater 
+namespace GoapDemo.BreakfastTest
 {
-    public bool Hungry { get; private set; }
-    public bool Caffeinated { get; private set; }
-    public Bread Bread { get; private set; }
-    public Coffee Coffee { get; private set; }
-
-    public Eater()
+    public class Eater 
     {
-        Hungry = true;
-        Caffeinated = false;
-        Bread = new Bread();
-        Coffee = new Coffee();
+        public bool Hungry { get; private set; }
+        public bool Caffeinated { get; private set; }
+        public Bread Bread { get; private set; }
+        public Coffee Coffee { get; private set; }
+
+        public Eater()
+        {
+            Hungry = true;
+            Caffeinated = false;
+            Bread = new Bread();
+            Coffee = new Coffee();
+        }
     }
 }

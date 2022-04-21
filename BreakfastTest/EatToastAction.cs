@@ -1,47 +1,48 @@
-using Godot;
-using System;
 using System.Collections.Generic;
 
-public class EatToastAction : GoapAction<Eater>
+namespace GoapDemo.BreakfastTest
 {
-    public static GoapVar<bool, Eater> _hungry =
-        BoolVar<Eater>.Construct("Hungry", 1f, e => e.Hungry);
-    public EatToastAction() : base("EatToast")
+    public class EatToastAction : GoapAction<Eater>
     {
-    }
-
-    protected override void SetupVars()
-    {
-        Vars = new List<IGoapAgentVar<Eater>>
+        public static GoapVar<bool, Eater> _hungry =
+            BoolVar<Eater>.Construct("Hungry", 1f, e => e.Hungry);
+        public EatToastAction() : base("EatToast")
         {
-            _hungry
-        };
-    }
+        }
 
-    public override GoapState<Eater> TransformContextForSuccessorGoal(GoapState<Eater> actionContext)
-    {
-        return null;
-    }
+        protected override void SetupVars()
+        {
+            Vars = new List<IGoapAgentVar<Eater>>
+            {
+                _hungry
+            };
+        }
 
-    public override GoapGoal<Eater> GetSuccessorGoal(GoapActionArgs args)
-    {
-        return null;
-    }
-    public override bool Valid(GoapState<Eater> state)
-    {
-        return true;
-    }
-    public override float Cost(GoapState<Eater> state)
-    {
-        return 1f;
-    }
-    public override string Descr(GoapActionArgs args)
-    {
-        return "Eating toast";
-    }
-    public override GoapActionArgs ApplyToState(GoapState<Eater> state)
-    {
-        state.MutateVar(_hungry, false);
-        return new GoapActionArgs();
+        public override GoapState<Eater> TransformContextForSuccessorGoal(GoapState<Eater> actionContext)
+        {
+            return null;
+        }
+
+        public override GoapGoal<Eater> GetSuccessorGoal(GoapActionArgs args)
+        {
+            return null;
+        }
+        public override bool Valid(GoapState<Eater> state)
+        {
+            return true;
+        }
+        public override float Cost(GoapState<Eater> state)
+        {
+            return 1f;
+        }
+        public override string Descr(GoapActionArgs args)
+        {
+            return "Eating toast";
+        }
+        public override GoapActionArgs ApplyToState(GoapState<Eater> state)
+        {
+            state.MutateVar(_hungry, false);
+            return new GoapActionArgs();
+        }
     }
 }

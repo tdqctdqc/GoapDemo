@@ -8,12 +8,13 @@ public abstract class GoapVar<TValue, TAgent> : IGoapAgentVar<TAgent> where TVal
     public Type ValueType => typeof(TValue);
     public readonly Func<TAgent, TValue> ValueFunc;
     protected Func<TValue, object, float> _heuristicFunc;
-    protected Func<GoapVarInstance<TValue, TAgent>, GoapState<TAgent>, bool> _satisfiedFunc;
-    
+    protected GoapSatisfactionFunc<TAgent, TValue> _satisfiedFunc;
+    public static GoapSatisfactionFunc<TAgent, TValue> SimpleSatisfactionFunc =
+        new GoapSatisfactionFunc<TAgent, TValue>(SimpleSatisfied);
 
     public GoapVar(string name, Func<TAgent, TValue> valueFunc, 
                     Func<TValue, object, float> heuristicFunc,
-                    Func<GoapVarInstance<TValue, TAgent>, GoapState<TAgent>, bool> satisfiedFunc)
+                    GoapSatisfactionFunc<TAgent, TValue> satisfiedFunc)
     {
         _heuristicFunc = heuristicFunc;
         _satisfiedFunc = satisfiedFunc;
@@ -21,29 +22,31 @@ public abstract class GoapVar<TValue, TAgent> : IGoapAgentVar<TAgent> where TVal
         _name = name;
     }
 
-    public bool SatisfiedBy(GoapVarInstance<TValue, TAgent> instance, GoapState<TAgent> state)
+    public bool SatisfiedBy(GoapFluent<TValue, TAgent> instance, GoapState<TAgent> state)
     {
-        return _satisfiedFunc(instance, state);
+        return _satisfiedFunc.Check(instance, state);
     }
-    public float GetHeuristicCost(GoapVarInstance<TValue, TAgent> instance, object comparison)
+    public float GetHeuristicCost(GoapFluent<TValue, TAgent> instance, object comparison)
     {
         return _heuristicFunc(instance.Value, comparison);
     }
-    public GoapVarInstance<TValue, TAgent> Branch(TValue value)
+    public GoapFluent<TValue, TAgent> Branch(TValue value)
     {
-        return new GoapVarInstance<TValue, TAgent>(this, value);
+        return new GoapFluent<TValue, TAgent>(this, value);
     }
-    public GoapVarInstance<TValue, TAgent> Branch(TAgent agent)
+    public GoapFluent<TValue, TAgent> Branch(TAgent agent)
     {
-        return new GoapVarInstance<TValue, TAgent>(this, ValueFunc(agent));
+        return new GoapFluent<TValue, TAgent>(this, ValueFunc(agent));
     }
-    public IGoapAgentVarInstance<TAgent> BranchAgnosticByAgentEntity(TAgent entity)
+    public IGoapAgentFluent<TAgent> BranchAgnosticByAgentEntity(TAgent entity)
     {
         return Branch(entity);
     }
 
-    public static bool SimpleSatisfied(IGoapAgentVarInstance<TAgent> instance, GoapState<TAgent> state)
+    private static bool SimpleSatisfied(IGoapAgentFluent<TAgent> instance, GoapState<TAgent> state)
     {
         return state.CheckVarMatch(instance.Name, instance.GetValue());
     }
+
+    
 }

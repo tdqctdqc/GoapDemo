@@ -1,9 +1,9 @@
 using Godot;
 using System;
 
-public interface IGoapAgentVarInstance<TAgent> : IGoapVarInstance
+public interface IGoapAgentFluent<TAgent> : IGoapFluent
 {
-    float GetHeuristicCost(IGoapAgentVarInstance<TAgent> comparison);
+    float GetHeuristicCost(IGoapAgentFluent<TAgent> comparison);
     float GetHeuristicCost(object comparison);
     string Name { get; }
     Type ValueType { get; }

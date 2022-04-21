@@ -18,7 +18,7 @@ public class GoapSubGoalNode<TAgent>
     public void AddAgent(GoapAgent<TAgent> agent)
     {
         Agents.Add(agent);
-        var capability = SubGoal.SubordinateCapability(agent);
+        var capability = SubGoal.GetAgentCapability(agent);
         DifficultyUnsatisfied = Mathf.Max(0f, DifficultyUnsatisfied - capability);
     }
 }

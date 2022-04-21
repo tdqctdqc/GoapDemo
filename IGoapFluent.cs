@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public interface IGoapVarInstance
+public interface IGoapFluent
 {
     // string Name { get; }
     // Type ValueType { get; }

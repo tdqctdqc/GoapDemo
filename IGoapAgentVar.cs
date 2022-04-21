@@ -3,5 +3,5 @@ using System;
 
 public interface IGoapAgentVar<TAgent> : IGoapVar
 {
-    IGoapAgentVarInstance<TAgent> BranchAgnosticByAgentEntity(TAgent agent);
+    IGoapAgentFluent<TAgent> BranchAgnosticByAgentEntity(TAgent agent);
 }

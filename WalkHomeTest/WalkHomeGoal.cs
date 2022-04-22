@@ -70,15 +70,16 @@ namespace GoapDemo.WalkHomeTest
         }
         private class AtHomeVar : BoolVar<Walker>
         {
-            private static GoapSatisfactionFunc<Walker, bool> _satisfier = GetSatisfier();
+            private static GoapSatisfier<Walker, bool> _atHomeSatisfier = GetSatisfier();
             public AtHomeVar(float missCost) 
                 : base("AtHome", w => w.CurrentPosition == w.HomePosition, 
-                    (a, b) => FlatCostHeuristic(missCost, a, b), _satisfier)
+                    GetFlatCostHeuristic("AtHome", 1f), _atHomeSatisfier)
             {
             }
-            private static GoapSatisfactionFunc<Walker, bool> GetSatisfier()
+
+            private static GoapSatisfier<Walker, bool> GetSatisfier()
             {
-                var satisfier = new GoapSatisfactionFunc<Walker, bool>();
+                var satisfier = new GoapSatisfier<Walker, bool>();
                 satisfier.AddFunc(s =>
                 {
                     var homePos = s.GetVar<Vector2>(_homePosition.Name).Value;

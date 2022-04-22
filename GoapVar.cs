@@ -7,29 +7,29 @@ public abstract class GoapVar<TValue, TAgent> : IGoapAgentVar<TAgent> where TVal
     private readonly string _name;
     public Type ValueType => typeof(TValue);
     public readonly Func<TAgent, TValue> ValueFunc;
-    protected Func<TValue, object, float> _heuristicFunc;
-    protected GoapSatisfactionFunc<TAgent, TValue> _satisfiedFunc;
+    protected GoapHeuristic<TValue, TAgent> _heuristic;
+    protected GoapSatisfier<TAgent, TValue> _satisfier;
 
-    public static GoapSatisfactionFunc<TAgent, TValue> EqualitySatisfier { get; private set; }
+    public static GoapSatisfier<TAgent, TValue> EqualitySatisfier { get; private set; }
         = GetEqualitySatisfier();
 
     public GoapVar(string name, Func<TAgent, TValue> valueFunc, 
-                    Func<TValue, object, float> heuristicFunc,
-                    GoapSatisfactionFunc<TAgent, TValue> satisfiedFunc)
+                    GoapHeuristic<TValue, TAgent> heuristic,
+                    GoapSatisfier<TAgent, TValue> satisfier)
     {
-        _heuristicFunc = heuristicFunc;
-        _satisfiedFunc = satisfiedFunc;
+        _heuristic = heuristic;
+        _satisfier = satisfier;
         ValueFunc = valueFunc;
         _name = name;
     }
 
     public bool SatisfiedBy(GoapFluent<TValue, TAgent> fluent, GoapState<TAgent> state)
     {
-        return _satisfiedFunc.Check(fluent, state);
+        return _satisfier.Check(fluent, state);
     }
-    public float GetHeuristicCost(GoapFluent<TValue, TAgent> instance, object comparison)
+    public float GetHeuristicCost(GoapFluent<TValue, TAgent> fluent, GoapState<TAgent> state)
     {
-        return _heuristicFunc(instance.Value, comparison);
+        return _heuristic.GetHeuristic(fluent.Value, state);
     }
     public GoapFluent<TValue, TAgent> Branch(TValue value)
     {
@@ -44,10 +44,33 @@ public abstract class GoapVar<TValue, TAgent> : IGoapAgentVar<TAgent> where TVal
         return Branch(entity);
     }
 
-    private static GoapSatisfactionFunc<TAgent, TValue> GetEqualitySatisfier()
+    private static GoapSatisfier<TAgent, TValue> GetEqualitySatisfier()
     {
-        var satisfier = new GoapSatisfactionFunc<TAgent, TValue>();
+        var satisfier = new GoapSatisfier<TAgent, TValue>();
         satisfier.AddFunc( (f, s) =>  s.CheckVarMatch(f.Name, f.GetValue()) );
         return satisfier;
+    }
+    public static GoapHeuristic<TValue, TAgent> GetFlatCostHeuristic(string varName, float missHeurCost)
+    {
+        Func<TValue, GoapState<TAgent>, float> heuristicFunc = (value, state) =>
+        {
+            var stateFluent = state.GetVar<TValue>(varName);
+            if (stateFluent == null) return missHeurCost; 
+            if (stateFluent.Value is TValue v == false) return missHeurCost;
+            return v.Equals(value) ? 0f : missHeurCost;
+        };
+        return new GoapHeuristic<TValue, TAgent>(heuristicFunc);
+    }
+    public static GoapHeuristic<TValue, TAgent> GetDistanceHeuristic
+        (string varName, float missHeurCost, float distCost, Func<TValue,TValue,float> distFunc)
+    {
+        Func<TValue, GoapState<TAgent>, float> heuristicFunc = (value, state) =>
+        {
+            var stateFluent = state.GetVar<TValue>(varName);
+            if (stateFluent == null) return missHeurCost; 
+            if (stateFluent.Value is TValue v == false) return missHeurCost;
+            return distFunc(value, stateFluent.Value);
+        };
+        return new GoapHeuristic<TValue, TAgent>(heuristicFunc);
     }
 }

@@ -2,11 +2,11 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public class GoapSatisfactionFunc<TAgent, TValue> where TValue : struct
+public class GoapSatisfier<TAgent, TValue> where TValue : struct
 {
     private List<Func<GoapFluent<TValue, TAgent>, GoapState<TAgent>, bool>> _satisfactionFuncs;
 
-    public GoapSatisfactionFunc()
+    public GoapSatisfier()
     {
         _satisfactionFuncs = new List<Func<GoapFluent<TValue, TAgent>, GoapState<TAgent>, bool>>();
     }

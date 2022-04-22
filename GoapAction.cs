@@ -23,7 +23,6 @@ public abstract class GoapAction<TAgent> : IGoapAction
         CheckSuccessorGoalActions();
     }
     public abstract GoapGoal<TAgent> GetSuccessorGoal(GoapActionArgs args);
-    //public abstract bool Valid(GoapState<TAgent> state);
     public abstract float Cost(GoapState<TAgent> state);
     public abstract string Descr(GoapActionArgs args);
     public abstract GoapActionArgs ApplyToState(GoapState<TAgent> state);
@@ -60,7 +59,7 @@ public abstract class GoapAction<TAgent> : IGoapAction
         action._preReqs = fields.GetFieldsWithAttribute<RequirementAttribute, Func<GoapState<TAgent>, bool>>();
     }
 
-    public bool ValidSpecial(GoapState<TAgent> state)
+    public bool Valid(GoapState<TAgent> state)
     {
         for (int i = 0; i < _preReqs.Count; i++)
         {

@@ -88,7 +88,7 @@ public class GoapState<TAgent> : IGoapState
             
             
             var marginalCost = candVar != null 
-                                ? variable.GetHeuristicCost(candVar.GetValue())
+                                ? variable.GetHeuristicCost(candState)
                                 : Mathf.Inf;
             cost += marginalCost;
         }

@@ -15,7 +15,8 @@ namespace GoapDemo.WalkHomeTest
         [ExplicitVar] private static GoapVar<float, Walker> _strideLength
             = FloatVar<Walker>.ConstructScaleHeuristic("StrideLength", 1f, w => w.StrideLength);
         
-        [ImplicitVar] private static GoapVar<bool, Walker> _atHome = AtHomeVar.Construct();
+        [ImplicitVar] private static GoapVar<bool, Walker> _atHome
+            = new AtHomeVar(1f);
 
         [SubGoal] private static GoapSubGoal<Walker> _subGoal
             = new WalkHomeSubGoal(1f);
@@ -69,28 +70,23 @@ namespace GoapDemo.WalkHomeTest
         }
         private class AtHomeVar : BoolVar<Walker>
         {
-            private static GoapSatisfactionFunc<Walker, bool> _atHomeSatisfied
-                = new GoapSatisfactionFunc<Walker, bool>
-                (
-                    (v, s) =>
-                    {
-                        var homePos = s.GetVar<Vector2>(_homePosition.Name).Value;
-                        var currentPos = s.GetVar<Vector2>(_currentPosition.Name).Value;
-                        return homePos == currentPos;  
-                    }
-                );
-            public static BoolVar<Walker> Construct()
+            private static GoapSatisfactionFunc<Walker, bool> _satisfier = GetSatisfier();
+            public AtHomeVar(float missCost) 
+                : base("AtHome", w => w.CurrentPosition == w.HomePosition, 
+                    (a, b) => FlatCostHeuristic(missCost, a, b), _satisfier)
             {
-                return ConstructCustomSatisfiedFunc("AtHome", 1f, 
-                    w => w.CurrentPosition == w.HomePosition, _atHomeSatisfied);
             }
-
-            private AtHomeVar(string name, Func<Walker, bool> valueFunc, Func<bool, object, float> heuristicFunc, GoapSatisfactionFunc<Walker, bool> satisfiedFunc) : base(name, valueFunc, heuristicFunc, satisfiedFunc)
+            private static GoapSatisfactionFunc<Walker, bool> GetSatisfier()
             {
+                var satisfier = new GoapSatisfactionFunc<Walker, bool>();
+                satisfier.AddFunc(s =>
+                {
+                    var homePos = s.GetVar<Vector2>(_homePosition.Name).Value;
+                    var currentPos = s.GetVar<Vector2>(_currentPosition.Name).Value;
+                    return homePos == currentPos;  
+                });
+                return satisfier;
             }
         }
     }
-
-    
-
 }

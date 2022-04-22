@@ -21,14 +21,6 @@ public abstract class GoapAction<TAgent> : IGoapAction
         SetupVars(this);
         CheckSuccessorGoalActions();
     }
-
-    // public bool CheckReqs(GoapState<TAgent> state)
-    // {
-    //     foreach (var req in _reqs)
-    //     {
-    //         if(req.)
-    //     }
-    // }
     public abstract GoapGoal<TAgent> GetSuccessorGoal(GoapActionArgs args);
     public abstract bool Valid(GoapState<TAgent> state);
     public abstract float Cost(GoapState<TAgent> state);

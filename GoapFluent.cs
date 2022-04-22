@@ -19,10 +19,6 @@ public class GoapFluent<TValue, TAgent> : IGoapAgentFluent<TAgent> where TValue 
         BaseVar = baseVar;
         Value = baseVar.ValueFunc(agent); 
     }
-    public float GetHeuristicCost(IGoapAgentFluent<TAgent> comparison)
-    {
-        return BaseVar.GetHeuristicCost(this, comparison);
-    }
     public float GetHeuristicCost(object comparison)
     {
         return BaseVar.GetHeuristicCost(this, comparison);

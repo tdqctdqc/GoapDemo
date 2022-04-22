@@ -13,7 +13,7 @@ public class Vec2Var<TAgent> : GoapVar<Vector2, TAgent>
     {
         return new Vec2Var<TAgent>(name, valueFunc, 
             (a, b) => ScaledHeuristicCost(distCost, a, b), 
-            SimpleSatisfactionFunc);
+            EqualitySatisfier);
     }
 
     public static float ScaledHeuristicCost(float scale, Vector2 instance, object comparison)

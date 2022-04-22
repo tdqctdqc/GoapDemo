@@ -29,7 +29,7 @@ namespace GoapDemo.WalkHomeTest
 
         public override bool Valid(GoapState<Walker> state)
         {
-            return state.GetVar<bool>(_leftFootForward.Name).Value == true;
+            return state.CheckVarMatch(_leftFootForward.Name, true);
         }
 
         public override float Cost(GoapState<Walker> state)

@@ -14,7 +14,7 @@ public class BoolVar<TAgent> : GoapVar<bool,TAgent>
     {
         return new BoolVar<TAgent>(name, valueFunc, 
             (a, b) => FlatCostHeuristic(missCost, a, b), 
-            SimpleSatisfactionFunc);
+            EqualitySatisfier);
     }
     public static BoolVar<TAgent> ConstructCustomSatisfiedFunc(string name, float missCost, 
         Func<TAgent, bool> valueFunc, 

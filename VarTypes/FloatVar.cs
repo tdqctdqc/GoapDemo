@@ -13,7 +13,7 @@ public class FloatVar<TAgent> : GoapVar<float, TAgent>
     {
         return new FloatVar<TAgent>(name, valueFunc, 
             (a, b) => ScaledHeuristicCost(distCost, a, b), 
-            SimpleSatisfactionFunc);
+            EqualitySatisfier);
     }
 
     private static float ScaledHeuristicCost(float weight, float instance, object comparison)

@@ -3,7 +3,6 @@ using System;
 
 public interface IGoapAgentFluent<TAgent> : IGoapFluent
 {
-    float GetHeuristicCost(IGoapAgentFluent<TAgent> comparison);
     float GetHeuristicCost(object comparison);
     string Name { get; }
     Type ValueType { get; }

@@ -9,8 +9,9 @@ public abstract class GoapVar<TValue, TAgent> : IGoapAgentVar<TAgent> where TVal
     public readonly Func<TAgent, TValue> ValueFunc;
     protected Func<TValue, object, float> _heuristicFunc;
     protected GoapSatisfactionFunc<TAgent, TValue> _satisfiedFunc;
-    public static GoapSatisfactionFunc<TAgent, TValue> SimpleSatisfactionFunc =
-        new GoapSatisfactionFunc<TAgent, TValue>(SimpleSatisfied);
+
+    public static GoapSatisfactionFunc<TAgent, TValue> EqualitySatisfier { get; private set; }
+        = GetEqualitySatisfier();
 
     public GoapVar(string name, Func<TAgent, TValue> valueFunc, 
                     Func<TValue, object, float> heuristicFunc,
@@ -43,10 +44,10 @@ public abstract class GoapVar<TValue, TAgent> : IGoapAgentVar<TAgent> where TVal
         return Branch(entity);
     }
 
-    private static bool SimpleSatisfied(IGoapAgentFluent<TAgent> instance, GoapState<TAgent> state)
+    private static GoapSatisfactionFunc<TAgent, TValue> GetEqualitySatisfier()
     {
-        return state.CheckVarMatch(instance.Name, instance.GetValue());
+        var satisfier = new GoapSatisfactionFunc<TAgent, TValue>();
+        satisfier.AddFunc( (f, s) =>  s.CheckVarMatch(f.Name, f.GetValue()) );
+        return satisfier;
     }
-
-    
 }

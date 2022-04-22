@@ -14,6 +14,9 @@ namespace GoapDemo.WalkHomeTest
             = BoolVar<Walker>.Construct("LeftFootForward", 1f, w => w.LeftFootForward);
         [ExplicitVar] private static GoapVar<float, Walker> _strideLength
             = FloatVar<Walker>.ConstructScaleHeuristic("StrideLength", 1f, w => w.StrideLength);
+        
+        [Requirement] private static Func<GoapState<Walker>, bool> _leftFootBackFunc 
+            = s => s.CheckVarMatch(_leftFootForward.Name, false);
         public LeftStepAction() : base("LeftStep")
         {
         }
@@ -25,10 +28,6 @@ namespace GoapDemo.WalkHomeTest
         public override GoapGoal<Walker> GetSuccessorGoal(GoapActionArgs args)
         {
             return null;
-        }
-        public override bool Valid(GoapState<Walker> state)
-        {
-            return state.CheckVarMatch(_leftFootForward.Name, false);
         }
         public override float Cost(GoapState<Walker> state)
         {

@@ -41,7 +41,7 @@ public static class GoapPlanner
             openPlans.Remove(current);
             planIter++;
             var planNeighbors = subGoal.Actions
-                .Where(a => a.Valid(current.EndState))
+                .Where(a => a.ValidSpecial(current.EndState))
                 .Select(a => current.ExtendPlan(a));
             openPlans.AddRange(planNeighbors);
             if (openPlans.Count == 0) break;

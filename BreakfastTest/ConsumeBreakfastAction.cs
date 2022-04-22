@@ -5,14 +5,17 @@ namespace GoapDemo.BreakfastTest
 {
     public class ConsumeBreakfastAction : GoapAction<Eater> 
     {
-        [ExplicitVar] private static GoapVar<bool, Eater> _breakfastIsMade =
-            BoolVar<Eater>.Construct("BreakfastIsMade", 1f, e => e.Bread.Buttered && e.Bread.Toasted && e.Coffee.Made);
-        [ExplicitVar] private static GoapVar<bool, Eater> _hasConsumedBreakfast =
-            BoolVar<Eater>.Construct("HasEatenBreakfast", 1f, e => e.Hungry == false);
-        [SuccessorVar] private static GoapVar<bool, Eater> _hungry =
-            BoolVar<Eater>.Construct("Hungry", 1f, e => e.Hungry);
-        [SuccessorVar] private static GoapVar<bool, Eater> _caffeinated =
-            BoolVar<Eater>.Construct("Caffeinated", 1f, e => e.Caffeinated);
+        [ExplicitVar] private static GoapVar<bool, Eater> _breakfastIsMade 
+            = BoolVar<Eater>.Construct("BreakfastIsMade", 1f, e => e.Bread.Buttered && e.Bread.Toasted && e.Coffee.Made);
+        [ExplicitVar] private static GoapVar<bool, Eater> _hasConsumedBreakfast 
+            = BoolVar<Eater>.Construct("HasEatenBreakfast", 1f, e => e.Hungry == false);
+        [SuccessorVar] private static GoapVar<bool, Eater> _hungry 
+            = BoolVar<Eater>.Construct("Hungry", 1f, e => e.Hungry);
+        [SuccessorVar] private static GoapVar<bool, Eater> _caffeinated 
+            = BoolVar<Eater>.Construct("Caffeinated", 1f, e => e.Caffeinated);
+        
+        [Requirement] private static Func<GoapState<Eater>, bool> _req
+            = s => s.CheckVarMatch(_breakfastIsMade.Name, true);
         public ConsumeBreakfastAction() : base("ConsumeBreakfast")
         {
         }
@@ -50,10 +53,6 @@ namespace GoapDemo.BreakfastTest
         public override GoapGoal<Eater> GetSuccessorGoal(GoapActionArgs args)
         {
             return new ConsumeBreakfastGoal();
-        }
-        public override bool Valid(GoapState<Eater> state)
-        {
-            return state.CheckVarMatch(_breakfastIsMade.Name, true);
         }
         public override float Cost(GoapState<Eater> state)
         {

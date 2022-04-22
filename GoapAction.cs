@@ -7,8 +7,8 @@ using System.Linq;
 public abstract class GoapAction<TAgent> : IGoapAction
 {
     public string Name { get; private set; }
-    public IReadOnlyList<IGoapAgentVar<TAgent>> Reqs => _reqs;
-    private List<IGoapAgentVar<TAgent>> _reqs;
+    public IReadOnlyList<Func<GoapState<TAgent>, bool>> PreReqs => _preReqs;
+    private List<Func<GoapState<TAgent>, bool>> _preReqs;
     public abstract GoapState<TAgent> TransformContextForSuccessorGoal(GoapState<TAgent> actionContext);
     public List<IGoapAgentVar<TAgent>> ExplicitVars => _explicitVars;
     private List<IGoapAgentVar<TAgent>> _explicitVars;
@@ -18,11 +18,12 @@ public abstract class GoapAction<TAgent> : IGoapAction
     protected GoapAction(string name)
     {
         Name = name;
+        SetupReqs(this);
         SetupVars(this);
         CheckSuccessorGoalActions();
     }
     public abstract GoapGoal<TAgent> GetSuccessorGoal(GoapActionArgs args);
-    public abstract bool Valid(GoapState<TAgent> state);
+    //public abstract bool Valid(GoapState<TAgent> state);
     public abstract float Cost(GoapState<TAgent> state);
     public abstract string Descr(GoapActionArgs args);
     public abstract GoapActionArgs ApplyToState(GoapState<TAgent> state);
@@ -53,8 +54,19 @@ public abstract class GoapAction<TAgent> : IGoapAction
 
     private static void SetupReqs(GoapAction<TAgent> action)
     {
+        action._preReqs = new List<Func<GoapState<TAgent>, bool>>();
         var actionType = action.GetType();
         var fields = actionType.GetFields(BindingFlags.NonPublic | BindingFlags.Static);
-        action._reqs = fields.GetFieldsWithAttribute<RequirementAttribute, IGoapAgentVar<TAgent>>();
+        action._preReqs = fields.GetFieldsWithAttribute<RequirementAttribute, Func<GoapState<TAgent>, bool>>();
+    }
+
+    public bool ValidSpecial(GoapState<TAgent> state)
+    {
+        for (int i = 0; i < _preReqs.Count; i++)
+        {
+            if (_preReqs[i](state) == false) return false;
+        }
+
+        return true;
     }
 }

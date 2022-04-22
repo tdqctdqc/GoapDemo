@@ -10,19 +10,13 @@ namespace GoapDemo.BreakfastTest
         public DrinkCoffeeAction() : base("DrinkCoffee")
         {
         }
-
         public override GoapState<Eater> TransformContextForSuccessorGoal(GoapState<Eater> actionContext)
         {
             return null;
         }
-
         public override GoapGoal<Eater> GetSuccessorGoal(GoapActionArgs args)
         {
             return null;
-        }
-        public override bool Valid(GoapState<Eater> state)
-        {
-            return true; 
         }
         public override float Cost(GoapState<Eater> state)
         {

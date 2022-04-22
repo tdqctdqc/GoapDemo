@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System;
 
 namespace GoapDemo.BreakfastTest
 {
@@ -6,6 +7,7 @@ namespace GoapDemo.BreakfastTest
     {
         [ExplicitVar] private static GoapVar<bool, Eater> _breadIsToasted =
             BoolVar<Eater>.Construct("BreadIsToasted", 1f, e => e.Bread.Toasted);
+
         public ToastBreadAction() : base("PutBreadInToaster")
         {
         }
@@ -18,10 +20,6 @@ namespace GoapDemo.BreakfastTest
         public override GoapGoal<Eater> GetSuccessorGoal(GoapActionArgs args)
         {
             return null;
-        }
-        public override bool Valid(GoapState<Eater> state)
-        {
-            return true; 
         }
         public override float Cost(GoapState<Eater> state)
         {

@@ -53,10 +53,6 @@ namespace GoapDemo.BreakfastTest
         {
             return new MakeBreakfastGoal();
         }
-        public override bool Valid(GoapState<Eater> state)
-        {
-            return true;
-        }
 
         public override float Cost(GoapState<Eater> state)
         {

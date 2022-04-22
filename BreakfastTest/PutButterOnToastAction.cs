@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace GoapDemo.BreakfastTest
@@ -8,6 +9,9 @@ namespace GoapDemo.BreakfastTest
             BoolVar<Eater>.Construct("BreadIsToasted", 1f, e => e.Bread.Toasted);
         [ExplicitVar] private static GoapVar<bool, Eater> _breadIsButtered =
             BoolVar<Eater>.Construct("BreadIsButtered", 1f, e => e.Bread.Buttered);
+        
+        [Requirement] private static Func<GoapState<Eater>, bool> _breadToastedReq 
+            = s => s.CheckVarMatch<bool>(_breadIsToasted.Name, true);
         public PutButterOnToastAction() : base("PutButterOnToast")
         {
         }
@@ -20,10 +24,6 @@ namespace GoapDemo.BreakfastTest
         public override GoapGoal<Eater> GetSuccessorGoal(GoapActionArgs args)
         {
             return null;
-        }
-        public override bool Valid(GoapState<Eater> state)
-        {
-            return state.CheckVarMatch<bool>(_breadIsToasted.Name, true);
         }
         public override float Cost(GoapState<Eater> state)
         {

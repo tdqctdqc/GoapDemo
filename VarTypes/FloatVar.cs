@@ -8,7 +8,7 @@ public class FloatVar<TAgent> : GoapVar<float, TAgent>
         GoapSatisfier<TAgent, float> satisfier) : base(name, valueFunc, heuristic, satisfier)
     {
     }
-    public static FloatVar<TAgent> ConstructScaleHeuristic(string name, float distCost, 
+    public static FloatVar<TAgent> ConstructDistanceHeuristic(string name, float distCost, 
         Func<TAgent, float> valueFunc)
     {
         return new FloatVar<TAgent>(name, valueFunc, 

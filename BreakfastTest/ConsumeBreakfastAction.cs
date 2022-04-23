@@ -6,13 +6,13 @@ namespace GoapDemo.BreakfastTest
     public class ConsumeBreakfastAction : GoapAction<Eater> 
     {
         [ExplicitVar] private static GoapVar<bool, Eater> _breakfastIsMade 
-            = BoolVar<Eater>.Construct("BreakfastIsMade", 1f, e => e.Bread.Buttered && e.Bread.Toasted && e.Coffee.Made);
+            = BoolVar<Eater>.ConstructEqualityHeuristic("BreakfastIsMade", 1f, e => e.Bread.Buttered && e.Bread.Toasted && e.Coffee.Made);
         [ExplicitVar] private static GoapVar<bool, Eater> _hasConsumedBreakfast 
-            = BoolVar<Eater>.Construct("HasEatenBreakfast", 1f, e => e.Hungry == false);
+            = BoolVar<Eater>.ConstructEqualityHeuristic("HasEatenBreakfast", 1f, e => e.Hungry == false);
         [SuccessorVar] private static GoapVar<bool, Eater> _hungry 
-            = BoolVar<Eater>.Construct("Hungry", 1f, e => e.Hungry);
+            = BoolVar<Eater>.ConstructEqualityHeuristic("Hungry", 1f, e => e.Hungry);
         [SuccessorVar] private static GoapVar<bool, Eater> _caffeinated 
-            = BoolVar<Eater>.Construct("Caffeinated", 1f, e => e.Caffeinated);
+            = BoolVar<Eater>.ConstructEqualityHeuristic("Caffeinated", 1f, e => e.Caffeinated);
         
         [Requirement] private static Func<GoapState<Eater>, bool> _req
             = s => s.CheckVarMatch(_breakfastIsMade.Name, true);
@@ -64,7 +64,7 @@ namespace GoapDemo.BreakfastTest
         }
         public override GoapActionArgs ApplyToState(GoapState<Eater> state)
         {
-            state.MutateVar(_hasConsumedBreakfast, true);
+            state.MutateFluent(_hasConsumedBreakfast, true);
             return new GoapActionArgs();
         }
     }

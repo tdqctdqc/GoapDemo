@@ -5,15 +5,15 @@ using System.Linq;
 
 public class GoapState<TAgent> : IGoapState
 {
-    protected Dictionary<string, IGoapAgentFluent<TAgent>> _varNameDic;
+    protected Dictionary<string, IGoapAgentFluent<TAgent>> _fluentNameDic;
     
     public GoapState(params IGoapAgentFluent<TAgent>[] stateVars)
     {
-        _varNameDic = new Dictionary<string, IGoapAgentFluent<TAgent>>();
+        _fluentNameDic = new Dictionary<string, IGoapAgentFluent<TAgent>>();
         for (int i = 0; i < stateVars.Length; i++)
         {
             var stateVar = stateVars[i];
-            _varNameDic.Add(stateVar.Name, stateVar);
+            _fluentNameDic.Add(stateVar.Name, stateVar);
         }
     }
 
@@ -30,12 +30,12 @@ public class GoapState<TAgent> : IGoapState
         args = action.ApplyToState(newState);
         return newState;
     }
-    public void MutateVar<TValue>(GoapVar<TValue, TAgent> varToMutate, TValue newValue) where TValue : struct
+    public void MutateFluent<TValue>(GoapVar<TValue, TAgent> varToMutate, TValue newValue) where TValue : struct
     {
         var newVarInstance = varToMutate.Branch(newValue);
-        if(_varNameDic.ContainsKey(varToMutate.Name))
-            _varNameDic.Remove(varToMutate.Name);
-        _varNameDic.Add(newVarInstance.Name, newVarInstance);
+        if(_fluentNameDic.ContainsKey(varToMutate.Name))
+            _fluentNameDic.Remove(varToMutate.Name);
+        _fluentNameDic.Add(newVarInstance.Name, newVarInstance);
     }
 
     public GoapFluent<TValue, TAgent> GetVar<TValue>(string name) where TValue : struct
@@ -49,19 +49,19 @@ public class GoapState<TAgent> : IGoapState
     }
     private IGoapAgentFluent<TAgent> GetVarAgnostic(string name)
     {
-        if (_varNameDic.ContainsKey(name))
+        if (_fluentNameDic.ContainsKey(name))
         {
-            return _varNameDic[name];
+            return _fluentNameDic[name];
         }
         return null;
     }
     private IGoapAgentFluent<TAgent> GetVarTypeChecked(string name, Type type)
     {
-        if (_varNameDic.ContainsKey(name))
+        if (_fluentNameDic.ContainsKey(name))
         {
-            if (_varNameDic[name].ValueType == type)
+            if (_fluentNameDic[name].ValueType == type)
             {
-                return _varNameDic[name];
+                return _fluentNameDic[name];
             }
         }
         return null;
@@ -69,11 +69,10 @@ public class GoapState<TAgent> : IGoapState
     
     public bool SatisfiedBy(GoapState<TAgent> candidateState)
     {
-        foreach (var entry in _varNameDic)
+        foreach (var entry in _fluentNameDic)
         {
-            var variable = entry.Value;
-            var typedVar = GetVarTypeChecked(variable.Name, variable.ValueType);
-            if (typedVar.SatisfiedBy(candidateState) == false) return false;
+            var fluent = entry.Value;
+            if (fluent.SatisfiedBy(candidateState) == false) return false;
         }
         return true; 
     }
@@ -81,31 +80,25 @@ public class GoapState<TAgent> : IGoapState
     public float GetHeuristicDistance(GoapState<TAgent> candState)
     {
         var cost = 0f;
-        foreach (var entry in _varNameDic)
+        foreach (var entry in _fluentNameDic)
         {
-            var variable = entry.Value;
-            var candVar = candState.GetVarTypeChecked(variable.Name, variable.ValueType);
-            
-            
-            var marginalCost = candVar != null 
-                                ? variable.GetHeuristicCost(candState)
-                                : Mathf.Inf;
+            var fluent = entry.Value;
+            var marginalCost = fluent.GetHeuristicCost(candState);
             cost += marginalCost;
         }
         return cost; 
     }
     public GoapState<TAgent> Clone()
     {
-        return new GoapState<TAgent>(_varNameDic.Values.ToArray());
+        return new GoapState<TAgent>(_fluentNameDic.Values.ToArray());
     }
 
     public void PrintState()
     {
-        foreach (var entry in _varNameDic)
+        foreach (var entry in _fluentNameDic)
         {
             var variable = entry.Value;
             GD.Print(variable.Name + " " + variable.GetValue());
         }
     }
-
 }

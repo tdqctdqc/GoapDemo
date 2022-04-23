@@ -9,7 +9,10 @@ public class GoapHeuristic<TValue, TAgent> where TValue : struct
     {
         _heuristicFunc = heuristicFunc;
     }
-
+    public GoapHeuristic(Func<GoapState<TAgent>, float> heuristicFunc)
+    {
+        _heuristicFunc = (v, s) => heuristicFunc(s);
+    }
     public float GetHeuristic(TValue value, GoapState<TAgent> state)
     {
         return _heuristicFunc(value, state);

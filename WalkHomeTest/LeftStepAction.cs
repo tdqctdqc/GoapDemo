@@ -7,13 +7,13 @@ namespace GoapDemo.WalkHomeTest
     public class LeftStepAction : GoapAction<Walker>
     {
         [ExplicitVar] private static GoapVar<Vector2, Walker> _currentPosition
-            = Vec2Var<Walker>.ConstructScaledHeuristic("CurrentPosition", 1f, w => w.CurrentPosition);
+            = Vec2Var<Walker>.ConstructDistanceHeuristic("CurrentPosition", 1f, w => w.CurrentPosition);
         [ExplicitVar] private static GoapVar<Vector2, Walker> _homePosition
-            = Vec2Var<Walker>.ConstructScaledHeuristic("HomePosition", 1f, w => w.HomePosition);
+            = Vec2Var<Walker>.ConstructDistanceHeuristic("HomePosition", 1f, w => w.HomePosition);
         [ExplicitVar] private static GoapVar<bool, Walker> _leftFootForward
-            = BoolVar<Walker>.Construct("LeftFootForward", 1f, w => w.LeftFootForward);
+            = BoolVar<Walker>.ConstructEqualityHeuristic("LeftFootForward", 1f, w => w.LeftFootForward);
         [ExplicitVar] private static GoapVar<float, Walker> _strideLength
-            = FloatVar<Walker>.ConstructScaleHeuristic("StrideLength", 1f, w => w.StrideLength);
+            = FloatVar<Walker>.ConstructDistanceHeuristic("StrideLength", 1f, w => w.StrideLength);
         
         [Requirement] private static Func<GoapState<Walker>, bool> _leftFootBackFunc 
             = s => s.CheckVarMatch(_leftFootForward.Name, false);
@@ -46,8 +46,8 @@ namespace GoapDemo.WalkHomeTest
             var strideLength = state.GetVar<float>(_strideLength.Name).Value;
             float effectiveStrideLength = Mathf.Min(strideLength, currentPos.DistanceTo(homePos));
             Vector2 newPos = currentPos + (homePos - currentPos).Normalized() * effectiveStrideLength;
-            state.MutateVar(_currentPosition, newPos);
-            state.MutateVar(_leftFootForward, true);
+            state.MutateFluent(_currentPosition, newPos);
+            state.MutateFluent(_leftFootForward, true);
 
             var args = new GoapActionArgs();
             args.AddArg("From", currentPos);

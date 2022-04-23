@@ -6,7 +6,7 @@ using System.Reflection;
 
 public static class ReflectionExtensions 
 {
-    public static List<TField> GetFieldsWithAttribute<TAttribute, TField>(this IEnumerable<FieldInfo> varFields)
+    public static List<TField> GetValuesForFieldsWithAttribute<TAttribute, TField>(this IEnumerable<FieldInfo> varFields)
         where TAttribute : System.Attribute
     {
         return varFields
@@ -14,5 +14,13 @@ public static class ReflectionExtensions
             .Select(
                 f => (TField)f.GetValue(null)  )
             .ToList();
+    }
+
+    public static FieldInfo[] GetAllFields(this Type type)
+    {
+        return type.GetFields(BindingFlags.Instance 
+                              | BindingFlags.Static 
+                              | BindingFlags.Public 
+                              | BindingFlags.NonPublic);
     }
 }

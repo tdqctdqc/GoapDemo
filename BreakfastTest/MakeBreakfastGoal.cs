@@ -6,11 +6,11 @@ namespace GoapDemo.BreakfastTest
     public class MakeBreakfastGoal : GoapGoal<Eater>
     {
         [ExplicitVar] private static GoapVar<bool, Eater> _breadIsToasted 
-            = BoolVar<Eater>.Construct("BreadIsToasted", 1f, e => e.Bread.Toasted);
+            = BoolVar<Eater>.ConstructEqualityHeuristic("BreadIsToasted", 1f, e => e.Bread.Toasted);
         [ExplicitVar] private static GoapVar<bool, Eater> _breadIsButtered 
-            = BoolVar<Eater>.Construct("BreadIsButtered", 1f, e => e.Bread.Buttered);
+            = BoolVar<Eater>.ConstructEqualityHeuristic("BreadIsButtered", 1f, e => e.Bread.Buttered);
         [ExplicitVar] private static GoapVar<bool, Eater> _coffeeIsMade 
-            = BoolVar<Eater>.Construct("CoffeeIsMade", 1f, e => e.Coffee.Made);
+            = BoolVar<Eater>.ConstructEqualityHeuristic("CoffeeIsMade", 1f, e => e.Coffee.Made);
 
         [SubGoal] private static GoapSubGoal<Eater> _makeToastSubGoal
             = new MakeToastSubGoal(1f);
@@ -32,16 +32,11 @@ namespace GoapDemo.BreakfastTest
 
         private class MakeToastSubGoal : GoapSubGoal<Eater>
         {
-            public override List<GoapAction<Eater>> Actions => _actions;
-            private static List<GoapAction<Eater>> _actions;
-            protected override void BuildActions()
-            {
-                _actions = new List<GoapAction<Eater>>()
-                {
-                    new ToastBreadAction(),
-                    new PutButterOnToastAction()
-                };
-            }
+            [AvailableAction] private static GoapAction<Eater> _toastBreadAction
+                = new ToastBreadAction();
+
+            [AvailableAction] private static GoapAction<Eater> _butterToastAction
+                = new PutButterOnToastAction();
 
             public override float GetAgentCapability(GoapAgent<Eater> agent)
             {
@@ -63,15 +58,8 @@ namespace GoapDemo.BreakfastTest
         }
         private class MakeCoffeeSubGoal : GoapSubGoal<Eater>
         {
-            public override List<GoapAction<Eater>> Actions => _actions;
-            private static List<GoapAction<Eater>> _actions;
-            protected override void BuildActions()
-            {
-                _actions = new List<GoapAction<Eater>>()
-                {
-                    new MakeCoffeeAction()
-                };
-            }
+            [AvailableAction] private static GoapAction<Eater> _makeCoffeeAction
+                = new MakeCoffeeAction();
 
             public override float GetAgentCapability(GoapAgent<Eater> agent)
             {

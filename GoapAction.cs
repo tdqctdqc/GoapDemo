@@ -9,10 +9,8 @@ public abstract class GoapAction<TAgent> : IGoapAction
     public string Name { get; private set; }
     public IReadOnlyList<Func<GoapState<TAgent>, bool>> PreReqs => _preReqs;
     private List<Func<GoapState<TAgent>, bool>> _preReqs;
-    public abstract GoapState<TAgent> TransformContextForSuccessorGoal(GoapState<TAgent> actionContext);
     public List<IGoapAgentVar<TAgent>> ExplicitVars => _explicitVars;
     private List<IGoapAgentVar<TAgent>> _explicitVars;
-
     public List<IGoapAgentVar<TAgent>> SuccessorVars => _successorVars;
     private List<IGoapAgentVar<TAgent>> _successorVars;
     protected GoapAction(string name)
@@ -25,6 +23,7 @@ public abstract class GoapAction<TAgent> : IGoapAction
     public abstract GoapGoal<TAgent> GetSuccessorGoal(GoapActionArgs args);
     public abstract float Cost(GoapState<TAgent> state);
     public abstract string Descr(GoapActionArgs args);
+    public abstract GoapState<TAgent> TransformContextForSuccessorGoal(GoapState<TAgent> actionContext);
     public abstract GoapActionArgs ApplyToState(GoapState<TAgent> state);
     private void CheckSuccessorGoalActions()
     {
@@ -46,9 +45,9 @@ public abstract class GoapAction<TAgent> : IGoapAction
     private static void SetupVars(GoapAction<TAgent> action)
     {
         var actionType = action.GetType();
-        var fields = actionType.GetFields(BindingFlags.NonPublic | BindingFlags.Static);
-        action._explicitVars = fields.GetFieldsWithAttribute<ExplicitVarAttribute, IGoapAgentVar<TAgent>>();
-        action._successorVars = fields.GetFieldsWithAttribute<SuccessorVarAttribute, IGoapAgentVar<TAgent>>();
+        var fields = actionType.GetAllFields();
+        action._explicitVars = fields.GetValuesForFieldsWithAttribute<ExplicitVarAttribute, IGoapAgentVar<TAgent>>();
+        action._successorVars = fields.GetValuesForFieldsWithAttribute<SuccessorVarAttribute, IGoapAgentVar<TAgent>>();
     }
 
     private static void SetupReqs(GoapAction<TAgent> action)
@@ -56,7 +55,7 @@ public abstract class GoapAction<TAgent> : IGoapAction
         action._preReqs = new List<Func<GoapState<TAgent>, bool>>();
         var actionType = action.GetType();
         var fields = actionType.GetFields(BindingFlags.NonPublic | BindingFlags.Static);
-        action._preReqs = fields.GetFieldsWithAttribute<RequirementAttribute, Func<GoapState<TAgent>, bool>>();
+        action._preReqs = fields.GetValuesForFieldsWithAttribute<RequirementAttribute, Func<GoapState<TAgent>, bool>>();
     }
 
     public bool Valid(GoapState<TAgent> state)

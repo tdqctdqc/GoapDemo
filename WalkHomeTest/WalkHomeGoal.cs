@@ -7,16 +7,16 @@ namespace GoapDemo.WalkHomeTest
     public class WalkHomeGoal : GoapGoal<Walker>
     {
         [ExplicitVar] private static GoapVar<Vector2, Walker> _currentPosition
-            = Vec2Var<Walker>.ConstructScaledHeuristic("CurrentPosition", 1f, w => w.CurrentPosition);
+            = Vec2Var<Walker>.ConstructDistanceHeuristic("CurrentPosition", 1f, w => w.CurrentPosition);
         [ExplicitVar] private static GoapVar<Vector2, Walker> _homePosition
-            = Vec2Var<Walker>.ConstructScaledHeuristic("HomePosition", 1f, w => w.HomePosition);
+            = Vec2Var<Walker>.ConstructDistanceHeuristic("HomePosition", 1f, w => w.HomePosition);
         [ExplicitVar] private static GoapVar<bool, Walker> _leftFootForward
-            = BoolVar<Walker>.Construct("LeftFootForward", 1f, w => w.LeftFootForward);
+            = BoolVar<Walker>.ConstructEqualityHeuristic("LeftFootForward", 1f, w => w.LeftFootForward);
         [ExplicitVar] private static GoapVar<float, Walker> _strideLength
-            = FloatVar<Walker>.ConstructScaleHeuristic("StrideLength", 1f, w => w.StrideLength);
+            = FloatVar<Walker>.ConstructDistanceHeuristic("StrideLength", 1f, w => w.StrideLength);
         
         [ImplicitVar] private static GoapVar<bool, Walker> _atHome
-            = new AtHomeVar(1f);
+            = new AtHomeVar();
 
         [SubGoal] private static GoapSubGoal<Walker> _subGoal
             = new WalkHomeSubGoal(1f);
@@ -38,21 +38,14 @@ namespace GoapDemo.WalkHomeTest
 
         private class WalkHomeSubGoal : GoapSubGoal<Walker>
         {
-        
+            [AvailableAction] private static GoapAction<Walker> _leftStepAction
+                = new LeftStepAction();
+            [AvailableAction] private static GoapAction<Walker> _rightStepAction
+                = new RightStepAction();
             public WalkHomeSubGoal(float difficulty) : base(GetTargetState(), difficulty)
             {
             }
 
-            public override List<GoapAction<Walker>> Actions => _actions;
-            private List<GoapAction<Walker>> _actions;
-            protected override void BuildActions()
-            {
-                _actions = new List<GoapAction<Walker>>
-                {
-                    new LeftStepAction(),
-                    new RightStepAction()
-                };
-            }
 
             public override float GetAgentCapability(GoapAgent<Walker> agent)
             {
@@ -70,14 +63,25 @@ namespace GoapDemo.WalkHomeTest
         }
         private class AtHomeVar : BoolVar<Walker>
         {
-            private static GoapSatisfier<Walker, bool> _atHomeSatisfier = GetSatisfier();
-            public AtHomeVar(float missCost) 
+            private static GoapSatisfier<Walker, bool> _atHomeSatisfier = GetAtHomeSatisfier();
+            private static GoapHeuristic<bool, Walker> _atHomeHeuristic = GetAtHomeHeuristic(1f);
+            public AtHomeVar() 
                 : base("AtHome", w => w.CurrentPosition == w.HomePosition, 
-                    GetFlatCostHeuristic("AtHome", 1f), _atHomeSatisfier)
+                    _atHomeHeuristic, _atHomeSatisfier)
             {
             }
-
-            private static GoapSatisfier<Walker, bool> GetSatisfier()
+            private static GoapHeuristic<bool, Walker> GetAtHomeHeuristic(float distCost)
+            {
+                Func<GoapState<Walker>, float> heuristicFunc = s =>
+                {
+                    var homePos = s.GetVar<Vector2>(_homePosition.Name).Value;
+                    var currentPos = s.GetVar<Vector2>(_currentPosition.Name).Value;
+                    return homePos.DistanceTo(currentPos) * distCost;  
+                };
+                var heuristic = new GoapHeuristic<bool, Walker>(heuristicFunc);
+                return heuristic;
+            }
+            private static GoapSatisfier<Walker, bool> GetAtHomeSatisfier()
             {
                 var satisfier = new GoapSatisfier<Walker, bool>();
                 satisfier.AddFunc(s =>

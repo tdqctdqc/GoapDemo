@@ -5,7 +5,7 @@ namespace GoapDemo.BreakfastTest
     public class DrinkCoffeeAction : GoapAction<Eater>
     {
         [ExplicitVar] private static GoapVar<bool, Eater> _caffeinated =
-            BoolVar<Eater>.Construct("Caffeinated", 1f, e => e.Caffeinated);
+            BoolVar<Eater>.ConstructEqualityHeuristic("Caffeinated", 1f, e => e.Caffeinated);
     
         public DrinkCoffeeAction() : base("DrinkCoffee")
         {
@@ -28,7 +28,7 @@ namespace GoapDemo.BreakfastTest
         }
         public override GoapActionArgs ApplyToState(GoapState<Eater> state)
         {
-            state.MutateVar(_caffeinated, true);
+            state.MutateFluent(_caffeinated, true);
             return new GoapActionArgs();
         }
     }

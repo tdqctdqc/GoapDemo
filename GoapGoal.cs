@@ -56,15 +56,15 @@ public abstract class GoapGoal<TAgent>
     protected static void SetupVars(GoapGoal<TAgent> goal)
     {
         var goalType = goal.GetType();
-        var fields = goalType.GetFields(BindingFlags.NonPublic | BindingFlags.Static);
-        goal._explicitVars = fields.GetFieldsWithAttribute<ExplicitVarAttribute, IGoapAgentVar<TAgent>>();
-        goal._implicitVars = fields.GetFieldsWithAttribute<ImplicitVarAttribute, IGoapAgentVar<TAgent>>();
+        var fields = goalType.GetAllFields();
+        goal._explicitVars = fields.GetValuesForFieldsWithAttribute<ExplicitVarAttribute, IGoapAgentVar<TAgent>>();
+        goal._implicitVars = fields.GetValuesForFieldsWithAttribute<ImplicitVarAttribute, IGoapAgentVar<TAgent>>();
     }
 
     protected static void SetupSubGoals(GoapGoal<TAgent> goal)
     {
         var goalType = goal.GetType();
-        var fields = goalType.GetFields(BindingFlags.NonPublic | BindingFlags.Static);
-        goal._subGoals = fields.GetFieldsWithAttribute<SubGoalAttribute, GoapSubGoal<TAgent>>();
+        var fields = goalType.GetAllFields();
+        goal._subGoals = fields.GetValuesForFieldsWithAttribute<SubGoalAttribute, GoapSubGoal<TAgent>>();
     }
 }

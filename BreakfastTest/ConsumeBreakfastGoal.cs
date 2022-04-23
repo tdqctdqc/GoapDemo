@@ -1,17 +1,20 @@
 using System.Collections.Generic;
 using System.Linq;
+using Godot;
 
 namespace GoapDemo.BreakfastTest
 {
     public class ConsumeBreakfastGoal : GoapGoal<Eater>
     {
         [ExplicitVar] private static GoapVar<bool, Eater> _hungry 
-            = BoolVar<Eater>.Construct("Hungry", 1f, e => e.Hungry);
+            = BoolVar<Eater>.ConstructEqualityHeuristic("Hungry", 1f, e => e.Hungry);
         [ExplicitVar] private static GoapVar<bool, Eater> _caffeinated 
-            = BoolVar<Eater>.Construct("Caffeinated", 1f, e => e.Caffeinated);
+            = BoolVar<Eater>.ConstructEqualityHeuristic("Caffeinated", 1f, e => e.Caffeinated);
 
         [SubGoal] private static GoapSubGoal<Eater> _subGoal
             = new ConsumeBreakfastSubGoal(1f);
+
+        
         public ConsumeBreakfastGoal() : base()
         {
         
@@ -28,15 +31,10 @@ namespace GoapDemo.BreakfastTest
 
         private class ConsumeBreakfastSubGoal : GoapSubGoal<Eater>
         {
-            public override List<GoapAction<Eater>> Actions => _actions;
-            protected override void BuildActions()
-            {
-                _actions = new List<GoapAction<Eater>>()
-                {
-                    new EatToastAction(),
-                    new DrinkCoffeeAction()
-                };
-            }
+            [AvailableAction] private static GoapAction<Eater> _eatToastAction
+                = new EatToastAction();
+            [AvailableAction] private static GoapAction<Eater> _drinkCoffeeAction
+                = new DrinkCoffeeAction();
 
             public override float GetAgentCapability(GoapAgent<Eater> agent)
             {

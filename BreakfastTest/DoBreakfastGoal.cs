@@ -6,9 +6,9 @@ namespace GoapDemo.BreakfastTest
 public class DoBreakfastGoal : GoapGoal<Eater>
 {
     [ExplicitVar] private static GoapVar<bool, Eater> _breakfastIsMade =
-        BoolVar<Eater>.Construct("BreakfastIsMade", 1f, e => e.Bread.Buttered && e.Bread.Toasted && e.Coffee.Made);
+        BoolVar<Eater>.ConstructEqualityHeuristic("BreakfastIsMade", 1f, e => e.Bread.Buttered && e.Bread.Toasted && e.Coffee.Made);
     [ExplicitVar] private static GoapVar<bool, Eater> _hasConsumedBreakfast =
-        BoolVar<Eater>.Construct("HasEatenBreakfast", 1f, e => e.Hungry == false);
+        BoolVar<Eater>.ConstructEqualityHeuristic("HasEatenBreakfast", 1f, e => e.Hungry == false);
 
     [SubGoal] private static GoapSubGoal<Eater> _subGoal =
         new DoBreakfastSubGoal(1f);
@@ -28,17 +28,10 @@ public class DoBreakfastGoal : GoapGoal<Eater>
 
     private class DoBreakfastSubGoal : GoapSubGoal<Eater>
     {
-        public override List<GoapAction<Eater>> Actions => _actions;
-        private static List<GoapAction<Eater>> _actions;
-
-        protected override void BuildActions()
-        {
-            _actions = new List<GoapAction<Eater>>()
-            {
-                new MakeBreakfastAction(),
-                new ConsumeBreakfastAction()
-            };
-        }
+        [AvailableAction] private static GoapAction<Eater> _makeBreakfastAction 
+            = new MakeBreakfastAction();
+        [AvailableAction] private static GoapAction<Eater> _consumeBreakfastAction 
+            = new ConsumeBreakfastAction();
 
         public override float GetAgentCapability(GoapAgent<Eater> agent)
         {

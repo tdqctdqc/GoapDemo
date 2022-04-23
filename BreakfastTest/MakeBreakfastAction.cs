@@ -6,14 +6,14 @@ namespace GoapDemo.BreakfastTest
     public class MakeBreakfastAction : GoapAction<Eater>
     {
         [ExplicitVar] private static GoapVar<bool, Eater> _breakfastIsMade =
-            BoolVar<Eater>.Construct("BreakfastIsMade", 1f, e => e.Bread.Buttered && e.Bread.Toasted && e.Coffee.Made);
+            BoolVar<Eater>.ConstructEqualityHeuristic("BreakfastIsMade", 1f, e => e.Bread.Buttered && e.Bread.Toasted && e.Coffee.Made);
     
         [SuccessorVar] private static GoapVar<bool, Eater> _breadIsToasted =
-            BoolVar<Eater>.Construct("BreadIsToasted", 1f, e => e.Bread.Toasted);
+            BoolVar<Eater>.ConstructEqualityHeuristic("BreadIsToasted", 1f, e => e.Bread.Toasted);
         [SuccessorVar] private static GoapVar<bool, Eater> _breadIsButtered =
-            BoolVar<Eater>.Construct("BreadIsButtered", 1f, e => e.Bread.Buttered);
+            BoolVar<Eater>.ConstructEqualityHeuristic("BreadIsButtered", 1f, e => e.Bread.Buttered);
         [SuccessorVar] private static GoapVar<bool, Eater> _coffeeIsMade =
-            BoolVar<Eater>.Construct("CoffeeIsMade", 1f, e => e.Coffee.Made);
+            BoolVar<Eater>.ConstructEqualityHeuristic("CoffeeIsMade", 1f, e => e.Coffee.Made);
     
     
         public MakeBreakfastAction() : base("MakeBreakfast")
@@ -24,25 +24,12 @@ namespace GoapDemo.BreakfastTest
         {
             if (actionContext.GetVar<bool>(_breakfastIsMade.Name) is GoapFluent<bool, Eater> breakfastMade)
             {
-                GoapState<Eater> initState;
-                if (breakfastMade.Value == false)
-                {
-                    initState = new GoapState<Eater>
-                    (
-                        new GoapFluent<bool,Eater>(_breadIsButtered, false),
-                        new GoapFluent<bool,Eater>(_breadIsToasted, false),
-                        new GoapFluent<bool,Eater>(_coffeeIsMade, false)
-                    );
-                }
-                else
-                {
-                    initState = new GoapState<Eater>
-                    (
-                        new GoapFluent<bool,Eater>(_breadIsButtered, true),
-                        new GoapFluent<bool,Eater>(_breadIsToasted, true),
-                        new GoapFluent<bool,Eater>(_coffeeIsMade, true)
-                    );
-                }
+                GoapState<Eater> initState = new GoapState<Eater>
+                (
+                    new GoapFluent<bool,Eater>(_breadIsButtered, breakfastMade.Value),
+                    new GoapFluent<bool,Eater>(_breadIsToasted, breakfastMade.Value),
+                    new GoapFluent<bool,Eater>(_coffeeIsMade, breakfastMade.Value)
+                );
 
                 return initState;
             }
@@ -64,7 +51,7 @@ namespace GoapDemo.BreakfastTest
         }
         public override GoapActionArgs ApplyToState(GoapState<Eater> state)
         {
-            state.MutateVar(_breakfastIsMade, true);
+            state.MutateFluent(_breakfastIsMade, true);
             return new GoapActionArgs();
         }
     }

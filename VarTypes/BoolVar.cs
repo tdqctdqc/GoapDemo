@@ -11,11 +11,10 @@ public class BoolVar<TAgent> : GoapVar<bool,TAgent>
     {
     }
 
-    public static BoolVar<TAgent> Construct(string name, float missCost, Func<TAgent, bool> valueFunc)
+    public static BoolVar<TAgent> ConstructEqualityHeuristic(string name, float missCost, Func<TAgent, bool> valueFunc)
     {
         return new BoolVar<TAgent>(name, valueFunc, 
-            GetFlatCostHeuristic(name, missCost), 
+            GetEqualityHeuristic(name, missCost), 
             EqualitySatisfier);
     }
-    
 }

@@ -6,9 +6,9 @@ namespace GoapDemo.BreakfastTest
     public class PutButterOnToastAction : GoapAction<Eater>
     {
         [ExplicitVar] private static GoapVar<bool, Eater> _breadIsToasted =
-            BoolVar<Eater>.Construct("BreadIsToasted", 1f, e => e.Bread.Toasted);
+            BoolVar<Eater>.ConstructEqualityHeuristic("BreadIsToasted", 1f, e => e.Bread.Toasted);
         [ExplicitVar] private static GoapVar<bool, Eater> _breadIsButtered =
-            BoolVar<Eater>.Construct("BreadIsButtered", 1f, e => e.Bread.Buttered);
+            BoolVar<Eater>.ConstructEqualityHeuristic("BreadIsButtered", 1f, e => e.Bread.Buttered);
         
         [Requirement] private static Func<GoapState<Eater>, bool> _breadToastedReq 
             = s => s.CheckVarMatch<bool>(_breadIsToasted.Name, true);
@@ -35,7 +35,7 @@ namespace GoapDemo.BreakfastTest
         }
         public override GoapActionArgs ApplyToState(GoapState<Eater> state)
         {
-            state.MutateVar(_breadIsButtered, true);
+            state.MutateFluent(_breadIsButtered, true);
             return new GoapActionArgs();
         }
     }

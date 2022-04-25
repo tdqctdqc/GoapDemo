@@ -6,13 +6,13 @@ namespace GoapDemo.WalkHomeTest
 {
     public class WalkHomeGoal : GoapGoal<Walker>
     {
-        [ExplicitVar] private static GoapVar<Vector2, Walker> _currentPosition
+        [ExplicitVar] public static GoapVar<Vector2, Walker> CurrentPosition
             = Vec2Var<Walker>.ConstructDistanceHeuristic("CurrentPosition", 1f, w => w.CurrentPosition);
-        [ExplicitVar] private static GoapVar<Vector2, Walker> _homePosition
+        [ExplicitVar] public static GoapVar<Vector2, Walker> HomePosition
             = Vec2Var<Walker>.ConstructDistanceHeuristic("HomePosition", 1f, w => w.HomePosition);
-        [ExplicitVar] private static GoapVar<bool, Walker> _leftFootForward
+        [ExplicitVar] public static GoapVar<bool, Walker> LeftFootForward
             = BoolVar<Walker>.ConstructEqualityHeuristic("LeftFootForward", 1f, w => w.LeftFootForward);
-        [ExplicitVar] private static GoapVar<float, Walker> _strideLength
+        [ExplicitVar] public static GoapVar<float, Walker> StrideLength
             = FloatVar<Walker>.ConstructDistanceHeuristic("StrideLength", 1f, w => w.StrideLength);
         
         [ImplicitVar] private static GoapVar<bool, Walker> _atHome
@@ -32,8 +32,8 @@ namespace GoapDemo.WalkHomeTest
 
         private static bool AtHomeSatisfiedFunc(GoapFluent<bool, Walker> value, GoapState<Walker> state)
         {
-            var homePos = state.GetVar<Vector2>(_homePosition.Name).Value;
-            var currentPos = state.GetVar<Vector2>(_currentPosition.Name).Value;
+            var homePos = state.GetVar<Vector2>(HomePosition.Name).Value;
+            var currentPos = state.GetVar<Vector2>(CurrentPosition.Name).Value;
             return homePos == currentPos;
         }
         public override GoapState<Walker> GetInitialState(List<GoapAgent<Walker>> agents)

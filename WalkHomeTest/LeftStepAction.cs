@@ -6,14 +6,10 @@ namespace GoapDemo.WalkHomeTest
 {
     public class LeftStepAction : GoapAction<Walker>
     {
-        [ExplicitVar] private static GoapVar<Vector2, Walker> _currentPosition
-            = Vec2Var<Walker>.ConstructDistanceHeuristic("CurrentPosition", 1f, w => w.CurrentPosition);
-        [ExplicitVar] private static GoapVar<Vector2, Walker> _homePosition
-            = Vec2Var<Walker>.ConstructDistanceHeuristic("HomePosition", 1f, w => w.HomePosition);
-        [ExplicitVar] private static GoapVar<bool, Walker> _leftFootForward
-            = BoolVar<Walker>.ConstructEqualityHeuristic("LeftFootForward", 1f, w => w.LeftFootForward);
-        [ExplicitVar] private static GoapVar<float, Walker> _strideLength
-            = FloatVar<Walker>.ConstructDistanceHeuristic("StrideLength", 1f, w => w.StrideLength);
+        [ExplicitVar] private static GoapVar<Vector2, Walker> _currentPosition => WalkHomeGoal.CurrentPosition;
+        [ExplicitVar] private static GoapVar<Vector2, Walker> _homePosition => WalkHomeGoal.HomePosition;
+        [ExplicitVar] private static GoapVar<bool, Walker> _leftFootForward => WalkHomeGoal.LeftFootForward;
+        [ExplicitVar] private static GoapVar<float, Walker> _strideLength => WalkHomeGoal.StrideLength;
         
         [Requirement] private static Func<GoapState<Walker>, bool> _leftFootBackFunc 
             = s => s.CheckVarMatch(_leftFootForward.Name, false);

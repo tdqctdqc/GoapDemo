@@ -5,8 +5,7 @@ namespace GoapDemo.BreakfastTest
 {
     public class MakeCoffeeAction : GoapAction<Eater>
     {
-        [ExplicitVar] private static GoapVar<bool, Eater> _coffeeIsMade =
-            BoolVar<Eater>.ConstructEqualityHeuristic("CoffeeIsMade", 1f, e => e.Coffee.Made);
+        [ExplicitVar] private static GoapVar<bool, Eater> _coffeeIsMade => MakeBreakfastGoal.CoffeeIsMade;
 
         public MakeCoffeeAction() : base("MakeCoffee", a => { })
         {

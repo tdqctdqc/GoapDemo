@@ -5,21 +5,13 @@ namespace GoapDemo.BreakfastTest
 {
     public class ConsumeBreakfastAction : GoapAction<Eater>
     {
-        [ExplicitVar] private static GoapVar<bool, Eater> _breakfastIsMade => _breakfastMadeLazy.Value;
-        private static Lazy<GoapVar<bool, Eater>> _breakfastMadeLazy = new Lazy<GoapVar<bool, Eater>>(
-            () => BoolVar<Eater>.ConstructEqualityHeuristic("BreakfastIsMade", 1f, e => e.Bread.Buttered && e.Bread.Toasted && e.Coffee.Made));
-        
-        [ExplicitVar] private static GoapVar<bool, Eater> _hasConsumedBreakfast 
-            = BoolVar<Eater>.ConstructEqualityHeuristic("HasEatenBreakfast", 1f, e => e.Hungry == false);
-        
-        [SuccessorVar] private static GoapVar<bool, Eater> _hungry 
-            =  BoolVar<Eater>.ConstructEqualityHeuristic("Hungry", 1f, e => e.Hungry);
 
-        [SuccessorVar] private static GoapVar<bool, Eater> _caffeinated 
-            = BoolVar<Eater>.ConstructEqualityHeuristic("Caffeinated", 1f, e => e.Caffeinated);
+        [ExplicitVar] private static GoapVar<bool, Eater> _hasConsumedBreakfast => DoBreakfastGoal.HasConsumedBreakfast;
+        [SuccessorVar] private static GoapVar<bool, Eater> _hungry => ConsumeBreakfastGoal.Hungry;
+        [SuccessorVar] private static GoapVar<bool, Eater> _caffeinated => ConsumeBreakfastGoal.Caffeinated;
         
         [Requirement] private static Func<GoapState<Eater>, bool> _breakfastMadeReq 
-            = s => s.CheckVarMatch(_breakfastIsMade.Name, true);
+            = s => s.CheckVarMatch(DoBreakfastGoal.BreakfastIsMade.Name, true);
         
         public ConsumeBreakfastAction() : base("ConsumeBreakfast", SetDependentFields)
         {

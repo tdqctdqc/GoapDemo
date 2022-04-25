@@ -9,7 +9,7 @@ namespace GoapDemo.BreakfastTest
         [SuccessorVar] private static GoapVar<bool, Eater> _breadIsToasted => MakeBreakfastGoal.BreadIsToasted;
         [SuccessorVar] private static GoapVar<bool, Eater> _breadIsButtered => MakeBreakfastGoal.BreadIsButtered;
         [SuccessorVar] private static GoapVar<bool, Eater> _coffeeIsMade => MakeBreakfastGoal.CoffeeIsMade;
-    
+        [TestCase] private static IGoapAction GetTestCase() => new MakeBreakfastAction();
         public MakeBreakfastAction() : base("MakeBreakfast", a => { })
         {
         }

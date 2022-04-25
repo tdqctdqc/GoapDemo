@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public class IGoapAction 
+public interface IGoapAction : IGoapRuleFollower
 {
-    private string Name { get; }
+    string Name { get; }
 }

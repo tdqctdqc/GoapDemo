@@ -10,8 +10,8 @@ public static class ReflectionExtensions
         where TAttribute : System.Attribute
     {
         var type = ob.GetType();
-        var fields = GetAllFields(type).WithAttribute<TAttribute>();
-        var props = GetAllProperties(type).WithAttribute<TAttribute>();
+        var fields = GetAllFields(type).WithAttribute<FieldInfo, TAttribute>();
+        var props = GetAllProperties(type).WithAttribute<PropertyInfo, TAttribute>();
         var result = GetValuesForFields<TValue>(fields, ob);
         result.AddRange(GetValuesForProperties<TValue>(props, ob));
         return result;
@@ -45,6 +45,18 @@ public static class ReflectionExtensions
             )
             .ToList();
     }
+    public static List<TResult> GetResultsForMethods<TResult>(this IEnumerable<MethodInfo> methodInfos, object instance, object[] args = null)
+    {
+        return methodInfos
+            .Select
+            ( p =>
+                {
+                    var valueHaver = p.IsStatic ? null : instance;
+                    return (TResult) p.Invoke(valueHaver, args);
+                }
+            )
+            .ToList();
+    }
     public static FieldInfo[] GetAllFields(this Type type)
     {
         return type.GetFields(BindingFlags.Instance 
@@ -59,12 +71,17 @@ public static class ReflectionExtensions
                                        | BindingFlags.Public
                                        | BindingFlags.NonPublic);
     }
-    public static IEnumerable<FieldInfo> WithAttribute<TAttribute>(this IEnumerable<FieldInfo> fields) where TAttribute : System.Attribute
+    public static MethodInfo[] GetAllMethods(this Type type)
     {
-        return fields.Where(f => f.GetCustomAttribute<TAttribute>() != null);
+        return type.GetMethods(BindingFlags.Instance
+                                  | BindingFlags.Static
+                                  | BindingFlags.Public
+                                  | BindingFlags.NonPublic);
     }
-    public static IEnumerable<PropertyInfo> WithAttribute<TAttribute>(this IEnumerable<PropertyInfo> fields) where TAttribute : System.Attribute
+
+    public static IEnumerable<TInfo> WithAttribute<TInfo, TAttribute>(this IEnumerable<TInfo> memberInfos) 
+        where TInfo : MemberInfo where TAttribute : System.Attribute
     {
-        return fields.Where(f => f.GetCustomAttribute<TAttribute>() != null);
+        return memberInfos.Where(f => f.GetCustomAttribute<TAttribute>() != null);
     }
 }

@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>GoapDemo</id>
+    <version>1.0.0</version>
+    <authors>GoapDemo</authors>
+    <description>Package Description</description>
+    <dependencies>
+      <group targetFramework=".NETFramework4.7.2" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="C:\Users\Tynan Dion\Desktop\games\GoapDemo\.mono\temp\bin\Debug\GoapDemo.dll" target="lib\net472\GoapDemo.dll" />
+  </files>
+</package>

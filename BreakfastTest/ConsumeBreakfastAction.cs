@@ -12,7 +12,8 @@ namespace GoapDemo.BreakfastTest
         
         [Requirement] private static Func<GoapState<Eater>, bool> _breakfastMadeReq 
             = s => s.CheckVarMatch(DoBreakfastGoal.BreakfastIsMade.Name, true);
-        
+
+        [TestCase] private static IGoapAction GetTestCase() => new ConsumeBreakfastAction();
         public ConsumeBreakfastAction() : base("ConsumeBreakfast", SetDependentFields)
         {
         }

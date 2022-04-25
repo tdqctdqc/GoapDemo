@@ -9,6 +9,7 @@ namespace GoapDemo.BreakfastTest
         [ExplicitVar] private static GoapVar<bool, Eater> _breadIsButtered => MakeBreakfastGoal.BreadIsButtered;
         [Requirement] private static Func<GoapState<Eater>, bool> _breadToastedReq 
             = s => s.CheckVarMatch<bool>(_breadIsToastedVar.Name, true);
+        [TestCase] private static IGoapAction GetTestCase() => new PutButterOnToastAction();
         public PutButterOnToastAction() : base("PutButterOnToast", a => { })
         {
         }

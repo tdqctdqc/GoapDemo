@@ -9,6 +9,8 @@ public class Root : Node
 {
     public override void _Ready()
     {
+        GoapChecker.CheckRules();
+        
         DoWalkerTest();
         DoBreakfastTest(1);
         // DoReflectionTest();

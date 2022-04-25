@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Linq;
 
-public abstract class GoapGoal<TAgent>
+public abstract class GoapGoal<TAgent> : IGoapGoal
 {
     public IReadOnlyList<GoapSubGoal<TAgent>> SubGoals => _subGoals;
     private List<GoapSubGoal<TAgent>> _subGoals;
@@ -45,45 +45,10 @@ public abstract class GoapGoal<TAgent>
     {
         goal._subGoals = goal.GetValuesForMembersWithAttributeType<GoapSubGoal<TAgent>, SubGoalAttribute>();
     }
-    private void CheckActionVars()
-    {
-        foreach (var subGoal in SubGoals)
-        {
-            foreach (var action in subGoal.Actions)
-            {
-                foreach (var actionVar in action.ExplicitVars)
-                {
-                    if (
-                        ExplicitVars
-                            .Where(v => v.Name == actionVar.Name
-                                        && v.ValueType == actionVar.ValueType)
-                            .Count() == 0
-                    )
-                    {
-                        throw new Exception("can't fulfil action var " + actionVar.Name);
-                    }
-                }
-            }
-        }
-    }
 
-    private void CheckImplicitVars()
+    public void CheckRules()
     {
-        foreach (var implicitVar in ImplicitVars)
-        {
-            var implicitVarDependencies = implicitVar
-                .GetValuesForMembersWithAttributeType<IGoapAgentVar<TAgent>, ExplicitVarAttribute>();
-            foreach (var dependency in implicitVarDependencies)
-            {
-                if 
-                (
-                    ExplicitVars
-                        .Where(v => v.Name == dependency.Name
-                                    && v.ValueType == dependency.ValueType)
-                        .Count() == 0
-                )
-                    throw new Exception("can't fulfil implicit var " + implicitVar.Name);
-            }
-        }
+        GoapChecker.CheckActionVars(this);
+        GoapChecker.CheckImplicitVars(this);
     }
 }

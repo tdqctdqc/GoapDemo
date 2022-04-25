@@ -13,6 +13,7 @@ namespace GoapDemo.WalkHomeTest
         
         [Requirement] private static Func<GoapState<Walker>, bool> _leftFootBackFunc 
             = s => s.CheckVarMatch(_leftFootForward.Name, false);
+        [TestCase] private static IGoapAction GetTestCase() => new LeftStepAction();
         public LeftStepAction() : base("LeftStep", a => { })
         {
         }

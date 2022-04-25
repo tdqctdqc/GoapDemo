@@ -13,7 +13,6 @@ public class GoapSubGoal<TAgent>
     protected GoapSubGoal(Action<GoapSubGoal<TAgent>> setDependentInstanceFields)
     {
         setDependentInstanceFields(this);
-        // TargetState = targetState;
         BuildTargetState(this);
         BuildActions(this);
         BuildAgentReqs(this);

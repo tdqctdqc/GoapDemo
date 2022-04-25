@@ -5,6 +5,7 @@ namespace GoapDemo.BreakfastTest
     public class EatToastAction : GoapAction<Eater>
     {
         [ExplicitVar] private static GoapVar<bool, Eater> _hungry => ConsumeBreakfastGoal.Hungry;
+        [TestCase] private static IGoapAction GetTestCase() => new EatToastAction();
         public EatToastAction() : base("EatToast", a => { })
         {
         }

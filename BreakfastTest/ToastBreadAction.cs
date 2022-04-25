@@ -6,6 +6,7 @@ namespace GoapDemo.BreakfastTest
     public class ToastBreadAction : GoapAction<Eater>
     {
         [ExplicitVar] private static GoapVar<bool, Eater> _breadIsToasted => MakeBreakfastGoal.BreadIsToasted;
+        [TestCase] private static IGoapAction GetTestCase() => new ToastBreadAction();
         public ToastBreadAction() : base("PutBreadInToaster", a => { })
         {
         }

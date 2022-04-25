@@ -12,6 +12,7 @@ namespace GoapDemo.WalkHomeTest
         [ExplicitVar] private static GoapVar<float, Walker> _strideLength => WalkHomeGoal.StrideLength;
         [Requirement] private static Func<GoapState<Walker>, bool> _leftFootForwardFunc 
             = s => s.CheckVarMatch(_leftFootForward.Name, true);
+        [TestCase] private static IGoapAction GetTestCase() => new RightStepAction();
         public RightStepAction() : base("RightStep", a => {})
         {
         }

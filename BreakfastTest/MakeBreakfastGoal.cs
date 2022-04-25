@@ -5,11 +5,11 @@ namespace GoapDemo.BreakfastTest
 {
     public class MakeBreakfastGoal : GoapGoal<Eater>
     {
-        [ExplicitVar] private static GoapVar<bool, Eater> _breadIsToasted 
+        [ExplicitVar] public static GoapVar<bool, Eater> BreadIsToasted 
             = BoolVar<Eater>.ConstructEqualityHeuristic("BreadIsToasted", 1f, e => e.Bread.Toasted);
-        [ExplicitVar] private static GoapVar<bool, Eater> _breadIsButtered 
+        [ExplicitVar] public static GoapVar<bool, Eater> BreadIsButtered 
             = BoolVar<Eater>.ConstructEqualityHeuristic("BreadIsButtered", 1f, e => e.Bread.Buttered);
-        [ExplicitVar] private static GoapVar<bool, Eater> _coffeeIsMade 
+        [ExplicitVar] public static GoapVar<bool, Eater> CoffeeIsMade 
             = BoolVar<Eater>.ConstructEqualityHeuristic("CoffeeIsMade", 1f, e => e.Coffee.Made);
 
         [SubGoal] private static GoapSubGoal<Eater> _makeToastSubGoal

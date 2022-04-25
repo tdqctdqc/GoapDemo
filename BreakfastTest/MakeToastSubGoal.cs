@@ -12,15 +12,11 @@ namespace GoapDemo.BreakfastTest
         [AvailableAction] private static GoapAction<Eater> _butterToastAction
             = new PutButterOnToastAction();
 
-        private static Lazy<GoapVar<bool, Eater>> _breadIsToastedVarLazy  = new Lazy<GoapVar<bool, Eater>>(
-                   () => BoolVar<Eater>.ConstructEqualityHeuristic("BreadIsToasted", 1f, e => e.Bread.Toasted));
         [TargetFluent] private static GoapFluent<bool, Eater> _breadIsToastedFluent
-            = new GoapFluent<bool, Eater>(_breadIsToastedVarLazy.Value, true);
+            = new GoapFluent<bool, Eater>(MakeBreakfastGoal.BreadIsToasted, true);
         
-        private static Lazy<GoapVar<bool, Eater>> _breadIsButteredVarLazy = new Lazy<GoapVar<bool, Eater>>( 
-                    () => BoolVar<Eater>.ConstructEqualityHeuristic("BreadIsButtered", 1f, e => e.Bread.Buttered));
         [TargetFluent] private static GoapFluent<bool, Eater> _breadIsButteredFluent
-            = new GoapFluent<bool, Eater>(_breadIsButteredVarLazy.Value, true);
+            = new GoapFluent<bool, Eater>(MakeBreakfastGoal.BreadIsButtered, true);
         
         public MakeToastSubGoal() 
             : base(sg => { })

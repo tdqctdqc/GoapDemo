@@ -10,10 +10,8 @@ namespace GoapDemo.BreakfastTest
         [AgentRequirement] private static GoapAgentRequirement<Eater> _req
             = new GoapAgentRequirement<Eater>(s => 1f, a => 1f);
         
-        private static Lazy<GoapVar<bool, Eater>> _coffeeIsMadeVarLazy  = new Lazy<GoapVar<bool, Eater>>(
-                   () => BoolVar<Eater>.ConstructEqualityHeuristic("CoffeeIsMade", 1f, e => e.Coffee.Made));
         [TargetFluent] private static GoapFluent<bool, Eater> _coffeeIsMadeFluent
-            = new GoapFluent<bool, Eater>(_coffeeIsMadeVarLazy.Value, true);
+            = new GoapFluent<bool, Eater>(MakeBreakfastGoal.CoffeeIsMade, true);
         
         public MakeCoffeeSubGoal() 
             : base(sg => { })

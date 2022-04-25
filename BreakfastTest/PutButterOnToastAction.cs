@@ -5,14 +5,19 @@ namespace GoapDemo.BreakfastTest
 {
     public class PutButterOnToastAction : GoapAction<Eater>
     {
-        [ExplicitVar] private static GoapVar<bool, Eater> _breadIsToasted =
-            BoolVar<Eater>.ConstructEqualityHeuristic("BreadIsToasted", 1f, e => e.Bread.Toasted);
+        [ExplicitVar]
+        private static GoapVar<bool, Eater> _breadIsToastedVar
+            => _breadIsToastedVarLazy.Value;
+        private static Lazy<GoapVar<bool, Eater>> _breadIsToastedVarLazy = new Lazy<GoapVar<bool, Eater>>(
+            () => BoolVar<Eater>.ConstructEqualityHeuristic("BreadIsToasted", 1f, e => e.Bread.Toasted));
+
+
         [ExplicitVar] private static GoapVar<bool, Eater> _breadIsButtered =
             BoolVar<Eater>.ConstructEqualityHeuristic("BreadIsButtered", 1f, e => e.Bread.Buttered);
         
         [Requirement] private static Func<GoapState<Eater>, bool> _breadToastedReq 
-            = s => s.CheckVarMatch<bool>(_breadIsToasted.Name, true);
-        public PutButterOnToastAction() : base("PutButterOnToast")
+            = s => s.CheckVarMatch<bool>(_breadIsToastedVar.Name, true);
+        public PutButterOnToastAction() : base("PutButterOnToast", a => { })
         {
         }
 

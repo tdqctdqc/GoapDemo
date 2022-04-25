@@ -13,13 +13,38 @@ public abstract class GoapGoal<TAgent>
     public List<IGoapAgentVar<TAgent>> ImplicitVars => _implicitVars;
     private List<IGoapAgentVar<TAgent>> _implicitVars;
     public abstract float Priority(GoapAgent<TAgent> agent);
-    public GoapGoal()
+    public GoapGoal(Action setDependentInstanceFields)
     {
+        setDependentInstanceFields();
         SetupVars(this);
         SetupSubGoals(this);
-        CheckActionVars();
+        // CheckActionVars();
+        // CheckImplicitVars();
     }
 
+    
+    public abstract GoapState<TAgent> GetInitialState(List<GoapAgent<TAgent>> agents);
+
+    protected GoapState<TAgent> GetInitialStateFirstAgentMethod(List<GoapAgent<TAgent>> agents)
+    {
+        var agent = agents[0];
+        var initialState = new GoapState<TAgent>
+        (
+            ExplicitVars.Select(v => v.BranchAgnosticByAgentEntity(agent.Entity)).ToArray()
+        );
+        return initialState;
+    }
+
+    protected static void SetupVars(GoapGoal<TAgent> goal)
+    {
+        goal._explicitVars = goal.GetValuesForMembersWithAttributeType<IGoapAgentVar<TAgent>, ExplicitVarAttribute>();
+        goal._implicitVars = goal.GetValuesForMembersWithAttributeType<IGoapAgentVar<TAgent>, ImplicitVarAttribute>();
+    }
+
+    protected static void SetupSubGoals(GoapGoal<TAgent> goal)
+    {
+        goal._subGoals = goal.GetValuesForMembersWithAttributeType<GoapSubGoal<TAgent>, SubGoalAttribute>();
+    }
     private void CheckActionVars()
     {
         foreach (var subGoal in SubGoals)
@@ -41,30 +66,24 @@ public abstract class GoapGoal<TAgent>
             }
         }
     }
-    public abstract GoapState<TAgent> GetInitialState(List<GoapAgent<TAgent>> agents);
 
-    protected GoapState<TAgent> GetInitialStateFirstAgentMethod(List<GoapAgent<TAgent>> agents)
+    private void CheckImplicitVars()
     {
-        var agent = agents[0];
-        var initialState = new GoapState<TAgent>
-        (
-            ExplicitVars.Select(v => v.BranchAgnosticByAgentEntity(agent.Entity)).ToArray()
-        );
-        return initialState;
-    }
-
-    protected static void SetupVars(GoapGoal<TAgent> goal)
-    {
-        var goalType = goal.GetType();
-        var fields = goalType.GetAllFields();
-        goal._explicitVars = fields.GetValuesForFieldsWithAttribute<ExplicitVarAttribute, IGoapAgentVar<TAgent>>();
-        goal._implicitVars = fields.GetValuesForFieldsWithAttribute<ImplicitVarAttribute, IGoapAgentVar<TAgent>>();
-    }
-
-    protected static void SetupSubGoals(GoapGoal<TAgent> goal)
-    {
-        var goalType = goal.GetType();
-        var fields = goalType.GetAllFields();
-        goal._subGoals = fields.GetValuesForFieldsWithAttribute<SubGoalAttribute, GoapSubGoal<TAgent>>();
+        foreach (var implicitVar in ImplicitVars)
+        {
+            var implicitVarDependencies = implicitVar
+                .GetValuesForMembersWithAttributeType<IGoapAgentVar<TAgent>, ExplicitVarAttribute>();
+            foreach (var dependency in implicitVarDependencies)
+            {
+                if 
+                (
+                    ExplicitVars
+                        .Where(v => v.Name == dependency.Name
+                                    && v.ValueType == dependency.ValueType)
+                        .Count() == 0
+                )
+                    throw new Exception("can't fulfil implicit var " + implicitVar.Name);
+            }
+        }
     }
 }

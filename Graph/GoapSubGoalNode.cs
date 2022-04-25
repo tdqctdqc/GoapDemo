@@ -5,20 +5,16 @@ using System.Collections.Generic;
 public class GoapSubGoalNode<TAgent>
 {
     public GoapSubGoal<TAgent> SubGoal { get; private set; }
-    public List<GoapAgent<TAgent>> Agents { get; private set; }
-    public float DifficultyUnsatisfied { get; private set; }
+    public GoapAgentAccumulator<TAgent> Accumulator { get; private set; }
     
-    public GoapSubGoalNode(GoapSubGoal<TAgent> subGoal)
+    public GoapSubGoalNode(GoapSubGoal<TAgent> subGoal, GoapState<TAgent> initialState)
     {
         SubGoal = subGoal;
-        DifficultyUnsatisfied = subGoal.Difficulty;
-        Agents = new List<GoapAgent<TAgent>>();
+        Accumulator = new GoapAgentAccumulator<TAgent>(this, initialState);
     }
 
-    public void AddAgent(GoapAgent<TAgent> agent)
+    public void AccumulateAgents(List<GoapAgent<TAgent>> availableAgents, int numToTake)
     {
-        Agents.Add(agent);
-        var capability = SubGoal.GetAgentCapability(agent);
-        DifficultyUnsatisfied = Mathf.Max(0f, DifficultyUnsatisfied - capability);
+        Accumulator.AccumulateAgents(availableAgents, numToTake);
     }
 }

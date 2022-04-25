@@ -3,45 +3,43 @@ using System.Collections.Generic;
 
 namespace GoapDemo.BreakfastTest
 {
-    public class ConsumeBreakfastAction : GoapAction<Eater> 
+    public class ConsumeBreakfastAction : GoapAction<Eater>
     {
-        [ExplicitVar] private static GoapVar<bool, Eater> _breakfastIsMade 
-            = BoolVar<Eater>.ConstructEqualityHeuristic("BreakfastIsMade", 1f, e => e.Bread.Buttered && e.Bread.Toasted && e.Coffee.Made);
+        [ExplicitVar] private static GoapVar<bool, Eater> _breakfastIsMade => _breakfastMadeLazy.Value;
+        private static Lazy<GoapVar<bool, Eater>> _breakfastMadeLazy = new Lazy<GoapVar<bool, Eater>>(
+            () => BoolVar<Eater>.ConstructEqualityHeuristic("BreakfastIsMade", 1f, e => e.Bread.Buttered && e.Bread.Toasted && e.Coffee.Made));
+        
         [ExplicitVar] private static GoapVar<bool, Eater> _hasConsumedBreakfast 
             = BoolVar<Eater>.ConstructEqualityHeuristic("HasEatenBreakfast", 1f, e => e.Hungry == false);
+        
         [SuccessorVar] private static GoapVar<bool, Eater> _hungry 
-            = BoolVar<Eater>.ConstructEqualityHeuristic("Hungry", 1f, e => e.Hungry);
+            =  BoolVar<Eater>.ConstructEqualityHeuristic("Hungry", 1f, e => e.Hungry);
+
         [SuccessorVar] private static GoapVar<bool, Eater> _caffeinated 
             = BoolVar<Eater>.ConstructEqualityHeuristic("Caffeinated", 1f, e => e.Caffeinated);
         
-        [Requirement] private static Func<GoapState<Eater>, bool> _req
+        [Requirement] private static Func<GoapState<Eater>, bool> _breakfastMadeReq 
             = s => s.CheckVarMatch(_breakfastIsMade.Name, true);
-        public ConsumeBreakfastAction() : base("ConsumeBreakfast")
+        
+        public ConsumeBreakfastAction() : base("ConsumeBreakfast", SetDependentFields)
         {
         }
 
+        private static void SetDependentFields(GoapAction<Eater> action)
+        {
+            var consumeAction = (ConsumeBreakfastAction) action;
+            // consumeAction._req = s => s.CheckVarMatch(_breakfastIsMade.Name, true);
+        }
         public override GoapState<Eater> TransformContextForSuccessorGoal(GoapState<Eater> actionContext)
         {
             var consumedVar = actionContext.GetVar<bool>(_hasConsumedBreakfast.Name);
             if (consumedVar is GoapFluent<bool, Eater> consumed)
             {
-                GoapState<Eater> initState;
-                if (consumed.Value == true)
-                {
-                    initState = new GoapState<Eater>
-                    (
-                        new GoapFluent<bool, Eater>(_hungry, false),
-                        new GoapFluent<bool, Eater>(_caffeinated, true)
-                    );
-                }
-                else
-                {
-                    initState = new GoapState<Eater>
-                    (
-                        new GoapFluent<bool, Eater>(_hungry, true),
-                        new GoapFluent<bool, Eater>(_caffeinated, false)
-                    );
-                }
+                GoapState<Eater> initState = new GoapState<Eater>
+                (
+                    new GoapFluent<bool, Eater>(_hungry, consumed.Value == false),
+                    new GoapFluent<bool, Eater>(_caffeinated, consumed.Value)
+                );
                 return initState;
             }
             else

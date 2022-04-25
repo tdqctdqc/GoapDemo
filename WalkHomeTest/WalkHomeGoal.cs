@@ -19,7 +19,12 @@ namespace GoapDemo.WalkHomeTest
             = new AtHomeVar();
 
         [SubGoal] private static GoapSubGoal<Walker> _subGoal
-            = new WalkHomeSubGoal(1f);
+            = new WalkHomeSubGoal();
+
+        public WalkHomeGoal() : base(() => { })
+        {
+            
+        }
         public override float Priority(GoapAgent<Walker> agent)
         {
             return 1f; 
@@ -35,63 +40,45 @@ namespace GoapDemo.WalkHomeTest
         {
             return GetInitialStateFirstAgentMethod(agents);
         }
+    }
+    
+    
+    public class AtHomeVar : BoolVar<Walker>
+    {
+        [ExplicitVar] private static GoapVar<Vector2, Walker> _currentPosition
+            = Vec2Var<Walker>.ConstructDistanceHeuristic("CurrentPosition", 1f, w => w.CurrentPosition);
+        [ExplicitVar] private static GoapVar<Vector2, Walker> _homePosition
+            = Vec2Var<Walker>.ConstructDistanceHeuristic("HomePosition", 1f, w => w.HomePosition);
 
-        private class WalkHomeSubGoal : GoapSubGoal<Walker>
+        private static GoapSatisfier<Walker, bool> _atHomeSatisfier = GetAtHomeSatisfier();
+        private static GoapHeuristic<bool, Walker> _atHomeHeuristic = GetAtHomeHeuristic(1f);
+        public AtHomeVar() 
+            : base("AtHome", w => w.CurrentPosition == w.HomePosition, 
+                _atHomeHeuristic, _atHomeSatisfier)
         {
-            [AvailableAction] private static GoapAction<Walker> _leftStepAction
-                = new LeftStepAction();
-            [AvailableAction] private static GoapAction<Walker> _rightStepAction
-                = new RightStepAction();
-            public WalkHomeSubGoal(float difficulty) : base(GetTargetState(), difficulty)
-            {
-            }
-
-
-            public override float GetAgentCapability(GoapAgent<Walker> agent)
-            {
-                return 1f;
-            }
-
-            private static GoapState<Walker> GetTargetState()
-            {
-                var targetState = new GoapState<Walker>
-                (
-                    new GoapFluent<bool, Walker>(_atHome, true)
-                );
-                return targetState;
-            }
         }
-        private class AtHomeVar : BoolVar<Walker>
+        private static GoapHeuristic<bool, Walker> GetAtHomeHeuristic(float distCost)
         {
-            private static GoapSatisfier<Walker, bool> _atHomeSatisfier = GetAtHomeSatisfier();
-            private static GoapHeuristic<bool, Walker> _atHomeHeuristic = GetAtHomeHeuristic(1f);
-            public AtHomeVar() 
-                : base("AtHome", w => w.CurrentPosition == w.HomePosition, 
-                    _atHomeHeuristic, _atHomeSatisfier)
+            Func<GoapState<Walker>, float> heuristicFunc = s =>
             {
-            }
-            private static GoapHeuristic<bool, Walker> GetAtHomeHeuristic(float distCost)
+                var homePos = s.GetVar<Vector2>(_homePosition.Name).Value;
+                var currentPos = s.GetVar<Vector2>(_currentPosition.Name).Value;
+                return homePos.DistanceTo(currentPos) * distCost;  
+            };
+            var heuristic = new GoapHeuristic<bool, Walker>(heuristicFunc);
+            return heuristic;
+        }
+        private static GoapSatisfier<Walker, bool> GetAtHomeSatisfier()
+        {
+            var satisfier = new GoapSatisfier<Walker, bool>();
+            satisfier.AddFunc(s =>
             {
-                Func<GoapState<Walker>, float> heuristicFunc = s =>
-                {
-                    var homePos = s.GetVar<Vector2>(_homePosition.Name).Value;
-                    var currentPos = s.GetVar<Vector2>(_currentPosition.Name).Value;
-                    return homePos.DistanceTo(currentPos) * distCost;  
-                };
-                var heuristic = new GoapHeuristic<bool, Walker>(heuristicFunc);
-                return heuristic;
-            }
-            private static GoapSatisfier<Walker, bool> GetAtHomeSatisfier()
-            {
-                var satisfier = new GoapSatisfier<Walker, bool>();
-                satisfier.AddFunc(s =>
-                {
-                    var homePos = s.GetVar<Vector2>(_homePosition.Name).Value;
-                    var currentPos = s.GetVar<Vector2>(_currentPosition.Name).Value;
-                    return homePos == currentPos;  
-                });
-                return satisfier;
-            }
+                var homePos = s.GetVar<Vector2>(_homePosition.Name).Value;
+                var currentPos = s.GetVar<Vector2>(_currentPosition.Name).Value;
+                return homePos == currentPos;  
+            });
+            return satisfier;
         }
     }
 }
+

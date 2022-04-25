@@ -7,7 +7,7 @@ namespace GoapDemo.BreakfastTest
         [ExplicitVar] private static GoapVar<bool, Eater> _caffeinated =
             BoolVar<Eater>.ConstructEqualityHeuristic("Caffeinated", 1f, e => e.Caffeinated);
     
-        public DrinkCoffeeAction() : base("DrinkCoffee")
+        public DrinkCoffeeAction() : base("DrinkCoffee", a => { })
         {
         }
         public override GoapState<Eater> TransformContextForSuccessorGoal(GoapState<Eater> actionContext)

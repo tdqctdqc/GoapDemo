@@ -5,7 +5,7 @@ using System.Linq;
 
 public class GoapState<TAgent> : IGoapState
 {
-    protected Dictionary<string, IGoapAgentFluent<TAgent>> _fluentNameDic;
+    private Dictionary<string, IGoapAgentFluent<TAgent>> _fluentNameDic;
     
     public GoapState(params IGoapAgentFluent<TAgent>[] stateVars)
     {
@@ -16,14 +16,15 @@ public class GoapState<TAgent> : IGoapState
             _fluentNameDic.Add(stateVar.Name, stateVar);
         }
     }
-
-    
     public bool CheckVarMatch<TValue>(string name, TValue value)
     {
+        if (name.Length == 0)
+        {
+            throw new Exception("no name!");
+        }
         var goapVar = GetVarAgnostic(name);
         return goapVar != null ? goapVar.GetValue().Equals(value) : false;
     }
-
     public GoapState<TAgent> ExtendState(GoapAction<TAgent> action, out GoapActionArgs args)
     {
         var newState = Clone();
@@ -93,6 +94,34 @@ public class GoapState<TAgent> : IGoapState
         return new GoapState<TAgent>(_fluentNameDic.Values.ToArray());
     }
 
+    public static GoapState<TAgent> GetUnionState(params GoapState<TAgent>[] states)
+    {
+        var tempDic = new Dictionary<string, IGoapAgentFluent<TAgent>>();
+        var checkedFluents = new List<IGoapAgentFluent<TAgent>>();
+        for (int i = 0; i < states.Length; i++)
+        {
+            var state = states[i];
+            foreach (var entry in state._fluentNameDic)
+            {
+                var fluent = entry.Value;
+                if (tempDic.ContainsKey(fluent.Name))
+                {
+                    var oldFluent = tempDic[fluent.Name];
+                    if (oldFluent.GetValue().Equals(fluent.GetValue()) == false)
+                    {
+                        throw new Exception("contradicting fluents, can't create union state");
+                    }
+                }
+                else
+                {
+                    tempDic.Add(fluent.Name, fluent);
+                    checkedFluents.Add(fluent);
+                }
+            }
+        }
+
+        return new GoapState<TAgent>(checkedFluents.ToArray());
+    }
     public void PrintState()
     {
         foreach (var entry in _fluentNameDic)

@@ -5,18 +5,20 @@ namespace GoapDemo.BreakfastTest
 {
     public class MakeBreakfastAction : GoapAction<Eater>
     {
-        [ExplicitVar] private static GoapVar<bool, Eater> _breakfastIsMade =
-            BoolVar<Eater>.ConstructEqualityHeuristic("BreakfastIsMade", 1f, e => e.Bread.Buttered && e.Bread.Toasted && e.Coffee.Made);
+        [ExplicitVar] private static GoapVar<bool, Eater> _breakfastIsMade 
+            = BoolVar<Eater>.ConstructEqualityHeuristic("BreakfastIsMade", 1f, e => e.Bread.Buttered && e.Bread.Toasted && e.Coffee.Made);
+        
+        [SuccessorVar] private static GoapVar<bool, Eater> _breadIsToasted 
+            = BoolVar<Eater>.ConstructEqualityHeuristic("BreadIsToasted", 1f, e => e.Bread.Toasted);
+        
+        [SuccessorVar] private static GoapVar<bool, Eater> _breadIsButtered 
+            = BoolVar<Eater>.ConstructEqualityHeuristic("BreadIsButtered", 1f, e => e.Bread.Buttered);
+        
+        [SuccessorVar] private static GoapVar<bool, Eater> _coffeeIsMade 
+            = BoolVar<Eater>.ConstructEqualityHeuristic("CoffeeIsMade", 1f, e => e.Coffee.Made);
     
-        [SuccessorVar] private static GoapVar<bool, Eater> _breadIsToasted =
-            BoolVar<Eater>.ConstructEqualityHeuristic("BreadIsToasted", 1f, e => e.Bread.Toasted);
-        [SuccessorVar] private static GoapVar<bool, Eater> _breadIsButtered =
-            BoolVar<Eater>.ConstructEqualityHeuristic("BreadIsButtered", 1f, e => e.Bread.Buttered);
-        [SuccessorVar] private static GoapVar<bool, Eater> _coffeeIsMade =
-            BoolVar<Eater>.ConstructEqualityHeuristic("CoffeeIsMade", 1f, e => e.Coffee.Made);
     
-    
-        public MakeBreakfastAction() : base("MakeBreakfast")
+        public MakeBreakfastAction() : base("MakeBreakfast", a => { })
         {
         }
 

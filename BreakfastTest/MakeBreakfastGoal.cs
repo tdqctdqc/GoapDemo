@@ -13,10 +13,10 @@ namespace GoapDemo.BreakfastTest
             = BoolVar<Eater>.ConstructEqualityHeuristic("CoffeeIsMade", 1f, e => e.Coffee.Made);
 
         [SubGoal] private static GoapSubGoal<Eater> _makeToastSubGoal
-            = new MakeToastSubGoal(1f);
+            = new MakeToastSubGoal();
         [SubGoal] private static GoapSubGoal<Eater> _makeCoffeeSubGoal
-            = new MakeCoffeeSubGoal(1f);
-        public MakeBreakfastGoal() : base()
+            = new MakeCoffeeSubGoal();
+        public MakeBreakfastGoal() : base(() => { })
         {
         
         }
@@ -28,55 +28,6 @@ namespace GoapDemo.BreakfastTest
         public override GoapState<Eater> GetInitialState(List<GoapAgent<Eater>> agents)
         {
             return GetInitialStateFirstAgentMethod(agents);
-        }
-
-        private class MakeToastSubGoal : GoapSubGoal<Eater>
-        {
-            [AvailableAction] private static GoapAction<Eater> _toastBreadAction
-                = new ToastBreadAction();
-
-            [AvailableAction] private static GoapAction<Eater> _butterToastAction
-                = new PutButterOnToastAction();
-
-            public override float GetAgentCapability(GoapAgent<Eater> agent)
-            {
-                return 1f;
-            }
-
-            public MakeToastSubGoal(float difficulty) : base(GetTargetState(), difficulty)
-            {
-            }
-            private static GoapState<Eater> GetTargetState()
-            {
-                var targetState = new GoapState<Eater>
-                (
-                    new GoapFluent<bool, Eater>(_breadIsToasted, true),
-                    new GoapFluent<bool, Eater>(_breadIsButtered, true)
-                );
-                return targetState;
-            }
-        }
-        private class MakeCoffeeSubGoal : GoapSubGoal<Eater>
-        {
-            [AvailableAction] private static GoapAction<Eater> _makeCoffeeAction
-                = new MakeCoffeeAction();
-
-            public override float GetAgentCapability(GoapAgent<Eater> agent)
-            {
-                return 1f;
-            }
-
-            public MakeCoffeeSubGoal(float difficulty) : base(GetTargetState(), difficulty)
-            {
-            }
-            private static GoapState<Eater> GetTargetState()
-            {
-                var targetState = new GoapState<Eater>
-                (
-                    new GoapFluent<bool, Eater>(_coffeeIsMade, true)
-                );
-                return targetState;
-            }
         }
     }
 }

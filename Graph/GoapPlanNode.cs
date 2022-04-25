@@ -53,11 +53,6 @@ public class GoapPlanNode<TAgent>
                 child.DoPlanning();
             }
         }
-        //check each actionNode to if exists successor goal
-        //if so create goalNode for it, place in children 
-        //else add null in children for it 
-        
-        //for each child call DoPlanning()
     }
     public void AccumulateLeaves(List<GoapActionNode<TAgent>> list)
     {

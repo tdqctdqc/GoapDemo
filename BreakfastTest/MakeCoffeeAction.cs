@@ -8,7 +8,7 @@ namespace GoapDemo.BreakfastTest
         [ExplicitVar] private static GoapVar<bool, Eater> _coffeeIsMade =
             BoolVar<Eater>.ConstructEqualityHeuristic("CoffeeIsMade", 1f, e => e.Coffee.Made);
 
-        public MakeCoffeeAction() : base("MakeCoffee")
+        public MakeCoffeeAction() : base("MakeCoffee", a => { })
         {
         }
 

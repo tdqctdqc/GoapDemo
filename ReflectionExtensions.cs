@@ -26,6 +26,7 @@ public static class ReflectionExtensions
                     return (TField) f.GetValue(valueHaver);
                 }
             )
+            .Where(v => v == null == false)
             .ToList();
     }
 
@@ -43,6 +44,7 @@ public static class ReflectionExtensions
                     return (TProperty) p.GetValue(valueHaver);
                 }
             )
+            .Where(v => v == null == false)
             .ToList();
     }
     public static List<TResult> GetResultsForMethods<TResult>(this IEnumerable<MethodInfo> methodInfos, object instance, object[] args = null)
@@ -55,6 +57,7 @@ public static class ReflectionExtensions
                     return (TResult) p.Invoke(valueHaver, args);
                 }
             )
+            .Where(v => v == null == false)
             .ToList();
     }
     public static FieldInfo[] GetAllFields(this Type type)

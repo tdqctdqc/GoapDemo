@@ -13,9 +13,9 @@ public abstract class GoapGoal<TAgent> : IGoapGoal
     public List<IGoapAgentVar<TAgent>> ImplicitVars => _implicitVars;
     private List<IGoapAgentVar<TAgent>> _implicitVars;
     public abstract float Priority(GoapAgent<TAgent> agent);
-    public GoapGoal(Action setDependentInstanceFields)
+    public GoapGoal(Action<GoapGoal<TAgent>> setDependentInstanceFields)
     {
-        setDependentInstanceFields();
+        setDependentInstanceFields(this);
         SetupVars(this);
         SetupSubGoals(this);
         // CheckActionVars();

@@ -25,7 +25,7 @@ namespace GoapDemo.BreakfastTest
         }
         public override GoapState<Eater> TransformContextForSuccessorGoal(GoapState<Eater> actionContext)
         {
-            var consumedVar = actionContext.GetVar<bool>(_hasConsumedBreakfast.Name);
+            var consumedVar = actionContext.GetFluent<bool>(_hasConsumedBreakfast.Name);
             if (consumedVar is GoapFluent<bool, Eater> consumed)
             {
                 GoapState<Eater> initState = new GoapState<Eater>

@@ -38,9 +38,9 @@ namespace GoapDemo.WalkHomeTest
         }
         public override GoapActionArgs ApplyToState(GoapState<Walker> state)
         {
-            var homePos = state.GetVar<Vector2>(_homePosition.Name).Value;
-            var currentPos = state.GetVar<Vector2>(_currentPosition.Name).Value;
-            var strideLength = state.GetVar<float>(_strideLength.Name).Value;
+            var homePos = state.GetFluent<Vector2>(_homePosition.Name).Value;
+            var currentPos = state.GetFluent<Vector2>(_currentPosition.Name).Value;
+            var strideLength = state.GetFluent<float>(_strideLength.Name).Value;
             float effectiveStrideLength = Mathf.Min(strideLength, currentPos.DistanceTo(homePos));
             Vector2 newPos = currentPos + (homePos - currentPos).Normalized() * effectiveStrideLength;
             state.MutateFluent(_currentPosition, newPos);

@@ -9,7 +9,7 @@ public class Root : Node
 {
     public override void _Ready()
     {
-        GoapChecker.CheckRules();
+        // GoapChecker.CheckRules();
         
         DoWalkerTest();
         DoBreakfastTest(1);

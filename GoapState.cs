@@ -39,7 +39,7 @@ public class GoapState<TAgent> : IGoapState
         _fluentNameDic.Add(newVarInstance.Name, newVarInstance);
     }
 
-    public GoapFluent<TValue, TAgent> GetVar<TValue>(string name) where TValue : struct
+    public GoapFluent<TValue, TAgent> GetFluent<TValue>(string name) where TValue : struct
     {
         if (GetVarTypeChecked(name, typeof(TValue)) is GoapFluent<TValue, TAgent> v)
         {

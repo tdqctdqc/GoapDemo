@@ -16,7 +16,7 @@ namespace GoapDemo.BreakfastTest
 
         public override GoapState<Eater> TransformContextForSuccessorGoal(GoapState<Eater> actionContext)
         {
-            if (actionContext.GetVar<bool>(_breakfastIsMade.Name) is GoapFluent<bool, Eater> breakfastMade)
+            if (actionContext.GetFluent<bool>(_breakfastIsMade.Name) is GoapFluent<bool, Eater> breakfastMade)
             {
                 GoapState<Eater> initState = new GoapState<Eater>
                 (

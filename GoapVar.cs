@@ -54,7 +54,7 @@ public abstract class GoapVar<TValue, TAgent> : IGoapAgentVar<TAgent> where TVal
     {
         Func<TValue, GoapState<TAgent>, float> heuristicFunc = (value, state) =>
         {
-            var stateFluent = state.GetVar<TValue>(varName);
+            var stateFluent = state.GetFluent<TValue>(varName);
             if (stateFluent == null) return missCost; 
             if (stateFluent.Value is TValue v == false) return missCost;
             return v.Equals(value) ? 0f : missCost;
@@ -66,7 +66,7 @@ public abstract class GoapVar<TValue, TAgent> : IGoapAgentVar<TAgent> where TVal
     {
         Func<TValue, GoapState<TAgent>, float> heuristicFunc = (value, state) =>
         {
-            var stateFluent = state.GetVar<TValue>(varName);
+            var stateFluent = state.GetFluent<TValue>(varName);
             if (stateFluent == null) return missHeurCost; 
             if (stateFluent.Value is TValue v == false) return missHeurCost;
             return distFunc(value, stateFluent.Value);

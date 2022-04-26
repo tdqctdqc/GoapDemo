@@ -29,27 +29,34 @@ public static class GoapPlanner
         Func<GoapState<TAgent>, bool> finished = (s) => subGoal.TargetState.SatisfiedBy(s);
         int planIter = 0;
             
-        List<GoapPlan<TAgent>> openPlans = new List<GoapPlan<TAgent>>();
-        openPlans.Add(startPlan);
-        while (openPlans.Count > 0 && planIter < maxPlanIter)
+        IEnumerable<GoapPlan<TAgent>> openPlans;
+        openPlans = new List<GoapPlan<TAgent>> {startPlan};
+        while (openPlans.Count() > 0 && planIter < maxPlanIter)
         {
-            current = openPlans[0];
+            // GD.Print("STEP " + planIter);
+            current = openPlans.First();
+            // GD.Print("heuristic dist: " + subGoal.TargetState.GetHeuristicDistance(openPlans.First().EndState));
+            // current.EndState.PrintState();
             if (finished(current.EndState))
             {
                 return current;
             }
-            openPlans.Remove(current);
+            openPlans = openPlans.Skip(1);
             planIter++;
             var planNeighbors = subGoal.Actions
                 .Where(a => a.Valid(current.EndState))
                 .Select(a => current.ExtendPlan(a));
-            openPlans.AddRange(planNeighbors);
-            if (openPlans.Count == 0) break;
+            openPlans = openPlans.Union(planNeighbors);
+            if (openPlans.Count() == 0) break;
             openPlans = openPlans
                 .OrderBy(p => p.Cost + subGoal.TargetState.GetHeuristicDistance(p.EndState))
                 .ToList();
         }
-
+        GD.Print("BEST PLAN");
+        for (int i = 0; i < openPlans.First().Actions.Count; i++)
+        {
+            GD.Print(openPlans.First().Actions[i].Name);
+        }
         return null;
     }
 }

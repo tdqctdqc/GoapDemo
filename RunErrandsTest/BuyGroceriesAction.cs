@@ -4,9 +4,11 @@ using System;
 public class BuyGroceriesAction : GoapAction<Errander>
 {
     private RunErrandsGoal _runErrandsGoal;
-    private GoapVar<Vector2, Errander> _currentPos => RunErrandsGoal.CurrentPosition;
+    private static GoapVar<Vector2, Errander> _currentPos => RunErrandsGoal.CurrentPosition;
     private GoapVar<Vector2, Errander> _groceryStorePos => _runErrandsGoal.GroceryStorePosition;
-    private GoapVar<bool, Errander> _groceriesUnbought => RunErrandsGoal.GroceriesUnbought;
+    private static GoapVar<bool, Errander> _groceriesUnbought => RunErrandsGoal.GroceriesUnbought;
+    [Requirement] private static Func<GoapState<Errander>, bool> _req
+        => s => s.CheckVarMatch(_groceriesUnbought.Name, true);
     public BuyGroceriesAction(RunErrandsGoal goal) : 
         base("BuyGroceries", a => { SetInstanceMembers(a, goal);})
     {

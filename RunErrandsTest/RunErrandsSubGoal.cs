@@ -3,6 +3,8 @@ using System;
 
 public class RunErrandsSubGoal : GoapSubGoal<Errander>
 {
+    [AgentRequirement] private static GoapAgentRequirement<Errander> _req = new (s => 1f, a => 1f); 
+    
     [TargetFluent] private static GoapFluent<bool, Errander> _returnBooksTarget
         = new (RunErrandsGoal.BooksUnreturned, false);
     [TargetFluent] private static GoapFluent<bool, Errander> _cashChecksTarget
@@ -11,12 +13,14 @@ public class RunErrandsSubGoal : GoapSubGoal<Errander>
         = new (RunErrandsGoal.GroceriesUnbought, false);
     [TargetFluent] private static GoapFluent<bool, Errander> _returnHomeTarget
         = new(RunErrandsGoal.AtHome, true);
-        
+    
+    [AvailableAction] private GoapAction<Errander> _returnHomeAction;
     [AvailableAction] private GoapAction<Errander> _returnBooksAction;
     [AvailableAction] private GoapAction<Errander> _cashChecksAction;
     [AvailableAction] private GoapAction<Errander> _buyGroceriesAction;
-    [AvailableAction] private GoapAction<Errander> _returnHomeAction;
-    protected RunErrandsSubGoal(RunErrandsGoal goal) 
+    
+    
+    public RunErrandsSubGoal(RunErrandsGoal goal) 
         : base(sg => { SetInstanceMembers(sg, goal); })
     {
     }

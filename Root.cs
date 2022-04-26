@@ -11,8 +11,9 @@ public class Root : Node
     {
         // GoapChecker.CheckRules();
         
-        DoWalkerTest();
-        DoBreakfastTest(1);
+        // DoWalkerTest();
+        // DoBreakfastTest(1);
+        DoErrandsTest();
         // DoReflectionTest();
     }
 
@@ -43,4 +44,10 @@ public class Root : Node
         GoapPlanner.PlanGoal(goal, list);
     }
 
+    private void DoErrandsTest()
+    {
+        var list = new List<GoapAgent<Errander>>{new ErrandAgent(new Errander(Vector2.Zero))};
+        var goal = new RunErrandsGoal(Vector2.Right * 10f, Vector2.Up * 10f, Vector2.One * 10f);
+        GoapPlanner.PlanGoal(goal, list);
+    }
 }

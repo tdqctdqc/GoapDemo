@@ -5,8 +5,10 @@ public class CashCheckAction : GoapAction<Errander>
 {
     private RunErrandsGoal _runErrandsGoal;
     private GoapVar<Vector2, Errander> _bankPos => _runErrandsGoal.BankPosition;
-    private GoapVar<Vector2, Errander> _currentPos => RunErrandsGoal.CurrentPosition;
-    private GoapVar<bool, Errander> _checksUncashed => RunErrandsGoal.ChecksUncashed;
+    private static GoapVar<Vector2, Errander> _currentPos => RunErrandsGoal.CurrentPosition;
+    private static GoapVar<bool, Errander> _checksUncashed => RunErrandsGoal.ChecksUncashed;
+    [Requirement] private static Func<GoapState<Errander>, bool> _req
+        => s => s.CheckVarMatch(_checksUncashed.Name, true);
     public CashCheckAction(RunErrandsGoal goal) 
         : base("CashCheck", a => { SetInstanceMembers((CashCheckAction)a, goal);})
     {

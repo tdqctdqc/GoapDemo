@@ -3,9 +3,17 @@ using System;
 
 public class ReturnHomeAction : GoapAction<Errander>
 {
-    private GoapVar<Vector2, Errander> _currentPos => RunErrandsGoal.CurrentPosition;
-    private GoapVar<Vector2, Errander> _homePos => RunErrandsGoal.HomePosition;
-    
+    private static GoapVar<Vector2, Errander> _currentPos => RunErrandsGoal.CurrentPosition;
+    private static GoapVar<Vector2, Errander> _homePos => RunErrandsGoal.HomePosition;
+
+    [Requirement] private static Func<GoapState<Errander>, bool> _req
+        => s =>
+        {
+            s.CheckVarMatch(RunErrandsGoal.AtHome.Name, false);
+            var homePos = s.GetFluent<Vector2>(_homePos.Name).Value;
+            var currentPos = s.GetFluent<Vector2>(_currentPos.Name).Value;
+            return homePos != currentPos;
+        };
     public ReturnHomeAction() 
         : base("ReturnHome", a => { })
     {
@@ -20,7 +28,7 @@ public class ReturnHomeAction : GoapAction<Errander>
     {
         var homePos = state.GetFluent<Vector2>(_homePos.Name).Value;
         var currentPos = state.GetFluent<Vector2>(_currentPos.Name).Value;
-        return currentPos.DistanceTo(homePos);
+        return currentPos.DistanceTo(homePos) * 3f;
     }
 
     public override string Descr(GoapActionArgs args)

@@ -5,8 +5,7 @@ namespace GoapDemo.BreakfastTest
 {
     public class MakeToastSubGoal : GoapSubGoal<Eater>
     {
-        [AgentRequirement] private static GoapAgentRequirement<Eater> _req
-            = new GoapAgentRequirement<Eater>(s => 1f, a => 1f); 
+        [AgentRequirement] private static GoapAgentRequirement<Eater> _req = new (s => 1f, a => 1f); 
 
         [TargetFluent] private static GoapFluent<bool, Eater> _breadIsToastedFluent
             = new GoapFluent<bool, Eater>(MakeBreakfastGoal.BreadIsToasted, true);

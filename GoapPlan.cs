@@ -42,6 +42,11 @@ public class GoapPlan<TAgent>
         return new GoapPlan<TAgent>(this, newState, newActions, extendedArgs, Cost + actionCost, diff);
     }
 
+    public float GetLastActionCost()
+    {
+        if (Actions.Count == 0) return 0f;
+        return Actions.Last().Cost(Parent.EndState);
+    }
     public void Print()
     {
         GD.Print("PLAN ACTIONS");

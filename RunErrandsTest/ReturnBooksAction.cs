@@ -5,8 +5,11 @@ public class ReturnBooksAction : GoapAction<Errander>
 {
     private RunErrandsGoal _runErrandsGoal;
     private GoapVar<Vector2, Errander> _libraryPos => _runErrandsGoal.LibraryPosition;
-    private GoapVar<Vector2, Errander> _currentPos => RunErrandsGoal.CurrentPosition;
-    private GoapVar<bool, Errander> _booksUnreturned => RunErrandsGoal.BooksUnreturned;
+    private static GoapVar<Vector2, Errander> _currentPos => RunErrandsGoal.CurrentPosition;
+    private static GoapVar<bool, Errander> _booksUnreturned => RunErrandsGoal.BooksUnreturned;
+
+    [Requirement] private static Func<GoapState<Errander>, bool> _req
+        => s => s.CheckVarMatch(_booksUnreturned.Name, true);
     public ReturnBooksAction(RunErrandsGoal goal) 
         : base("ReturnBooks", a => { SetInstanceMembers((ReturnBooksAction)a, goal);})
     {

@@ -21,6 +21,8 @@ public class GoapPlanNode<TAgent>
     public void DoPlanning(GoapState<TAgent> initialState)
     {
         Plan = GoapPlanner.PlanSubGoal(SubGoal, initialState, Agents, 100);
+        
+
         if (Plan == null)
         {
             GD.Print("failed plan");

@@ -21,7 +21,7 @@ public class RunErrandsSubGoal : GoapSubGoal<Errander>
     
     
     public RunErrandsSubGoal(RunErrandsGoal goal) 
-        : base(sg => { SetInstanceMembers(sg, goal); })
+        : base("RunErrands", sg => { SetInstanceMembers(sg, goal); })
     {
     }
 

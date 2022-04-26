@@ -15,7 +15,7 @@ namespace GoapDemo.WalkHomeTest
         [AgentRequirement] private static GoapAgentRequirement<Walker> _req
             = new (s => 1f, a => 1f); 
         public WalkHomeSubGoal()
-            : base(sg => {})
+            : base("WalkHome", sg => {})
         {
         }
     }

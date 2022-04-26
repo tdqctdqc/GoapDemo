@@ -17,7 +17,7 @@ namespace GoapDemo.BreakfastTest
         [AvailableAction] private static GoapAction<Eater> _butterToastAction
                     = new PutButterOnToastAction();
         public MakeToastSubGoal() 
-            : base(sg => { })
+            : base("MakeToast", sg => { })
         {
         }
     }

@@ -17,7 +17,7 @@ namespace GoapDemo.BreakfastTest
             = new ConsumeBreakfastAction();
 
         public DoBreakfastSubGoal(float diff) 
-            : base(sg => { })
+            : base("DoBreakfast", sg => { })
         {
             
         }

@@ -20,7 +20,7 @@ namespace GoapDemo.BreakfastTest
         [AvailableAction] private static GoapAction<Eater> _drinkCoffeeAction 
             = new DrinkCoffeeAction();
         public ConsumeBreakfastSubGoal() 
-            : base(sg => { })
+            : base("ConsumeBreakfast", sg => { })
         {
         }
     }

@@ -21,6 +21,7 @@ public class AStarSearch<TNode> where TNode : class
         _getNeighbors = getNeighbors;
         _getHeuristic = getHeuristic;
         _getSuccess = getSuccess;
+        _getCost = getCost;
         _openNodes = new List<TNode>{start};
         _maxIter = maxIter;
         _currentIter = 0;

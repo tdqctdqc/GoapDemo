@@ -12,7 +12,7 @@ namespace GoapDemo.BreakfastTest
         [AvailableAction] private static GoapAction<Eater> _makeCoffeeAction
                     = new MakeCoffeeAction();
         public MakeCoffeeSubGoal() 
-            : base(sg => { })
+            : base("MakeCoffee", sg => { })
         {
         }
     }

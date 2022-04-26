@@ -16,7 +16,7 @@ public class DoBreakfastGoal : GoapGoal<Eater>
     [SubGoal] private static GoapSubGoal<Eater> _subGoal 
         =  new DoBreakfastSubGoal(1f);
     [TestCase] private static IGoapGoal GetTestCase() => new DoBreakfastGoal();
-    public DoBreakfastGoal() : base(g => { })
+    public DoBreakfastGoal() : base("DoBreakfast", g => { })
     {
         
     }

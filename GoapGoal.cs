@@ -12,9 +12,11 @@ public abstract class GoapGoal<TAgent> : IGoapGoal
     private List<IGoapAgentVar<TAgent>> _explicitVars;
     public List<IGoapAgentVar<TAgent>> ImplicitVars => _implicitVars;
     private List<IGoapAgentVar<TAgent>> _implicitVars;
+    public string Name { get; private set; }
     public abstract float Priority(GoapAgent<TAgent> agent);
-    public GoapGoal(Action<GoapGoal<TAgent>> setDependentInstanceFields)
+    public GoapGoal(string name, Action<GoapGoal<TAgent>> setDependentInstanceFields)
     {
+        Name = name;
         setDependentInstanceFields(this);
         SetupVars(this);
         SetupSubGoals(this);

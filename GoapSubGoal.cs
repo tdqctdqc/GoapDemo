@@ -10,8 +10,10 @@ public class GoapSubGoal<TAgent>
     private List<GoapAction<TAgent>> _actions; 
     public IReadOnlyList<GoapAgentRequirement<TAgent>> AgentRequirements => _agentRequirements;
     private List<GoapAgentRequirement<TAgent>> _agentRequirements;
-    protected GoapSubGoal(Action<GoapSubGoal<TAgent>> setDependentInstanceFields)
+    public string Name { get; private set; }
+    protected GoapSubGoal(string name, Action<GoapSubGoal<TAgent>> setDependentInstanceFields)
     {
+        Name = name;
         setDependentInstanceFields(this);
         BuildTargetState(this);
         BuildActions(this);

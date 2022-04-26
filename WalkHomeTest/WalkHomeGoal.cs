@@ -24,7 +24,7 @@ namespace GoapDemo.WalkHomeTest
             = new WalkHomeSubGoal();
         [TestCase] private static IGoapGoal GetTestCase() => new WalkHomeGoal();
 
-        public WalkHomeGoal() : base(g => { })
+        public WalkHomeGoal() : base("WalkHome", g => { })
         {
             
         }

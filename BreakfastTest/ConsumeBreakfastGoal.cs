@@ -15,7 +15,7 @@ namespace GoapDemo.BreakfastTest
         [SubGoal] private static GoapSubGoal<Eater> _subGoal 
             = new ConsumeBreakfastSubGoal();
         [TestCase] private static IGoapGoal GetTestCase() => new ConsumeBreakfastGoal();
-        public ConsumeBreakfastGoal() : base(g => { })
+        public ConsumeBreakfastGoal() : base("ConsumeBreakfast", g => { })
         {
         
         }

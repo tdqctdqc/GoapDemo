@@ -32,7 +32,7 @@ public class RunErrandsGoal : GoapGoal<Errander>
 
     [SubGoal] public GoapSubGoal<Errander> _subGoal;
     public RunErrandsGoal(Vector2 groceryStoreLoc, Vector2 libLoc, Vector2 bankLoc) 
-        : base(g => { SetupInstanceVars(g, groceryStoreLoc, libLoc, bankLoc); })
+        : base("RunErrands", g => { SetupInstanceVars(g, groceryStoreLoc, libLoc, bankLoc); })
     {
     }
 

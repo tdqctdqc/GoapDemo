@@ -6,7 +6,6 @@ using System.Linq;
 public class GoapState<TAgent> : IGoapState
 {
     private Dictionary<string, IGoapAgentFluent<TAgent>> _fluentNameDic;
-    
     public GoapState(params IGoapAgentFluent<TAgent>[] stateVars)
     {
         _fluentNameDic = new Dictionary<string, IGoapAgentFluent<TAgent>>();

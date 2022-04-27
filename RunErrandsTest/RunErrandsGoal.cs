@@ -10,24 +10,21 @@ public class RunErrandsGoal : GoapGoal<Errander>
 
     [ExplicitVar] public static GoapVar<Vector2, Errander> HomePosition => _homePosLazy.Value;
     private static Lazy<GoapVar<Vector2, Errander>> _homePosLazy = new(
-        () => Vec2Var<Errander>.ConstructDistanceHeuristic("HomePosition", 1f, e => e.HomePosition));
+        () => GoapVar<Vector2, Errander>.ConstructDistanceHeuristic("HomePosition", 1f, (v,w) => v.DistanceTo(w), e => e.HomePosition));
     
     [ExplicitVar] public static GoapVar<Vector2, Errander> CurrentPosition => _currentPosLazy.Value;
     private static Lazy<GoapVar<Vector2, Errander>> _currentPosLazy = new(
-        () => Vec2Var<Errander>.ConstructDistanceHeuristic("CurrentPosition", 1f, e => e.CurrentPosition));
+        () => GoapVar<Vector2, Errander>.ConstructDistanceHeuristic("CurrentPosition", 1f, (v,w) => v.DistanceTo(w), e => e.CurrentPosition));
     
     [ExplicitVar] public static GoapVar<bool, Errander> BooksUnreturned
-        = BoolVar<Errander>.ConstructEqualityHeuristic("BooksUnreturned", 10f, e => e.NeedToReturnBooks);
+        = GoapVar<bool,Errander>.ConstructEqualityHeuristic("BooksUnreturned", 10f, e => e.NeedToReturnBooks);
     [ExplicitVar] public static GoapVar<bool, Errander> ChecksUncashed
-        = BoolVar<Errander>.ConstructEqualityHeuristic("ChecksUncashed", 10f, e => e.NeedToCashCheck);
+        = GoapVar<bool,Errander>.ConstructEqualityHeuristic("ChecksUncashed", 10f, e => e.NeedToCashCheck);
     [ExplicitVar] public static GoapVar<bool, Errander> GroceriesUnbought
-        = BoolVar<Errander>.ConstructEqualityHeuristic("GroceriesUnbought", 10f, e => e.NeedToBuyGroceries);
+        = GoapVar<bool,Errander>.ConstructEqualityHeuristic("GroceriesUnbought", 10f, e => e.NeedToBuyGroceries);
     
 
-    [ImplicitVar] public static GoapVar<bool, Errander> AtHome
-        = BoolVar<Errander>.ConstructImplicitDistanceHeuristic<Vector2>("AtHome",
-            e => e.CurrentPosition == e.HomePosition,
-            HomePosition, (p, q) => p.DistanceTo(q) * 0f, CurrentPosition);
+
 
 
     [SubGoal] public GoapSubGoal<Errander> _subGoal;
@@ -40,11 +37,11 @@ public class RunErrandsGoal : GoapGoal<Errander>
     {
         var runErrandsGoal = (RunErrandsGoal) goal;
         runErrandsGoal.GroceryStorePosition
-            = Vec2Var<Errander>.ConstructDistanceHeuristic("GroceryStorePosition", 1f, e => groceryStoreLoc);
+            = GoapVar<Vector2, Errander>.ConstructDistanceHeuristic("GroceryStorePosition", 1f, (v,w) => v.DistanceTo(w), e => groceryStoreLoc);
         runErrandsGoal.LibraryPosition
-            = Vec2Var<Errander>.ConstructDistanceHeuristic("LibraryPosition", 1f, e => libraryLoc);
+            = GoapVar<Vector2, Errander>.ConstructDistanceHeuristic("LibraryPosition", 1f, (v,w) => v.DistanceTo(w), e => libraryLoc);
         runErrandsGoal.BankPosition
-            = Vec2Var<Errander>.ConstructDistanceHeuristic("BankPosition", 1f, e => bankLoc);
+            = GoapVar<Vector2, Errander>.ConstructDistanceHeuristic("BankPosition", 1f, (v,w) => v.DistanceTo(w), e => bankLoc);
         runErrandsGoal._subGoal = new RunErrandsSubGoal(runErrandsGoal);
     }
 

@@ -36,8 +36,8 @@ public class AStarSearch<TNode> where TNode : class
         while (_openNodes.Count() > 0 && _currentIter < _maxIter)
         {
             var validToContinue = Cycle();
-            if (validToContinue == false) break;
             if (Success != null) return Success;
+            if (validToContinue == false) break;
         }
 
         return null;
@@ -54,6 +54,13 @@ public class AStarSearch<TNode> where TNode : class
             return true; 
         }
         var neighbors = _getNeighbors(_currentNode);
+        var success = neighbors.Where(n => _getSuccess(n)).FirstOrDefault();
+        if (success != null)
+        {
+            Success = success;
+            return true; 
+        }
+        
         _openNodes = _openNodes.Union(neighbors);
         if (_openNodes.Count() == 0) return false;
         _openNodes = _openNodes.OrderBy(n => _getCost(n) + _getHeuristic(n));

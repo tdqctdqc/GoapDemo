@@ -26,6 +26,22 @@ public class GoapSatisfier<TAgent, TValue> where TValue : struct
         }
         return true;
     }
+
+    public static GoapSatisfier<TAgent, TValue> GetEqualitySatisfier(Func<GoapState<TAgent>, TValue> getValueFunc)
+    {
+        var satisfier = new GoapSatisfier<TAgent, TValue>();
+        satisfier.AddFunc( (fluent, state) => fluent.Value.Equals(getValueFunc(state)) );
+        return satisfier;
+    }
+    public static GoapSatisfier<TAgent, TValue> GetEqualitySatisfier()
+    {
+        var satisfier = new GoapSatisfier<TAgent, TValue>();
+        satisfier.AddFunc( (fluent, state) => state.CheckVarMatch(fluent.Name, fluent.Value) );
+        return satisfier;
+    }
+    
+    
+    
     public static GoapSatisfier<TAgent, TValue> GetImplicitEqualitySatisfier<TExplicitValue>
         (GoapVar<TExplicitValue,TAgent> masterVar, params GoapVar<TExplicitValue,TAgent>[] explicitVars)
         where TExplicitValue : struct

@@ -19,8 +19,10 @@ public class Root : Node
         _camera.Current = true;
         // GoapChecker.CheckRules();
         var list = new List<GoapAgent<Errander>> {new ErrandAgent(new Errander(Vector2.Zero))};
-        var goal = new RunErrandsGoal(Vector2.One, Vector2.Left, Vector2.Right);
+        var goal = new RunErrandsGoal(Vector2.Right * 10f, Vector2.Up * 10f, Vector2.One * 10f);
         _goalGraphic = DoGraphicTest(goal, list);
+        DoErrandsTest();
+        
         // DoReflectionTest();
     }
 
@@ -66,7 +68,7 @@ public class Root : Node
     private void DoErrandsTest()
     {
         var list = new List<GoapAgent<Errander>>{new ErrandAgent(new Errander(Vector2.Zero))};
-        var goal = new RunErrandsGoal(Vector2.Right * 10f, Vector2.Up * 10f, Vector2.One * 10f);
+        var goal = new RunErrandsGoal(Vector2.Right, Vector2.Up, Vector2.One);
         GoapPlanner.PlanGoal(goal, list);
     }
 
@@ -78,10 +80,5 @@ public class Root : Node
         goalGraphic.StartSearch(agents);
         _cycle = goalGraphic.Cycle<TAgent>;
         return goalGraphic;
-    }
-
-    private void CycleTest()
-    {
-        
     }
 }

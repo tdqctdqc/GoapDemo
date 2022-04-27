@@ -8,9 +8,9 @@ namespace GoapDemo.BreakfastTest
     public class ConsumeBreakfastGoal : GoapGoal<Eater>
     {
         [ExplicitVar] public static GoapVar<bool, Eater> Hungry 
-            = BoolVar<Eater>.ConstructEqualityHeuristic("Hungry", 1f, e => e.Hungry);
+            = GoapVar<bool,Eater>.ConstructEqualityHeuristic("Hungry", 1f, e => e.Hungry);
         [ExplicitVar] public static GoapVar<bool, Eater> Caffeinated 
-            = BoolVar<Eater>.ConstructEqualityHeuristic("Caffeinated", 1f, e => e.Caffeinated);
+            = GoapVar<bool,Eater>.ConstructEqualityHeuristic("Caffeinated", 1f, e => e.Caffeinated);
         
         [SubGoal] private static GoapSubGoal<Eater> _subGoal 
             = new ConsumeBreakfastSubGoal();

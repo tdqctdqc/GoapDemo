@@ -22,7 +22,6 @@ public class GoapPlanNode<TAgent>
     {
         Plan = GoapPlanner.PlanSubGoal(SubGoal, initialState, 100);
         
-
         if (Plan == null)
         {
             GD.Print("failed plan");

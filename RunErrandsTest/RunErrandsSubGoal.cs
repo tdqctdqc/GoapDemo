@@ -11,8 +11,6 @@ public class RunErrandsSubGoal : GoapSubGoal<Errander>
         = new (RunErrandsGoal.ChecksUncashed, false);
     [TargetFluent] private static GoapFluent<bool, Errander> _buyGroceriesTarget
         = new (RunErrandsGoal.GroceriesUnbought, false);
-    [TargetFluent] private static GoapFluent<bool, Errander> _returnHomeTarget
-        = new(RunErrandsGoal.AtHome, true);
     
     [AvailableAction] private GoapAction<Errander> _returnHomeAction;
     [AvailableAction] private GoapAction<Errander> _returnBooksAction;

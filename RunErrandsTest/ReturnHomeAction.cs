@@ -9,10 +9,18 @@ public class ReturnHomeAction : GoapAction<Errander>
     [Requirement] private static Func<GoapState<Errander>, bool> _req
         => s =>
         {
-            s.CheckVarMatch(RunErrandsGoal.AtHome.Name, false);
-            var homePos = s.GetFluent<Vector2>(_homePos.Name).Value;
-            var currentPos = s.GetFluent<Vector2>(_currentPos.Name).Value;
-            return homePos != currentPos;
+            // s.CheckVarMatch(RunErrandsGoal.AtHome.Name, false);
+
+            if (s.CheckVarMatch(RunErrandsGoal.GroceriesUnbought.Name, true))
+                return false;
+            if (s.CheckVarMatch(RunErrandsGoal.ChecksUncashed.Name, true))
+                return false;
+            if (s.CheckVarMatch(RunErrandsGoal.BooksUnreturned.Name, true))
+                return false;
+            return true;
+            // var homePos = s.GetFluent<Vector2>(_homePos.Name).Value;
+            // var currentPos = s.GetFluent<Vector2>(_currentPos.Name).Value;
+            // return homePos != currentPos;
         };
     public ReturnHomeAction() 
         : base("ReturnHome", a => { })
